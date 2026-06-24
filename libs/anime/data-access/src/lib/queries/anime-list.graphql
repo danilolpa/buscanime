@@ -1,0 +1,17 @@
+query AnimeList($page: Int = 1, $perPage: Int = 20) {
+  Page(page: $page, perPage: $perPage) {
+    media(type: ANIME, sort: POPULARITY_DESC) {
+      id
+      title {
+        romaji
+        english
+      }
+      coverImage {
+        large
+      }
+      averageScore
+      format
+      genres
+    }
+  }
+}

@@ -21,6 +21,8 @@
     ]
   },
   "dependencies": {
+    "graphql": "^16.14.2",
+    "graphql-request": "^7.4.0",
     "tslib": "^2.3.0"
   }
 }
