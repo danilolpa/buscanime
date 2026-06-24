@@ -5,13 +5,13 @@ const createJestConfig = nextJest({
 });
 
 const config = {
-  displayName: '@buscanime/app',
+  displayName: 'web',
   preset: '../../jest.preset.js',
   transform: {
     '^(?!.*\\.(js|jsx|ts|tsx|css|json)$)': '@nx/react/plugins/jest',
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
-  coverageDirectory: '../../coverage/apps/app',
+  coverageDirectory: '../../coverage/apps/web',
   testEnvironment: 'jsdom',
 };
 
