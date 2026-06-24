@@ -2,6 +2,7 @@ packages:
   - 'apps/*'
   - 'libs/*'
   - 'libs/shared/*'
+  - 'libs/anime/*'
 allowBuilds:
   '@parcel/watcher': true
   '@swc/core': true
