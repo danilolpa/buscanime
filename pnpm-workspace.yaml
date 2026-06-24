@@ -1,7 +1,7 @@
 packages:
   - 'apps/*'
   - 'libs/*'
-
+  - 'libs/shared/*'
 allowBuilds:
   '@parcel/watcher': true
   '@swc/core': true
@@ -36,4 +36,4 @@ minimumReleaseAgeExclude:
   - '@nx/web@23.0.1'
   - '@nx/webpack@23.0.1'
   - '@nx/workspace@23.0.1'
-  - nx@23.0.1
+  - 'nx@23.0.1'
