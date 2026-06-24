@@ -26,7 +26,6 @@
       ]
     },
     "types": [
-      "jest",
       "node"
     ],
     "outDir": "dist",
@@ -46,8 +45,7 @@
     "out-tsc",
     "dist",
     "node_modules",
-    "jest.config.ts",
-    "jest.config.cts",
+    "vite.config.mts",
     "src/**/*.spec.ts",
     "src/**/*.test.ts",
     ".next",

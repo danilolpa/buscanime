@@ -9,7 +9,7 @@
       "!{projectRoot}/eslint.config.mjs",
       "!{projectRoot}/**/?(*.)+(spec|test).[jt]s?(x)?(.snap)",
       "!{projectRoot}/tsconfig.spec.json",
-      "!{projectRoot}/jest.config.[jt]s",
+      "!{projectRoot}/vite.config.{mts,ts}",
       "!{projectRoot}/src/test-setup.[jt]s",
       "!{projectRoot}/test-setup.[jt]s"
     ],
@@ -52,7 +52,7 @@
       "options": {
         "targetName": "e2e"
       }
-    },
+    }
   ],
   "targetDefaults": {
     "@nx/vitest:test": {
