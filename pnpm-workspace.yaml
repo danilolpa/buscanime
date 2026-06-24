@@ -5,6 +5,7 @@ packages:
   - 'libs/anime/*'
 allowBuilds:
   '@parcel/watcher': true
+  '@sentry/cli': true
   '@swc/core': true
   less: true
   msw: true
