@@ -18,6 +18,12 @@ importers:
         specifier: ^19.0.0
         version: 19.2.7(react@19.2.7)
     devDependencies:
+      '@babel/core':
+        specifier: ^7.14.5
+        version: 7.29.7
+      '@babel/preset-react':
+        specifier: ^7.14.5
+        version: 7.29.7(@babel/core@7.29.7)
       '@commitlint/cli':
         specifier: ^21.0.2
         version: 21.0.2(@types/node@22.20.0)(conventional-commits-parser@6.4.0)(typescript@5.9.3)
@@ -48,6 +54,9 @@ importers:
       '@nx/playwright':
         specifier: 23.0.1
         version: 23.0.1(@babel/traverse@7.29.7)(@nx/jest@23.0.1(66622af312bf2fa2d3c47e0db5d9ae80))(@playwright/test@1.61.0)(@swc-node/register@1.11.1(@swc/core@1.15.43(@swc/helpers@0.5.23))(@swc/types@0.1.27)(typescript@5.9.3))(@swc/cli@0.8.1(@swc/core@1.15.43(@swc/helpers@0.5.23))(chokidar@5.0.0))(@swc/core@1.15.43(@swc/helpers@0.5.23))(@zkochan/js-yaml@0.0.7)(eslint@9.39.4(jiti@2.7.0))(nx@23.0.1(@swc-node/register@1.11.1(@swc/core@1.15.43(@swc/helpers@0.5.23))(@swc/types@0.1.27)(typescript@5.9.3))(@swc/core@1.15.43(@swc/helpers@0.5.23)))
+      '@nx/react':
+        specifier: 23.0.1
+        version: 23.0.1(69a893324efbf100d5f7a8e4f5d8d2b4)
       '@nx/vitest':
         specifier: 23.0.1
         version: 23.0.1(a03dbdc96d62bdcef4eeb5c293781e0b)
@@ -188,6 +197,8 @@ importers:
       tslib:
         specifier: ^2.3.0
         version: 2.8.1
+
+  libs/ui: {}
 
 packages:
 
