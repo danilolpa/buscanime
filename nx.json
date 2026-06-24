@@ -53,16 +53,11 @@
         "targetName": "e2e"
       }
     },
-    {
-      "plugin": "@nx/jest/plugin",
-      "options": {
-        "targetName": "test"
-      }
-    }
   ],
   "targetDefaults": {
-    "test": {
-      "dependsOn": ["^build"]
+    "@nx/vitest:test": {
+      "cache": true,
+      "inputs": ["default", "^production"]
     }
   },
   "generators": {

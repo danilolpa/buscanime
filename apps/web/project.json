@@ -1,5 +1,15 @@
 {
   "name": "web",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "projectType": "application",
-  "tags": ["type:app"]
+  "tags": ["type:app"],
+  "targets": {
+    "test": {
+      "executor": "@nx/vitest:test",
+      "outputs": ["{options.reportsDirectory}"],
+      "options": {
+        "reportsDirectory": "coverage/apps/web"
+      }
+    }
+  }
 }
