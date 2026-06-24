@@ -8,6 +8,7 @@
   },
   "private": true,
   "dependencies": {
+    "@tanstack/react-query": "^5.101.0",
     "graphql": "^16.14.2",
     "graphql-request": "^7.4.0",
     "graphql-tag": "^2.12.7",

@@ -1,1 +1,2 @@
-export * from './lib/data-access.js';
+export * from './lib/use-anime-list.js';
+export * from './lib/anilist-client.js';
