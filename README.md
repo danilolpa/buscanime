@@ -1,101 +1,107 @@
-# Buscanime
+# buscanime
 
-<a alt="Nx logo" href="https://nx.dev" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="45"></a>
+Nx monorepo — foundation stage of an AniList anime-listing app built as a job challenge. The current codebase establishes the full infrastructure pipeline from browser to the AniList GraphQL API; the UI layer is a placeholder pending implementation.
 
-✨ Your new, shiny [Nx workspace](https://nx.dev) is ready ✨.
+---
 
-[Learn more about this workspace setup and its capabilities](https://nx.dev/nx-api/next?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects) or run `npx nx graph` to visually explore what was created. Now, let's get you up to speed!
+## Tech stack
 
-## Run tasks
+| Concern         | Technology                                               |
+| --------------- | -------------------------------------------------------- |
+| Monorepo        | [Nx 23](https://nx.dev)                                  |
+| App framework   | Next.js 16 (App Router, Turbopack)                       |
+| UI library      | React 19                                                 |
+| Language        | TypeScript 5.9                                           |
+| Package manager | pnpm 11 (single workspace lockfile)                      |
+| Unit testing    | Vitest 4 + Testing Library + MSW 2                       |
+| E2E testing     | Playwright (via `@nx/playwright`)                        |
+| Styling         | Tailwind CSS v4                                          |
+| Data fetching   | TanStack Query v5                                        |
+| GraphQL client  | graphql-request 7 + GraphQL Code Generator 7             |
+| Error tracking  | @sentry/nextjs 10                                        |
+| Linting         | ESLint 9 (flat config) + `@nx/enforce-module-boundaries` |
+| Formatting      | Prettier 3                                               |
+| Commits         | commitlint + husky + lint-staged (Conventional Commits)  |
 
-To run the dev server for your app, use:
+---
 
-```sh
-npx nx dev app
+## Workspace structure
+
+```
+buscanime/
+├── apps/
+│   ├── web/           # Next.js app (tag: type:app)
+│   └── web-e2e/       # Playwright e2e suite
+└── libs/
+    ├── anime/
+    │   └── data-access/   # TanStack Query hook + AniList SDK (tag: type:data-access)
+    ├── ui/                # Shared React components (tag: type:ui)
+    └── shared/
+        └── types/         # Domain types — Anime, etc. (tag: type:util)
 ```
 
-To create a production bundle:
+### Import boundary rules (enforced by `@nx/enforce-module-boundaries`)
 
-```sh
-npx nx build app
+| Source tag         | May import                                 |
+| ------------------ | ------------------------------------------ |
+| `type:app`         | `type:ui`, `type:data-access`, `type:util` |
+| `type:ui`          | `type:ui`, `type:util`                     |
+| `type:data-access` | `type:data-access`, `type:util`            |
+| `type:util`        | `type:util`                                |
+
+Key constraint: **`type:ui` cannot import `type:data-access`**. Data-fetching logic stays out of the component library.
+
+---
+
+## AniList data pipeline
+
+```
+Browser
+  └─ TanStack Query (useAnimeList)
+       └─ graphql-request → POST /api/anilist   (same-origin)
+            └─ Next.js Route Handler (proxy)
+                 ├─ logs latency: [anilist] <status> in <ms>ms
+                 ├─ captures upstream errors to Sentry
+                 └─ fetches https://graphql.anilist.co
 ```
 
-To see all available targets to run for a project, run:
+The browser never calls AniList directly. All GraphQL traffic goes through the `/api/anilist` proxy, which provides a single egress point for latency logging, error capture, and future rate-limit handling.
 
-```sh
-npx nx show project app
+---
+
+## Commands
+
+```bash
+# Install dependencies
+pnpm install
+
+# Dev server (Next.js with Turbopack)
+pnpm exec nx dev web
+
+# Run all checks (lint + test + typecheck + build) across the workspace
+pnpm exec nx run-many -t lint test typecheck build
+
+# Regenerate the typed AniList SDK from the GraphQL schema
+pnpm codegen
+
+# Interactive dependency graph
+pnpm exec nx graph
+
+# E2E tests (requires Playwright browsers installed)
+pnpm exec nx e2e web-e2e
 ```
 
-These targets are either [inferred automatically](https://nx.dev/concepts/inferred-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) or defined in the `project.json` or `package.json` files.
+---
 
-[More about running tasks in the docs &raquo;](https://nx.dev/features/run-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+## Environment variables
 
-## Add new projects
+| Variable                 | Required | Purpose                                                                |
+| ------------------------ | -------- | ---------------------------------------------------------------------- |
+| `NEXT_PUBLIC_SENTRY_DSN` | No       | Sentry DSN. Sentry is a no-op when absent — safe to omit in local dev. |
 
-While you could add new projects to your workspace manually, you might want to leverage [Nx plugins](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) and their [code generation](https://nx.dev/features/generate-code?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) feature.
+---
 
-Use the plugin's generator to create new projects.
+## Known follow-ups
 
-To generate a new application, use:
-
-```sh
-npx nx g @nx/next:app demo
-```
-
-To generate a new library, use:
-
-```sh
-npx nx g @nx/react:lib mylib
-```
-
-You can use `npx nx list` to get a list of installed plugins. Then, run `npx nx list <plugin-name>` to learn about more specific capabilities of a particular plugin. Alternatively, [install Nx Console](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) to browse plugins and generators in your IDE.
-
-[Learn more about Nx plugins &raquo;](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) | [Browse the plugin registry &raquo;](https://nx.dev/plugin-registry?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## Set up CI!
-
-### Step 1
-
-To connect to Nx Cloud, run the following command:
-
-```sh
-npx nx connect
-```
-
-Connecting to Nx Cloud ensures a [fast and scalable CI](https://nx.dev/ci/intro/why-nx-cloud?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) pipeline. It includes features such as:
-
-- [Remote caching](https://nx.dev/ci/features/remote-cache?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Task distribution across multiple machines](https://nx.dev/ci/features/distribute-task-execution?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Automated e2e test splitting](https://nx.dev/ci/features/split-e2e-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Task flakiness detection and rerunning](https://nx.dev/ci/features/flaky-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-### Step 2
-
-Use the following command to configure a CI workflow for your workspace:
-
-```sh
-npx nx g ci-workflow
-```
-
-[Learn more about Nx on CI](https://nx.dev/ci/intro/ci-with-nx#ready-get-started-with-your-provider?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## Install Nx Console
-
-Nx Console is an editor extension that enriches your developer experience. It lets you run tasks, generate code, and improves code autocompletion in your IDE. It is available for VSCode and IntelliJ.
-
-[Install Nx Console &raquo;](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## Useful links
-
-Learn more:
-
-- [Learn more about this workspace setup](https://nx.dev/nx-api/next?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects)
-- [Learn about Nx on CI](https://nx.dev/ci/intro/ci-with-nx?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Releasing Packages with Nx release](https://nx.dev/features/manage-releases?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [What are Nx plugins?](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-And join the Nx community:
-- [Discord](https://go.nx.dev/community)
-- [Follow us on X](https://twitter.com/nxdevtools) or [LinkedIn](https://www.linkedin.com/company/nrwl)
-- [Our Youtube channel](https://www.youtube.com/@nxdevtools)
-- [Our blog](https://nx.dev/blog?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+- **`@nx/vitest:test` executor deprecation** — the `web` project uses the executor form (`@nx/vitest:test` in `project.json`). Migrate to inferred targets before Nx v24: `pnpm exec nx g @nx/vitest:convert-to-inferred`.
+- **UI implementation** — `apps/web` currently renders a plain `<main>buscanime</main>` placeholder. The anime listing page, search, and filters are next-phase work.

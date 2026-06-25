@@ -8,6 +8,15 @@
     },
     {
       "path": "./apps/web"
+    },
+    {
+      "path": "./libs/shared/types"
+    },
+    {
+      "path": "./libs/ui"
+    },
+    {
+      "path": "./libs/anime/data-access"
     }
   ]
 }
