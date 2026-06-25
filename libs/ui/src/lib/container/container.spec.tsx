@@ -17,7 +17,7 @@ describe('Container', () => {
     const { container } = render(<Container>x</Container>);
     const el = container.firstChild as HTMLElement;
     expect(el.className).toContain('mx-auto');
-    expect(el.className).toContain('max-w-6xl');
+    expect(el.className).toContain('max-w-7xl');
   });
 
   it('mescla className extra', () => {
