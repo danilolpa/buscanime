@@ -1,11 +1,1 @@
-@import 'tailwindcss';
-
-/* Varre as classes usadas nas libs do workspace (cross-package) */
-@source '../../../../libs/ui/src/**/*.{ts,tsx}';
-
-@theme {
-  --color-score-low: #e53e3e; /* score < 50 */
-  --color-score-mid: #f5c518; /* 50–80 */
-  --color-score-high: #38a169; /* > 80 */
-  --color-score-ink: #1a1a1a; /* texto escuro p/ contraste AA no amarelo */
-}
+@import '../../../../libs/ui/src/styles/theme.css';

@@ -52,3 +52,5 @@ next-env.d.ts
 test-output
 
 vitest.config.*.timestamp*
+
+storybook-static
