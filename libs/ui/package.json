@@ -11,6 +11,9 @@
     },
     "./package.json": "./package.json"
   },
+  "dependencies": {
+    "@buscanime/shared-types": "workspace:*"
+  },
   "nx": {
     "tags": [
       "type:ui"

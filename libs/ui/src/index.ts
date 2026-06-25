@@ -5,3 +5,4 @@ export * from './lib/anime-rating/anime-rating';
 export * from './lib/input/input';
 export * from './lib/skeleton/skeleton';
 export * from './lib/logo/logo';
+export * from './lib/anime-card/anime-card';

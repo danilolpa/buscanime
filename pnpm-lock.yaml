@@ -282,7 +282,11 @@ importers:
         specifier: ^2.3.0
         version: 2.8.1
 
-  libs/ui: {}
+  libs/ui:
+    dependencies:
+      '@buscanime/shared-types':
+        specifier: workspace:*
+        version: link:../shared/types
 
 packages:
 
