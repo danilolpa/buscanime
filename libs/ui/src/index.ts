@@ -7,3 +7,4 @@ export * from './lib/skeleton/skeleton';
 export * from './lib/logo/logo';
 export * from './lib/anime-card/anime-card';
 export * from './lib/anime-grid/anime-grid';
+export * from './lib/format-filter/format-filter';
