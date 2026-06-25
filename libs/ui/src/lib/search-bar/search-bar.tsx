@@ -20,7 +20,9 @@ export function SearchBar({ value, onChange, onSearch }: SearchBarProps) {
         type="search"
         aria-label="Buscar anime"
         value={value}
-        onChange={(e) => onChange(e.target.value)}
+        onChange={(e) =>
+          onChange((e.target as unknown as { value: string }).value)
+        }
         placeholder="Ex: Naruto, One Piece..."
       />
       <Button type="submit" variant="solid">

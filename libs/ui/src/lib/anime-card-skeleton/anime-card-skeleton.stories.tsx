@@ -5,12 +5,6 @@ const meta: Meta<typeof AnimeCardSkeleton> = {
   title: 'Composites/AnimeCardSkeleton',
   component: AnimeCardSkeleton,
   tags: ['autodocs'],
-};
-
-export default meta;
-type Story = StoryObj<typeof AnimeCardSkeleton>;
-
-export const Single: Story = {
   decorators: [
     (Story) => (
       <div style={{ width: '200px' }}>
@@ -19,6 +13,11 @@ export const Single: Story = {
     ),
   ],
 };
+
+export default meta;
+type Story = StoryObj<typeof AnimeCardSkeleton>;
+
+export const Single: Story = {};
 
 export const LoadingGrid: Story = {
   name: 'Loading Grid (12 items)',

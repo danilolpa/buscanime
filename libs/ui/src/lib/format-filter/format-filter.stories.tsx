@@ -20,11 +20,13 @@ const meta: Meta<typeof FormatFilter> = {
 export default meta;
 type Story = StoryObj<typeof FormatFilter>;
 
+function FormatFilterInteractive() {
+  const [value, setValue] = useState('ALL');
+  return <FormatFilter options={options} value={value} onChange={setValue} />;
+}
+
 export const Default: Story = {
-  render: () => {
-    const [value, setValue] = useState('ALL');
-    return <FormatFilter options={options} value={value} onChange={setValue} />;
-  },
+  render: () => <FormatFilterInteractive />,
 };
 
 export const TVSelected: Story = {

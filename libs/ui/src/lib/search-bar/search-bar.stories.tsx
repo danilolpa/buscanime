@@ -11,28 +11,32 @@ const meta: Meta<typeof SearchBar> = {
 export default meta;
 type Story = StoryObj<typeof SearchBar>;
 
+function SearchBarEmpty() {
+  const [value, setValue] = useState('');
+  return (
+    <SearchBar
+      value={value}
+      onChange={setValue}
+      onSearch={() => alert(`Buscando: ${value}`)}
+    />
+  );
+}
+
+function SearchBarFilled() {
+  const [value, setValue] = useState('Naruto');
+  return (
+    <SearchBar
+      value={value}
+      onChange={setValue}
+      onSearch={() => alert(`Buscando: ${value}`)}
+    />
+  );
+}
+
 export const Empty: Story = {
-  render: () => {
-    const [value, setValue] = useState('');
-    return (
-      <SearchBar
-        value={value}
-        onChange={setValue}
-        onSearch={() => alert(`Buscando: ${value}`)}
-      />
-    );
-  },
+  render: () => <SearchBarEmpty />,
 };
 
 export const Filled: Story = {
-  render: () => {
-    const [value, setValue] = useState('Naruto');
-    return (
-      <SearchBar
-        value={value}
-        onChange={setValue}
-        onSearch={() => alert(`Buscando: ${value}`)}
-      />
-    );
-  },
+  render: () => <SearchBarFilled />,
 };
