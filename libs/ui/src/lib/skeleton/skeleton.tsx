@@ -27,7 +27,7 @@ export function Skeleton({
       style={style}
       className={cn(
         'animate-pulse bg-black/10',
-        rounded ? 'rounded-full' : 'rounded',
+        rounded ? 'rounded-full' : 'rounded-sm',
         className,
       )}
     />
