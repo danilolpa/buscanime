@@ -18,12 +18,12 @@ export default meta;
 type Story = StoryObj<typeof Logo>;
 
 export const SizeMd: Story = {
-  name: 'Size — md',
+  name: 'Size md',
   args: { size: 'md' },
 };
 
 export const SizeLg: Story = {
-  name: 'Size — lg',
+  name: 'Size lg',
   args: { size: 'lg' },
 };
 

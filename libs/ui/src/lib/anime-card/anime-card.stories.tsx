@@ -43,7 +43,7 @@ export const LongTitle: Story = {
   args: {
     anime: {
       ...baseAnime,
-      title: 'Fullmetal Alchemist: Brotherhood — The Complete Series',
+      title: 'Fullmetal Alchemist: Brotherhood, The Complete Series',
     },
   },
 };

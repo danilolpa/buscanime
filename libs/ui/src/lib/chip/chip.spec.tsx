@@ -14,12 +14,12 @@ describe('Chip', () => {
     expect(screen.getByText('Drama')).toBeInTheDocument();
   });
 
-  it('sem violações de a11y — default', async () => {
+  it('sem violações de a11y default', async () => {
     const { container } = render(<Chip>Action</Chip>);
     expect(await axe(container)).toHaveNoViolations();
   });
 
-  it('sem violações de a11y — onImage', async () => {
+  it('sem violações de a11y onImage', async () => {
     const { container } = render(<Chip variant="onImage">Drama</Chip>);
     expect(await axe(container)).toHaveNoViolations();
   });

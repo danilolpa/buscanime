@@ -24,21 +24,21 @@ export const Active: Story = {
 };
 
 export const SizeMd: Story = {
-  name: 'Size — md',
+  name: 'Size md',
   args: { children: 'Médio', size: 'md' },
 };
 
 export const SizeLg: Story = {
-  name: 'Size — lg',
+  name: 'Size lg',
   args: { children: 'Grande', size: 'lg' },
 };
 
 export const WithIconPlus: Story = {
-  name: 'With Icon — Plus',
+  name: 'With Icon Plus',
   args: { children: 'Adicionar', icon: <Plus size={16} /> },
 };
 
 export const WithIconSearch: Story = {
-  name: 'With Icon — Search',
+  name: 'With Icon Search',
   args: { children: 'Buscar', icon: <Search size={16} /> },
 };

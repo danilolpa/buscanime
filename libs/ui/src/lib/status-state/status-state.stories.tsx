@@ -13,7 +13,7 @@ export default meta;
 type Story = StoryObj<typeof StatusState>;
 
 export const Empty: Story = {
-  name: 'Vazio — Nada encontrado',
+  name: 'Vazio: Nada encontrado',
   args: {
     icon: <SearchX />,
     title: 'Nada encontrado',

@@ -20,7 +20,7 @@ export const Empty: Story = {
 };
 
 export const WithIcon: Story = {
-  name: 'With Icon — Search',
+  name: 'With Icon Search',
   args: {
     'aria-label': 'Buscar anime',
     placeholder: 'Buscar anime...',

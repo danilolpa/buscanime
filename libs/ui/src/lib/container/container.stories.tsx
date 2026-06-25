@@ -16,8 +16,8 @@ export const Default: Story = {
       <Container>
         <div className="border border-dashed border-gray-400 p-4 rounded">
           <p className="text-sm text-gray-600">
-            Conteúdo dentro do Container — centralizado com largura máxima de
-            6xl (72rem) e padding horizontal de 1rem.
+            Conteúdo dentro do Container, centralizado com largura máxima de 6xl
+            (72rem) e padding horizontal de 1rem.
           </p>
         </div>
       </Container>

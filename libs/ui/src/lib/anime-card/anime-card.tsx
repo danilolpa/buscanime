@@ -13,7 +13,7 @@ export const AnimeCard = memo(function AnimeCard({ anime }: AnimeCardProps) {
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
-    // Capa já em cache: o onLoad pode não disparar — checa o estado real.
+    // Capa já em cache: o onLoad pode não disparar, checa o estado real.
     if (imgRef.current?.complete) setLoaded(true);
   }, []);
 
