@@ -9,3 +9,4 @@ export * from './lib/anime-card/anime-card';
 export * from './lib/anime-grid/anime-grid';
 export * from './lib/format-filter/format-filter';
 export * from './lib/search-bar/search-bar';
+export * from './lib/anime-card-skeleton/anime-card-skeleton';
