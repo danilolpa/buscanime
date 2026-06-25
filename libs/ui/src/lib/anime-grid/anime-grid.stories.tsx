@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { AnimeGrid } from './anime-grid';
 import { AnimeCard } from '../anime-card/anime-card';
+import { Container } from '../container/container';
 import type { Anime } from '@buscanime/shared-types';
 
 const makeAnime = (id: number, title: string): Anime => ({
@@ -34,10 +35,12 @@ type Story = StoryObj<typeof AnimeGrid>;
 
 export const Default: Story = {
   render: () => (
-    <AnimeGrid>
-      {animes.map((anime) => (
-        <AnimeCard key={anime.id} anime={anime} />
-      ))}
-    </AnimeGrid>
+    <Container>
+      <AnimeGrid>
+        {animes.map((anime) => (
+          <AnimeCard key={anime.id} anime={anime} />
+        ))}
+      </AnimeGrid>
+    </Container>
   ),
 };

@@ -9,7 +9,7 @@ export function AnimeGrid({ className, children, ...props }: AnimeGridProps) {
   return (
     <div
       className={cn(
-        'grid gap-4 grid-cols-[repeat(auto-fill,minmax(min(320px,100%),1fr))]',
+        'grid gap-4 grid-cols-[repeat(auto-fill,minmax(min(300px,100%),1fr))]',
         className,
       )}
       {...props}

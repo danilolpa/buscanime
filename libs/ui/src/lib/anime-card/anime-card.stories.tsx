@@ -17,7 +17,7 @@ const meta: Meta<typeof AnimeCard> = {
   tags: ['autodocs'],
   decorators: [
     (Story) => (
-      <div style={{ width: '200px' }}>
+      <div style={{ width: '300px' }}>
         <Story />
       </div>
     ),
