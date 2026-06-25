@@ -1,15 +1,22 @@
-import { type HTMLAttributes } from 'react';
+import { type HTMLAttributes, forwardRef } from 'react';
 import { cn } from '../utils/cn';
 import { Container } from '../container/container';
 import { Logo } from '../logo/logo';
 
-export type FooterProps = HTMLAttributes<HTMLElement>
+export type FooterProps = HTMLAttributes<HTMLElement>;
 
-export function Footer({ className, ...props }: FooterProps) {
+export const Footer = forwardRef<HTMLElement, FooterProps>(function Footer(
+  { className, ...props },
+  ref,
+) {
   const year = new Date().getFullYear();
 
   return (
-    <footer className={cn('bg-brand text-white/80', className)} {...props}>
+    <footer
+      ref={ref}
+      className={cn('bg-brand text-white/80', className)}
+      {...props}
+    >
       <Container>
         <div className="flex flex-col items-center gap-2 py-6 sm:flex-row sm:justify-between">
           <Logo size="md" />
@@ -20,4 +27,4 @@ export function Footer({ className, ...props }: FooterProps) {
       </Container>
     </footer>
   );
-}
+});
