@@ -101,6 +101,59 @@ pnpm exec nx e2e web-e2e
 
 ---
 
+## Design System
+
+`libs/ui` (`@buscanime/ui`) is a presentational component library: **no data-fetching, no side-effects, Storybook-first**. Every component is tested with vitest-axe for structural accessibility and previewed in Storybook with `@storybook/addon-a11y` for in-browser contrast checking.
+
+### Component catalog
+
+**Primitives**
+
+| Component     | Description                                                                         |
+| ------------- | ----------------------------------------------------------------------------------- |
+| `Button`      | Primary / secondary / ghost / destructive variants with disabled and loading states |
+| `Chip`        | Inline label for metadata tags                                                      |
+| `AnimeRating` | Star-style score display (0–100 scale)                                              |
+| `Input`       | Controlled text field with label and error message slot                             |
+| `Skeleton`    | Base shimmer placeholder for loading states                                         |
+| `Logo`        | BuscAnime logotype (SVG, scalable)                                                  |
+
+**Domain composites**
+
+| Component           | Description                                                  |
+| ------------------- | ------------------------------------------------------------ |
+| `AnimeCard`         | Poster + title + rating tile                                 |
+| `AnimeGrid`         | Responsive CSS Grid wrapper (1 → 2 → 4 columns)              |
+| `FormatFilter`      | Horizontal pill-selector for anime format (TV, Movie, ONA…)  |
+| `SearchBar`         | Controlled search input with icon                            |
+| `AnimeCardSkeleton` | Loading placeholder for `AnimeCard`                          |
+| `AnimeGridSkeleton` | Full-grid loading placeholder (`count` prop, defaults to 12) |
+
+**Layout & states**
+
+| Component     | Description                                       |
+| ------------- | ------------------------------------------------- |
+| `Container`   | Max-width content wrapper with horizontal padding |
+| `Header`      | App header with Logo and optional slot            |
+| `Footer`      | App footer with copyright line                    |
+| `StatusState` | Empty / error / loading state banner              |
+
+### Theme tokens
+
+All design tokens live in `libs/ui/src/styles/theme.css` (CSS custom properties). Components consume them via Tailwind CSS v4 utilities — no hard-coded color values in component source.
+
+### Running the catalog
+
+```bash
+# Interactive Storybook dev server
+pnpm exec nx storybook ui
+
+# Static build (outputs to libs/ui/storybook-static/)
+pnpm exec nx build-storybook ui
+```
+
+---
+
 ## Known follow-ups
 
 - **`@nx/vitest:test` executor deprecation** — the `web` project uses the executor form (`@nx/vitest:test` in `project.json`). Migrate to inferred targets before Nx v24: `pnpm exec nx g @nx/vitest:convert-to-inferred`.
