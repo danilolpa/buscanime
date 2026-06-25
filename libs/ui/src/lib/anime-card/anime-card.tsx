@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import type { Anime } from '@buscanime/shared-types';
 import { Chip } from '../chip/chip';
 import { AnimeRating } from '../anime-rating/anime-rating';
@@ -6,7 +7,7 @@ export interface AnimeCardProps {
   anime: Anime;
 }
 
-export function AnimeCard({ anime }: AnimeCardProps) {
+export const AnimeCard = memo(function AnimeCard({ anime }: AnimeCardProps) {
   return (
     <article className="relative aspect-[3/4] overflow-hidden rounded-lg">
       <img
@@ -33,4 +34,4 @@ export function AnimeCard({ anime }: AnimeCardProps) {
       )}
     </article>
   );
-}
+});
