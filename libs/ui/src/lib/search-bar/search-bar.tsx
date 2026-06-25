@@ -1,4 +1,4 @@
-import { type FormEvent } from 'react';
+import { type ChangeEvent, type FormEvent } from 'react';
 import { Input } from '../input/input';
 import { Button } from '../button/button';
 
@@ -20,8 +20,8 @@ export function SearchBar({ value, onChange, onSearch }: SearchBarProps) {
         type="search"
         aria-label="Buscar anime"
         value={value}
-        onChange={(e) =>
-          onChange((e.target as unknown as { value: string }).value)
+        onChange={(e: ChangeEvent<HTMLInputElement>) =>
+          onChange(e.target.value)
         }
         placeholder="Ex: Naruto, One Piece..."
       />
