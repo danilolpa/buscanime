@@ -57,7 +57,7 @@ Os tokens vivem em **um único arquivo**: `libs/ui/src/styles/theme.css` (`@impo
 | --------------------- | -------------------- | ------------------------------------------ |
 | `--color-brand`       | violet-700 `#6d28d9` | Header, Footer, filtro ativo, botão Buscar |
 | `--color-accent`      | yellow-300           | Botão "Ver mais"                           |
-| `--color-rating-low`  | rose-500             | Rating < 50 (texto branco)                 |
+| `--color-rating-low`  | rose-600 #e11d48     | Rating < 50 (texto branco)                 |
 | `--color-rating-mid`  | yellow-300           | Rating 50–80 (texto ink)                   |
 | `--color-rating-high` | teal-700 `#0f766e`   | Rating > 80 (texto branco)                 |
 | `--color-ink`         | `#1a1a1a`            | Texto escuro sobre amarelo                 |
@@ -66,13 +66,13 @@ Os tokens vivem em **um único arquivo**: `libs/ui/src/styles/theme.css` (`@impo
 
 O mock usa texto branco sobre teal/amarelo, que **reprova** (~1.8–2.3:1). Corrigido:
 
-| Faixa (score %) | Fundo        | Texto     | Contraste                                      |
-| --------------- | ------------ | --------- | ---------------------------------------------- |
-| `< 50`          | rose-500     | branco    | ~3.7:1 (texto bold/grande) — verificar com axe |
-| `50–80`         | yellow-300   | `#1a1a1a` | ~12:1 ✓                                        |
-| `> 80`          | **teal-700** | branco    | ~4.8:1 ✓                                       |
+| Faixa (score %) | Fundo        | Texto     | Contraste |
+| --------------- | ------------ | --------- | --------- |
+| `< 50`          | rose-600     | branco    | ~4.7:1 ✓  |
+| `50–80`         | yellow-300   | `#1a1a1a` | ~13:1 ✓   |
+| `> 80`          | **teal-700** | branco    | ~5.5:1 ✓  |
 
-> O badge do rating usa texto **bold, ~14px+** (qualifica como "texto grande/bold" no WCAG, onde o mínimo é 3:1). Isso torna o limiar aplicável ao rose-500 + branco. Se mesmo assim o axe reprovar, subir para rose-600 ou usar texto escuro.
+> O badge usa `text-sm font-bold` (14px bold), que **não qualifica** como "texto grande" no WCAG (o limite é ≥ 14pt bold = 18,66px). Portanto, o limiar WCAG AA aplicável é **4,5:1** (não 3:1). Por isso `rating-low` usa rose-600 (4,70:1) — rose-500 (3,67:1) reprovaria. teal-700 e yellow-300 com ink passam com folga.
 
 ## 5. Inventário de componentes
 
@@ -143,4 +143,4 @@ Todos em `libs/ui/src/lib/<componente>/`. Cada um: `*.tsx` + `*.stories.tsx` + `
 
 ## 10. Decisões em aberto
 
-Nenhuma — ver §3. Pontos a validar empiricamente no Storybook: tom do `yellow-300` (vs `yellow-400`) e contraste do `rose-500` no axe.
+Nenhuma — ver §3. Pontos a validar empiricamente no Storybook: tom do `yellow-300` (vs `yellow-400`).
