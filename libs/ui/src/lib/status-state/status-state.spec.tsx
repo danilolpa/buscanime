@@ -28,7 +28,9 @@ describe('StatusState', () => {
 
   it('não renderiza message quando não fornecido', () => {
     render(<StatusState icon={<SearchX />} title="Nada encontrado" />);
-    expect(screen.queryByRole('paragraph')).not.toBeInTheDocument();
+    expect(
+      screen.queryByText('Tente outro termo de busca.'),
+    ).not.toBeInTheDocument();
   });
 
   it('renderiza action quando fornecido', () => {

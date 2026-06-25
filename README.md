@@ -109,34 +109,34 @@ pnpm exec nx e2e web-e2e
 
 **Primitives**
 
-| Component     | Description                                                                         |
-| ------------- | ----------------------------------------------------------------------------------- |
-| `Button`      | Primary / secondary / ghost / destructive variants with disabled and loading states |
-| `Chip`        | Inline label for metadata tags                                                      |
-| `AnimeRating` | Star-style score display (0–100 scale)                                              |
-| `Input`       | Controlled text field with label and error message slot                             |
-| `Skeleton`    | Base shimmer placeholder for loading states                                         |
-| `Logo`        | BuscAnime logotype (SVG, scalable)                                                  |
+| Component     | Description                                                                                         |
+| ------------- | --------------------------------------------------------------------------------------------------- |
+| `Button`      | `solid`/`outline` variants, `md`/`lg` sizes, `active` toggle, optional leading `icon` node          |
+| `Chip`        | Inline genre tag; `default` (tinted) or `onImage` (translucent dark) variant                        |
+| `AnimeRating` | Percentage badge (0–100) color-coded by score tier: rose (low), yellow (mid), teal (high)           |
+| `Input`       | Controlled text field with required `aria-label` and optional leading `icon`; no visible label slot |
+| `Skeleton`    | Shimmer `aria-hidden` block; accepts `width`, `height`, and `rounded` props                         |
+| `Logo`        | "BUSC"+"ANIME" text logotype (accent color); polymorphic `as: span \| a`, `md`/`lg` size            |
 
 **Domain composites**
 
-| Component           | Description                                                  |
-| ------------------- | ------------------------------------------------------------ |
-| `AnimeCard`         | Poster + title + rating tile                                 |
-| `AnimeGrid`         | Responsive CSS Grid wrapper (1 → 2 → 4 columns)              |
-| `FormatFilter`      | Horizontal pill-selector for anime format (TV, Movie, ONA…)  |
-| `SearchBar`         | Controlled search input with icon                            |
-| `AnimeCardSkeleton` | Loading placeholder for `AnimeCard`                          |
-| `AnimeGridSkeleton` | Full-grid loading placeholder (`count` prop, defaults to 12) |
+| Component           | Description                                                                                                    |
+| ------------------- | -------------------------------------------------------------------------------------------------------------- |
+| `AnimeCard`         | Takes an `Anime` object; renders cover image, gradient overlay, title, up to 3 genre chips, and a rating badge |
+| `AnimeGrid`         | Responsive CSS Grid wrapper (1 → 2 → 4 columns)                                                                |
+| `FormatFilter`      | Single-select row of outline `Button`s with `aria-pressed` per option                                          |
+| `SearchBar`         | Controlled `Input` + submit `Button` wrapped in a `role="search"` form                                         |
+| `AnimeCardSkeleton` | `aria-busy` loading placeholder matching `AnimeCard` dimensions                                                |
+| `AnimeGridSkeleton` | Grid of `AnimeCardSkeleton`s; `count` prop (default 12)                                                        |
 
 **Layout & states**
 
-| Component     | Description                                       |
-| ------------- | ------------------------------------------------- |
-| `Container`   | Max-width content wrapper with horizontal padding |
-| `Header`      | App header with Logo and optional slot            |
-| `Footer`      | App footer with copyright line                    |
-| `StatusState` | Empty / error / loading state banner              |
+| Component     | Description                                                                           |
+| ------------- | ------------------------------------------------------------------------------------- |
+| `Container`   | Max-width (`max-w-6xl`) content wrapper with horizontal padding                       |
+| `Header`      | Brand-colored `<header>` with `Logo` and optional `children` slot                     |
+| `Footer`      | Brand-colored `<footer>` with `Logo` and auto-generated copyright year line           |
+| `StatusState` | Centered empty/error state: required `icon`, `title`, optional `message` and `action` |
 
 ### Theme tokens
 
