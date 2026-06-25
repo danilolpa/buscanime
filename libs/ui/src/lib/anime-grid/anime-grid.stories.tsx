@@ -6,7 +6,7 @@ import type { Anime } from '@buscanime/shared-types';
 const makeAnime = (id: number, title: string): Anime => ({
   id,
   title,
-  coverImage: `https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx${id}-CXtrrkq96Hiy.jpg`,
+  coverImage: `https://picsum.photos/seed/${id}/300/400`,
   averageScore: 75 + id,
   format: 'TV',
   genres: ['Action', 'Adventure'],

@@ -5,8 +5,7 @@ import type { Anime } from '@buscanime/shared-types';
 const baseAnime: Anime = {
   id: 1,
   title: 'Naruto Shippuden',
-  coverImage:
-    'https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx1535-lawCwhzhi96a2.jpg',
+  coverImage: 'https://picsum.photos/seed/naruto/300/400',
   averageScore: 88,
   format: 'TV',
   genres: ['Action', 'Adventure', 'Fantasy'],
