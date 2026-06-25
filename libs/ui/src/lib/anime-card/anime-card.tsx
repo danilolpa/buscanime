@@ -12,6 +12,8 @@ export function AnimeCard({ anime }: AnimeCardProps) {
       <img
         src={anime.coverImage}
         alt={anime.title}
+        loading="lazy"
+        decoding="async"
         className="absolute inset-0 h-full w-full object-cover"
       />
       <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 to-transparent p-3 pt-12">
