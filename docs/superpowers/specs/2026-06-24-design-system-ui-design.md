@@ -32,18 +32,18 @@ Todos os componentes são **presentational** e vivem em `@buscanime/ui` (`type:u
 
 ## 3. Decisões
 
-| Tema                | Decisão                                                                                    |
-| ------------------- | ------------------------------------------------------------------------------------------ |
-| Workbench           | **Storybook** (Tailwind aplicado nas stories)                                              |
-| Roxo de marca       | **violet-700** (`#6d28d9`) — escala Tailwind, sem token custom                             |
-| Variantes de classe | **cva + tailwind-merge**                                                                   |
-| Ícones              | **lucide-react**                                                                           |
-| Typography          | **Sem primitivos** — classes Tailwind direto                                               |
-| Button: ícone       | prop genérica **`icon?: ReactNode`** + `iconPosition?: 'left' \| 'right'` (default `left`) |
-| AnimeCard props     | recebe o tipo **`Anime`** de `@buscanime/shared-types`                                     |
-| Rating alto         | **teal-700** + texto branco (contraste — ver §4)                                           |
-| SearchBar           | **componente** próprio (Input + Button), não composição na página                          |
-| Amarelo             | **yellow-300** (pode subir p/ `yellow-400` se ficar pálido no Storybook)                   |
+| Tema                | Decisão                                                                  |
+| ------------------- | ------------------------------------------------------------------------ |
+| Workbench           | **Storybook** (Tailwind aplicado nas stories)                            |
+| Roxo de marca       | **violet-700** (`#6d28d9`) — escala Tailwind, sem token custom           |
+| Variantes de classe | **cva + tailwind-merge**                                                 |
+| Ícones              | **lucide-react**                                                         |
+| Typography          | **Sem primitivos** — classes Tailwind direto                             |
+| Button: ícone       | prop genérica **`icon?: ReactNode`** — sempre renderizado à esquerda     |
+| AnimeCard props     | recebe o tipo **`Anime`** de `@buscanime/shared-types`                   |
+| Rating alto         | **teal-700** + texto branco (contraste — ver §4)                         |
+| SearchBar           | **componente** próprio (Input + Button), não composição na página        |
+| Amarelo             | **yellow-300** (pode subir p/ `yellow-400` se ficar pálido no Storybook) |
 
 ## 4. Tokens de tema + regras do AnimeRating (a11y)
 
@@ -80,14 +80,14 @@ Todos em `libs/ui/src/lib/<componente>/`. Cada um: `*.tsx` + `*.stories.tsx` + `
 
 ### 5.1 Primitivos
 
-| Componente      | API (props principais)                                                                                                                                                            | Notas                                                                  |
-| --------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
-| **Button**      | `variant: 'solid' \| 'outline'`, `active?: boolean`, `size: 'md' \| 'lg'`, `icon?: ReactNode`, `iconPosition?: 'left' \| 'right'` (default `left`), + props nativas de `<button>` | `active` leva outline→solid + hover distinto. Variantes via cva.       |
-| **Chip**        | `children`, `variant?` (ex.: `default \| onImage`)                                                                                                                                | Tag de gênero; `onImage` usa fundo translúcido p/ contraste sobre capa |
-| **AnimeRating** | `value: number`                                                                                                                                                                   | Cor por faixa (§4.2); arredonda/formata `%`                            |
-| **Input**       | `value`, `onChange`, `placeholder`, `aria-label` (obrigatório), `icon?`                                                                                                           | Campo de busca                                                         |
-| **Skeleton**    | `width?`, `height?`, `rounded?`                                                                                                                                                   | Bloco shimmer base                                                     |
-| **Logo**        | `size?`, `as?: 'span' \| 'a'`                                                                                                                                                     | "BUSC" claro + "ANIME" yellow                                          |
+| Componente      | API (props principais)                                                                                                       | Notas                                                                  |
+| --------------- | ---------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| **Button**      | `variant: 'solid' \| 'outline'`, `active?: boolean`, `size: 'md' \| 'lg'`, `icon?: ReactNode`, + props nativas de `<button>` | `active` leva outline→solid + hover distinto. Variantes via cva.       |
+| **Chip**        | `children`, `variant?` (ex.: `default \| onImage`)                                                                           | Tag de gênero; `onImage` usa fundo translúcido p/ contraste sobre capa |
+| **AnimeRating** | `value: number`                                                                                                              | Cor por faixa (§4.2); arredonda/formata `%`                            |
+| **Input**       | `value`, `onChange`, `placeholder`, `aria-label` (obrigatório), `icon?`                                                      | Campo de busca                                                         |
+| **Skeleton**    | `width?`, `height?`, `rounded?`                                                                                              | Bloco shimmer base                                                     |
+| **Logo**        | `size?`, `as?: 'span' \| 'a'`                                                                                                | "BUSC" claro + "ANIME" yellow                                          |
 
 ### 5.2 Compostos (domínio)
 

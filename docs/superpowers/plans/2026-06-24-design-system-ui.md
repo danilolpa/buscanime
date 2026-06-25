@@ -229,15 +229,13 @@ const button = cva('inline-flex items-center justify-center gap-2 rounded-md fon
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement>, VariantProps<typeof button> {
   icon?: ReactNode;
-  iconPosition?: 'left' | 'right';
 }
 
-export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button({ className, variant, size, active, icon, iconPosition = 'left', children, ...props }, ref) {
+export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button({ className, variant, size, active, icon, children, ...props }, ref) {
   return (
     <button ref={ref} className={cn(button({ variant, size, active }), className)} {...props}>
-      {icon && iconPosition === 'left' && <span aria-hidden>{icon}</span>}
+      {icon && <span aria-hidden>{icon}</span>}
       {children}
-      {icon && iconPosition === 'right' && <span aria-hidden>{icon}</span>}
     </button>
   );
 });
