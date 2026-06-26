@@ -11,7 +11,10 @@ import {
   Button,
   Container,
 } from '@buscanime/ui';
-import { useAnimeList } from '@buscanime/anime-data-access';
+import {
+  useAnimeList,
+  useAnimeFormatCounts,
+} from '@buscanime/anime-data-access';
 import { useAnimeFilters } from './use-anime-filters';
 import { FORMAT_OPTIONS, toMediaFormat } from './format-options';
 
@@ -49,6 +52,17 @@ export function AnimeBrowser({ endpoint }: AnimeBrowserProps) {
     wasFetching.current = query.isFetching;
   }, [query.isFetching]);
 
+  const counts = useAnimeFormatCounts({ search: q, endpoint });
+  const options =
+    q && counts.data
+      ? FORMAT_OPTIONS.map((o) => ({
+          ...o,
+          // cast pra Record<string, number>: o.value é string e FormatCounts é tipado
+          // por união literal de chaves — sem o cast o `nx build`/typecheck reclama.
+          badge: (counts.data as Record<string, number>)[o.value] ?? 0,
+        }))
+      : FORMAT_OPTIONS;
+
   function handleSearch() {
     setSearchPending(true);
     submitSearch();
@@ -57,11 +71,7 @@ export function AnimeBrowser({ endpoint }: AnimeBrowserProps) {
   return (
     <Container>
       <div className="flex flex-col gap-6 py-8">
-        <ToggleGroup
-          options={FORMAT_OPTIONS}
-          value={format}
-          onChange={setFormat}
-        />
+        <ToggleGroup options={options} value={format} onChange={setFormat} />
         <SearchBar
           value={text}
           onChange={onChangeText}

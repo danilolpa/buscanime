@@ -60,9 +60,21 @@ const page2 = {
   ],
 };
 
+// Contagens default (tudo 0): qualquer teste que dispare uma busca também aciona
+// AnimeFormatCounts; sem este handler base a request fica sem mock (warning do MSW).
+// Os testes que checam badges sobrescrevem com `server.use(...)`.
+const zeroCounts = Object.fromEntries(
+  ['ALL', 'TV', 'MOVIE', 'TV_SHORT', 'SPECIAL', 'OVA', 'ONA', 'MUSIC'].map(
+    (k) => [k, { pageInfo: { total: 0 } }],
+  ),
+);
+
 const server = setupServer(
   graphql.query('AnimeList', ({ variables }) =>
     HttpResponse.json({ data: { Page: variables.page === 1 ? page1 : page2 } }),
+  ),
+  graphql.query('AnimeFormatCounts', () =>
+    HttpResponse.json({ data: zeroCounts }),
   ),
 );
 beforeAll(() => server.listen());
@@ -153,6 +165,37 @@ describe('AnimeBrowser', () => {
     expect(screen.getByRole('searchbox', { name: 'Buscar anime' })).toHaveValue(
       '',
     );
+  });
+
+  it('mostra a contagem por formato durante a busca', async () => {
+    server.use(
+      graphql.query('AnimeList', () =>
+        HttpResponse.json({ data: { Page: page1 } }),
+      ),
+      graphql.query('AnimeFormatCounts', () =>
+        HttpResponse.json({
+          data: {
+            ALL: { pageInfo: { total: 20 } },
+            TV: { pageInfo: { total: 9 } },
+            MOVIE: { pageInfo: { total: 11 } },
+            TV_SHORT: { pageInfo: { total: 0 } },
+            SPECIAL: { pageInfo: { total: 0 } },
+            OVA: { pageInfo: { total: 0 } },
+            ONA: { pageInfo: { total: 0 } },
+            MUSIC: { pageInfo: { total: 0 } },
+          },
+        }),
+      ),
+    );
+    render(<AnimeBrowser endpoint={TEST_ENDPOINT} />, { wrapper });
+    await screen.findByText('Naruto');
+    await userEvent.type(
+      screen.getByRole('searchbox', { name: 'Buscar anime' }),
+      'naruto',
+    );
+    await userEvent.click(screen.getByRole('button', { name: 'Buscar' }));
+    expect(await screen.findByText('9')).toBeInTheDocument();
+    expect(screen.getByText('11')).toBeInTheDocument();
   });
 
   it('digitar não dispara busca; só o botão "Buscar" dispara', async () => {
