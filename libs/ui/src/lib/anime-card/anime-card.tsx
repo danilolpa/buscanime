@@ -1,3 +1,4 @@
+'use client';
 import { memo, useEffect, useRef, useState } from 'react';
 import type { Anime } from '@buscanime/shared-types';
 import { cn } from '../utils/cn';
