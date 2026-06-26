@@ -40,6 +40,16 @@ describe('SearchBar', () => {
     expect(onSearch).toHaveBeenCalledOnce();
   });
 
+  it('repassa loading pro botão Buscar', () => {
+    render(
+      <SearchBar value="" onChange={vi.fn()} onSearch={vi.fn()} loading />,
+    );
+    expect(screen.getByRole('button', { name: 'Buscar' })).toHaveAttribute(
+      'aria-busy',
+      'true',
+    );
+  });
+
   it('sem violações de a11y', async () => {
     const { container } = render(
       <SearchBar value="" onChange={vi.fn()} onSearch={vi.fn()} />,

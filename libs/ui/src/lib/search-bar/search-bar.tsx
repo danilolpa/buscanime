@@ -6,9 +6,15 @@ export interface SearchBarProps {
   value: string;
   onChange: (value: string) => void;
   onSearch: () => void;
+  loading?: boolean;
 }
 
-export function SearchBar({ value, onChange, onSearch }: SearchBarProps) {
+export function SearchBar({
+  value,
+  onChange,
+  onSearch,
+  loading,
+}: SearchBarProps) {
   function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     onSearch();
@@ -26,7 +32,7 @@ export function SearchBar({ value, onChange, onSearch }: SearchBarProps) {
         }
         placeholder="Ex: Naruto, One Piece..."
       />
-      <Button type="submit" variant="solid" size="lg">
+      <Button type="submit" variant="solid" size="lg" loading={loading}>
         Buscar
       </Button>
     </form>
