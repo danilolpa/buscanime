@@ -6,7 +6,7 @@ export function AnimeCardSkeleton() {
     <article
       aria-busy="true"
       aria-label="Carregando anime"
-      className="relative aspect-[3/4] overflow-hidden rounded-lg bg-black/5"
+      className="relative aspect-[10/9] overflow-hidden rounded-lg bg-black/5"
     >
       <div aria-hidden="true" className="flex h-full flex-col justify-end p-3">
         <Skeleton className="mb-2 h-4 w-3/4" />
