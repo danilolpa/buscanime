@@ -154,7 +154,33 @@ pnpm exec nx build-storybook ui
 
 ---
 
+## Anime listing page
+
+`apps/web` renders a full anime listing page at `/` that composes the `@buscanime/ui` design system with live AniList data via the `useAnimeList` hook (`@buscanime/anime-data-access`).
+
+**Features**
+
+- **Format filter** — `ToggleGroup` (TV / Movie / OVA / ONA / Special); selection is reflected in the URL (`?format=TV`).
+- **Text search** — `SearchBar` with 300 ms debounce for keystroke-level filtering plus an explicit "Buscar" / Enter flush; query is reflected in the URL (`?q=naruto`).
+- **Infinite pagination** — "Ver mais" button loads the next page (12 items per page) via `useInfiniteQuery`.
+- **Loading states** — `AnimeGridSkeleton` shown on initial load; `Button` enters a loading state while fetching more pages.
+- **Empty & error states** — `StatusState` surfaces "no results" and upstream AniList errors.
+
+**Running**
+
+```bash
+# Dev server
+pnpm exec nx dev web
+
+# Unit tests (web: 13 tests, @buscanime/ui: 67, @buscanime/anime-data-access: 3, @buscanime/shared-types: 1)
+pnpm exec nx test web
+
+# E2E happy-path (requires Playwright browsers; CI-only)
+pnpm exec nx e2e web-e2e
+```
+
+---
+
 ## Known follow-ups
 
 - **`@nx/vitest:test` executor deprecation** — the `web` project uses the executor form (`@nx/vitest:test` in `project.json`). Migrate to inferred targets before Nx v24: `pnpm exec nx g @nx/vitest:convert-to-inferred`.
-- **UI implementation** — `apps/web` currently renders a plain `<main>buscanime</main>` placeholder. The anime listing page, search, and filters are next-phase work.
