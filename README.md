@@ -1,186 +1,220 @@
-# buscanime
+# BuscaAnime
 
-Nx monorepo — an AniList anime-listing app built as a job challenge. It establishes the full infrastructure pipeline from browser to the AniList GraphQL API, a `@buscanime/ui` design system, and the listing page that composes them (format filter, debounced search, "Ver mais" pagination, and loading/empty/error states).
+[![Next.js](https://img.shields.io/badge/Next.js-16.1.6-000000?logo=nextdotjs)](https://nextjs.org)
+[![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=000)](https://react.dev)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178C6?logo=typescript&logoColor=fff)](https://www.typescriptlang.org)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-v4-06B6D4?logo=tailwindcss&logoColor=fff)](https://tailwindcss.com)
+[![GraphQL](https://img.shields.io/badge/GraphQL-16-E10098?logo=graphql&logoColor=fff)](https://graphql.org)
+[![Nx](https://img.shields.io/badge/Nx-23-143055?logo=nx)](https://nx.dev)
+[![pnpm](https://img.shields.io/badge/pnpm-11-F69220?logo=pnpm&logoColor=fff)](https://pnpm.io)
+[![Vitest](https://img.shields.io/badge/Vitest-4-6E9F18?logo=vitest&logoColor=fff)](https://vitest.dev)
+[![Playwright](https://img.shields.io/badge/Playwright-1.37-2EAD33?logo=playwright&logoColor=fff)](https://playwright.dev)
+[![Storybook](https://img.shields.io/badge/Storybook-10-FF4785?logo=storybook&logoColor=fff)](https://storybook.js.org)
+[![ESLint](https://img.shields.io/badge/ESLint-9-4B32C3?logo=eslint&logoColor=fff)](https://eslint.org)
+[![Prettier](https://img.shields.io/badge/Prettier-3-F7B93E?logo=prettier&logoColor=000)](https://prettier.io)
+[![Sentry](https://img.shields.io/badge/Sentry-10-362D59?logo=sentry&logoColor=fff)](https://sentry.io)
+[![CI](https://github.com/danilolpa/buscanime-winnin/actions/workflows/ci.yml/badge.svg)](https://github.com/danilolpa/buscanime-winnin/actions/workflows/ci.yml)
+[![Deploy](https://img.shields.io/badge/Vercel-Deploy-000000?logo=vercel)](https://buscanime-winnin-web.vercel.app/)
+
+**[buscanime-winnin-web.vercel.app](https://buscanime-winnin-web.vercel.app/)**
+
+---
+
+## Por que um monorepo?
+
+Para uma página de listagem de animes, é muito. Mas foi intencional.
+
+Um `create-next-app` resolveria o desafio. A escolha pelo monorepo existe para mostrar como eu pensaria numa base de código que aguentasse crescer, não só o que entrega o MVP.
+
+No monorepo, a biblioteca de componentes (`@buscanime/ui`) não sabe nada sobre dados. Nenhum componente faz fetch, nenhum conhece o TanStack Query. Essa separação não é só convenção — o ESLint quebra o build se um componente de UI tentar importar um hook de dados. É a forma de não depender da disciplina de todo o time quando o projeto crescer.
+
+O reuso vem junto. Hoje tem um app. Se aparecer um painel admin ou um app mobile, eles consumiriam os mesmos componentes e os mesmos hooks sem copiar código. Com um repositório simples você percebe essa necessidade tarde demais.
+
+O Nx cuida do resto: cache de build, execução paralela, grafo de dependências entre pacotes. Para um projeto pequeno é custo zero no dia a dia — `nx dev web` é igual a `next dev`. A diferença aparece quando o CI começa a demorar.
+
+Mas sim, para uma página de animes, é muito. Era esse o ponto.
 
 ---
 
 ## Tech stack
 
-| Concern         | Technology                                               |
-| --------------- | -------------------------------------------------------- |
-| Monorepo        | [Nx 23](https://nx.dev)                                  |
-| App framework   | Next.js 16 (App Router, Turbopack)                       |
-| UI library      | React 19                                                 |
-| Language        | TypeScript 5.9                                           |
-| Package manager | pnpm 11 (single workspace lockfile)                      |
-| Unit testing    | Vitest 4 + Testing Library + MSW 2                       |
-| E2E testing     | Playwright (via `@nx/playwright`)                        |
-| Styling         | Tailwind CSS v4                                          |
-| Data fetching   | TanStack Query v5                                        |
-| GraphQL client  | graphql-request 7 + GraphQL Code Generator 7             |
-| Error tracking  | @sentry/nextjs 10                                        |
-| Linting         | ESLint 9 (flat config) + `@nx/enforce-module-boundaries` |
-| Formatting      | Prettier 3                                               |
-| Commits         | commitlint + husky + lint-staged (Conventional Commits)  |
+| Concern   | Technology                                                                    |
+| --------- | ----------------------------------------------------------------------------- |
+| Core      | Next.js 16 (App Router, Turbopack), React 19, TypeScript 5.9, Tailwind CSS v4 |
+| Data      | TanStack Query v5, graphql-request 7, GraphQL Code Generator 7                |
+| Workspace | Nx 23, pnpm 11                                                                |
+| Testing   | Vitest 4 + Testing Library + MSW 2, Playwright, Storybook 10                  |
+| Qualidade | ESLint 9, Prettier 3, commitlint + husky + lint-staged, Sentry 10             |
 
 ---
 
-## Workspace structure
+## Estrutura de pastas
 
 ```
 buscanime/
 ├── apps/
-│   ├── web/           # Next.js app (tag: type:app)
-│   └── web-e2e/       # Playwright e2e suite
-└── libs/
-    ├── anime/
-    │   └── data-access/   # TanStack Query hook + AniList SDK (tag: type:data-access)
-    ├── ui/                # Shared React components (tag: type:ui)
-    └── shared/
-        └── types/         # Domain types — Anime, etc. (tag: type:util)
+│   ├── web/                        # Aplicação Next.js (App Router)
+│   │   ├── src/app/
+│   │   │   ├── (home)/             # Rota principal — listagem de animes
+│   │   │   │   ├── anime-browser.tsx       # Componente principal da página
+│   │   │   │   ├── use-anime-filters.ts    # Hook de filtros sincronizados com a URL
+│   │   │   │   └── format-options.ts       # Constantes e conversões de formato
+│   │   │   ├── api/anilist/        # Route Handler — proxy para a API do AniList
+│   │   │   ├── layout.tsx          # Layout raiz com metadata
+│   │   │   ├── providers.tsx       # QueryClient e configuração de retry
+│   │   │   └── error.tsx           # Boundary de erro global
+│   │   └── specs/                  # Testes de integração da página
+│   │
+│   └── web-e2e/                    # Testes E2E com Playwright
+│
+├── libs/
+│   ├── ui/                         # @buscanime/ui — biblioteca de componentes
+│   │   ├── src/lib/                # Componentes (Button, AnimeCard, SearchBar…)
+│   │   ├── src/styles/             # Design tokens (CSS custom properties)
+│   │   └── .storybook/             # Configuração do Storybook
+│   │
+│   ├── anime/
+│   │   └── data-access/            # @buscanime/anime-data-access
+│   │       └── src/lib/            # Hooks TanStack Query + SDK GraphQL gerado
+│   │
+│   └── shared/
+│       └── types/                  # @buscanime/shared-types — interfaces compartilhadas
+│
+├── docs/                           # Specs e planos de cada fase (Spec Driven Development)
+└── .github/workflows/              # CI/CD (lint, testes, build)
 ```
-
-### Import boundary rules (enforced by `@nx/enforce-module-boundaries`)
-
-| Source tag         | May import                                 |
-| ------------------ | ------------------------------------------ |
-| `type:app`         | `type:ui`, `type:data-access`, `type:util` |
-| `type:ui`          | `type:ui`, `type:util`                     |
-| `type:data-access` | `type:data-access`, `type:util`            |
-| `type:util`        | `type:util`                                |
-
-Key constraint: **`type:ui` cannot import `type:data-access`**. Data-fetching logic stays out of the component library.
 
 ---
 
-## AniList data pipeline
+## Por baixo do capô
+
+**O browser nunca fala com a AniList direto.**
+
+Toda chamada GraphQL passa pelo Route Handler `/api/anilist`, que age como proxy transparente. Ele recebe a requisição, repassa pra AniList, e devolve a resposta com o mesmo status code.
+
+Parece burocracia, mas cria um ponto único onde coisas úteis acontecem: log de latência em cada request, captura de erro no Sentry quando a upstream falha, e espaço para qualquer controle futuro — throttling, cache, autenticação — sem mexer em nada no cliente.
 
 ```
-Browser
-  └─ TanStack Query (useAnimeList)
-       └─ graphql-request → POST /api/anilist   (same-origin)
-            └─ Next.js Route Handler (proxy)
-                 ├─ logs latency: [anilist] <status> in <ms>ms
-                 ├─ captures upstream errors to Sentry
-                 └─ fetches https://graphql.anilist.co
+browser → /api/anilist (Route Handler) → graphql.anilist.co
 ```
 
-The browser never calls AniList directly. All GraphQL traffic goes through the `/api/anilist` proxy, which provides a single egress point for latency logging, error capture, and future rate-limit handling.
+O cliente só conhece o proxy. Se a AniList mudar de endereço, trocar de protocolo, ou precisar de um header de autenticação, o ajuste fica num arquivo só.
+
+**Erros têm tratamento específico, não genérico.**
+
+A AniList tem rate limit. Quando ele estoura, a API devolve 429 — e a resposta certa não é tentar de novo, é avisar o usuário e parar. O `QueryClient` detecta o 429 via duck-typing e cancela qualquer retry automático. Para todo o resto, tenta até 3 vezes antes de mostrar erro.
+
+Na interface, cada situação tem seu estado próprio:
+
+- **Rate limit (429)** — avisa que muitas buscas foram feitas e oferece botão para tentar de novo manualmente.
+- **Erro de upstream** — mostra que algo deu errado com opção de retry.
+- **Sem resultados** — diferencia de erro: informa que a busca não encontrou nada.
+
+Quando o proxy falha em chegar na AniList, o erro é capturado pelo Sentry antes de devolver um 502 pro cliente.
 
 ---
 
-## Commands
+## Como executar
+
+### Pré-requisitos
+
+- Node.js 20+
+- pnpm 11
 
 ```bash
-# Install dependencies
 pnpm install
-
-# Dev server (Next.js with Turbopack)
-pnpm exec nx dev web
-
-# Run all checks (lint + test + typecheck + build) across the workspace
-pnpm exec nx run-many -t lint test typecheck build
-
-# Regenerate the typed AniList SDK from the GraphQL schema
-pnpm codegen
-
-# Interactive dependency graph
-pnpm exec nx graph
-
-# E2E tests (requires Playwright browsers installed)
-pnpm exec nx e2e web-e2e
 ```
 
 ---
 
-## Environment variables
-
-| Variable                 | Required | Purpose                                                                |
-| ------------------------ | -------- | ---------------------------------------------------------------------- |
-| `NEXT_PUBLIC_SENTRY_DSN` | No       | Sentry DSN. Sentry is a no-op when absent — safe to omit in local dev. |
-
----
-
-## Design System
-
-`libs/ui` (`@buscanime/ui`) is a presentational component library: **no data-fetching, no side-effects, Storybook-first**. Every component is tested with vitest-axe for structural accessibility and previewed in Storybook with `@storybook/addon-a11y` for in-browser contrast checking.
-
-### Component catalog
-
-**Primitives**
-
-| Component     | Description                                                                                         |
-| ------------- | --------------------------------------------------------------------------------------------------- |
-| `Button`      | `solid`/`outline` variants, `md`/`lg` sizes, `active` toggle, optional leading `icon` node          |
-| `Chip`        | Inline genre tag; `default` (tinted) or `onImage` (translucent dark) variant                        |
-| `AnimeRating` | Percentage badge (0–100) color-coded by score tier: rose (low), yellow (mid), teal (high)           |
-| `Input`       | Controlled text field with required `aria-label` and optional leading `icon`; no visible label slot |
-| `Skeleton`    | Shimmer `aria-hidden` block; accepts `width`, `height`, and `rounded` props                         |
-| `Logo`        | "BUSC"+"ANIME" text logotype (accent color); polymorphic `as: span \| a`, `md`/`lg` size            |
-
-**Domain composites**
-
-| Component           | Description                                                                                                    |
-| ------------------- | -------------------------------------------------------------------------------------------------------------- |
-| `AnimeCard`         | Takes an `Anime` object; renders cover image, gradient overlay, title, up to 3 genre chips, and a rating badge |
-| `AnimeGrid`         | Responsive CSS Grid wrapper (1 → 2 → 4 columns)                                                                |
-| `ToggleGroup`       | Single-select toggle button group (one active, `aria-pressed`); used e.g. for format filtering                 |
-| `SearchBar`         | Controlled `Input` + submit `Button` wrapped in a `role="search"` form                                         |
-| `AnimeCardSkeleton` | `aria-busy` loading placeholder matching `AnimeCard` dimensions                                                |
-| `AnimeGridSkeleton` | Grid of `AnimeCardSkeleton`s; `count` prop (default 12)                                                        |
-
-**Layout & states**
-
-| Component     | Description                                                                           |
-| ------------- | ------------------------------------------------------------------------------------- |
-| `Container`   | Max-width (`max-w-6xl`) content wrapper with horizontal padding                       |
-| `Header`      | Brand-colored `<header>` with `Logo` and optional `children` slot                     |
-| `Footer`      | Brand-colored `<footer>` with `Logo` and auto-generated copyright year line           |
-| `StatusState` | Centered empty/error state: required `icon`, `title`, optional `message` and `action` |
-
-### Theme tokens
-
-All design tokens live in `libs/ui/src/styles/theme.css` (CSS custom properties). Components consume them via Tailwind CSS v4 utilities — no hard-coded color values in component source.
-
-### Running the catalog
+### Aplicação web
 
 ```bash
-# Interactive Storybook dev server
-pnpm exec nx storybook ui
-
-# Static build (outputs to libs/ui/storybook-static/)
-pnpm exec nx build-storybook ui
+pnpm exec nx dev web
 ```
 
+Acesse em `http://localhost:3000`.
+
 ---
 
-## Anime listing page
-
-`apps/web` renders a full anime listing page at `/` that composes the `@buscanime/ui` design system with live AniList data via the `useAnimeList` hook (`@buscanime/anime-data-access`).
-
-**Features**
-
-- **Format filter** — `ToggleGroup` (TV / Movie / OVA / ONA / Special); selection is reflected in the URL (`?format=TV`).
-- **Text search** — `SearchBar` with 300 ms debounce for keystroke-level filtering plus an explicit "Buscar" / Enter flush; query is reflected in the URL (`?q=naruto`).
-- **Infinite pagination** — "Ver mais" button loads the next page (12 items per page) via `useInfiniteQuery`.
-- **Loading states** — `AnimeGridSkeleton` shown on initial load; `Button` enters a loading state while fetching more pages.
-- **Empty & error states** — `StatusState` surfaces "no results" and upstream AniList errors.
-
-**Running**
+### Testes unitários
 
 ```bash
-# Dev server
-pnpm exec nx dev web
+# Todos os projetos de uma vez
+pnpm exec nx run-many -t test
 
-# Unit tests (web: 13 tests, @buscanime/ui: 67, @buscanime/anime-data-access: 3, @buscanime/shared-types: 1)
+# Por projeto
 pnpm exec nx test web
+pnpm exec nx test ui
+pnpm exec nx test anime-data-access
+```
 
-# E2E happy-path (requires Playwright browsers; CI-only)
+---
+
+### Testes E2E
+
+Os testes E2E sobem o servidor automaticamente antes de rodar.
+
+```bash
+# Instalar os browsers do Playwright (primeira vez)
+pnpm exec playwright install
+
 pnpm exec nx e2e web-e2e
 ```
 
 ---
 
-## Known follow-ups
+### Storybook
 
-- **`@nx/vitest:test` executor deprecation** — the `web` project uses the executor form (`@nx/vitest:test` in `project.json`). Migrate to inferred targets before Nx v24: `pnpm exec nx g @nx/vitest:convert-to-inferred`.
+Catálogo interativo de todos os componentes da `@buscanime/ui`.
+
+```bash
+pnpm exec nx storybook ui
+```
+
+Acesse em `http://localhost:6006`.
+
+---
+
+### Tudo de uma vez (lint + typecheck + testes + build)
+
+```bash
+pnpm exec nx run-many -t lint typecheck test build
+```
+
+---
+
+## Acessibilidade
+
+O app pontua **100 no Lighthouse** em todas as categorias: Performance, Accessibility, Best Practices e SEO.
+
+Antes de implementar, o Figma foi auditado. Um dos problemas encontrados foi o badge de score amarelo — a combinação de texto escuro sobre amarelo claro não atingia o contraste mínimo exigido pelo WCAG. A cor foi ajustada antes de virar código, não depois.
+
+Cada componente da `@buscanime/ui` tem testes automatizados com `vitest-axe`, que roda o motor do axe-core direto no Vitest. Se um componente introduzir uma violação de acessibilidade, o teste quebra antes de chegar no PR.
+
+Outras decisões que contribuíram para o score:
+
+- `aria-label` é obrigatório no `Input` a nível de tipo TypeScript — não tem como usar o componente sem ele.
+- Skeletons de carregamento têm `aria-busy="true"` e `aria-label` descritivo; elementos puramente decorativos levam `aria-hidden="true"` para não poluir a árvore de acessibilidade.
+- A área de resultados usa `aria-live="polite"` e `aria-busy` para avisar leitores de tela quando uma nova busca está em andamento.
+- `SearchBar` é um `<form role="search">`, botões de toggle têm `aria-pressed`, e o layout usa elementos semânticos (`<article>`, `<header>`, `<footer>`) em vez de `<div>` genérico.
+
+---
+
+## CI/CD
+
+O GitHub Actions roda em todo push para `main` e em pull requests. O pipeline executa em sequência:
+
+1. Instala dependências com lockfile congelado (`--frozen-lockfile`)
+2. Instala os browsers do Playwright
+3. Roda em paralelo via Nx: `lint`, `typecheck`, `test`, `build` e `e2e`
+
+O deploy na Vercel é automático a cada merge na `main`.
+
+---
+
+## Variáveis de ambiente
+
+| Variável                 | Obrigatória | Descrição                                                                |
+| ------------------------ | ----------- | ------------------------------------------------------------------------ |
+| `NEXT_PUBLIC_SENTRY_DSN` | Não         | DSN do Sentry para captura de erros. O app funciona normalmente sem ela. |
