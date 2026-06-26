@@ -42,12 +42,38 @@ describe('SearchBar', () => {
 
   it('repassa loading pro botão Buscar', () => {
     render(
-      <SearchBar value="" onChange={vi.fn()} onSearch={vi.fn()} loading />,
+      <SearchBar
+        value="naruto"
+        onChange={vi.fn()}
+        onSearch={vi.fn()}
+        loading
+      />,
     );
     expect(screen.getByRole('button', { name: 'Buscar' })).toHaveAttribute(
       'aria-busy',
       'true',
     );
+  });
+
+  it('desabilita o botão Buscar quando o input está vazio', () => {
+    render(<SearchBar value="   " onChange={vi.fn()} onSearch={vi.fn()} />);
+    expect(screen.getByRole('button', { name: 'Buscar' })).toBeDisabled();
+  });
+
+  it('habilita o botão Buscar quando há texto', () => {
+    render(<SearchBar value="naruto" onChange={vi.fn()} onSearch={vi.fn()} />);
+    expect(screen.getByRole('button', { name: 'Buscar' })).toBeEnabled();
+  });
+
+  it('não dispara onSearch ao submeter com input vazio', async () => {
+    const onSearch = vi.fn();
+    render(<SearchBar value="" onChange={vi.fn()} onSearch={onSearch} />);
+    // Enter com input vazio não deve buscar (botão desabilitado + guard no submit).
+    await userEvent.type(
+      screen.getByRole('searchbox', { name: 'Buscar anime' }),
+      '{Enter}',
+    );
+    expect(onSearch).not.toHaveBeenCalled();
   });
 
   it('sem violações de a11y', async () => {

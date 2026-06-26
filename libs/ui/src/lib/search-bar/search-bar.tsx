@@ -15,8 +15,11 @@ export function SearchBar({
   onSearch,
   loading,
 }: SearchBarProps) {
+  const isEmpty = !value.trim();
+
   function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    if (isEmpty) return;
     onSearch();
   }
 
@@ -32,7 +35,13 @@ export function SearchBar({
         }
         placeholder="Ex: Naruto, One Piece..."
       />
-      <Button type="submit" variant="solid" size="lg" loading={loading}>
+      <Button
+        type="submit"
+        variant="solid"
+        size="lg"
+        loading={loading}
+        disabled={isEmpty}
+      >
         Buscar
       </Button>
     </form>
