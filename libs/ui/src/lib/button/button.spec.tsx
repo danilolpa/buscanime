@@ -25,6 +25,11 @@ describe('Button', () => {
     expect(btn.querySelector('svg.animate-spin')).toBeInTheDocument();
   });
 
+  it('sem violações de a11y no estado loading', async () => {
+    const { container } = render(<Button loading>Buscar</Button>);
+    expect(await axe(container)).toHaveNoViolations();
+  });
+
   it('sem violações de a11y', async () => {
     const { container } = render(<Button>OK</Button>);
     expect(await axe(container)).toHaveNoViolations();
