@@ -104,6 +104,9 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Build libs and app
+        run: pnpm exec nx run-many -t build
+
       - name: Install Playwright browsers
         run: pnpm exec playwright install --with-deps
 
