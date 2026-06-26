@@ -1,6 +1,16 @@
-query AnimeList($page: Int = 1, $perPage: Int = 20) {
+query AnimeList(
+  $page: Int = 1
+  $perPage: Int = 12
+  $search: String
+  $format: MediaFormat
+  $sort: [MediaSort] = [POPULARITY_DESC]
+) {
   Page(page: $page, perPage: $perPage) {
-    media(type: ANIME, sort: POPULARITY_DESC) {
+    pageInfo {
+      currentPage
+      hasNextPage
+    }
+    media(type: ANIME, search: $search, format: $format, sort: $sort) {
       id
       title {
         romaji

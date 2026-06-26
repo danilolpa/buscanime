@@ -32,13 +32,60 @@ export type MediaFormat =
   /** Anime which are under 15 minutes in length and broadcast on television */
   | 'TV_SHORT';
 
+/** Media sort enums */
+export type MediaSort =
+  | 'CHAPTERS'
+  | 'CHAPTERS_DESC'
+  | 'DURATION'
+  | 'DURATION_DESC'
+  | 'END_DATE'
+  | 'END_DATE_DESC'
+  | 'EPISODES'
+  | 'EPISODES_DESC'
+  | 'FAVOURITES'
+  | 'FAVOURITES_DESC'
+  | 'FORMAT'
+  | 'FORMAT_DESC'
+  | 'ID'
+  | 'ID_DESC'
+  | 'POPULARITY'
+  | 'POPULARITY_DESC'
+  | 'SCORE'
+  | 'SCORE_DESC'
+  | 'SEARCH_MATCH'
+  | 'START_DATE'
+  | 'START_DATE_DESC'
+  | 'STATUS'
+  | 'STATUS_DESC'
+  | 'TITLE_ENGLISH'
+  | 'TITLE_ENGLISH_DESC'
+  | 'TITLE_NATIVE'
+  | 'TITLE_NATIVE_DESC'
+  | 'TITLE_ROMAJI'
+  | 'TITLE_ROMAJI_DESC'
+  | 'TRENDING'
+  | 'TRENDING_DESC'
+  | 'TYPE'
+  | 'TYPE_DESC'
+  | 'UPDATED_AT'
+  | 'UPDATED_AT_DESC'
+  | 'VOLUMES'
+  | 'VOLUMES_DESC';
+
 export type AnimeListQueryVariables = Exact<{
   page?: number | null | undefined;
   perPage?: number | null | undefined;
+  search?: string | null | undefined;
+  format?: MediaFormat | null | undefined;
+  sort?: Array<MediaSort | null | undefined> | MediaSort | null | undefined;
 }>;
 
 export type AnimeListQuery = {
   Page: {
+    pageInfo: {
+      currentPage: number | null;
+      hasNextPage: boolean | null;
+    } | null;
     media: Array<{
       id: number;
       averageScore: number | null;
@@ -71,7 +118,41 @@ export const AnimeListDocument = {
             name: { kind: 'Name', value: 'perPage' },
           },
           type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } },
-          defaultValue: { kind: 'IntValue', value: '20' },
+          defaultValue: { kind: 'IntValue', value: '12' },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'search' },
+          },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'format' },
+          },
+          type: {
+            kind: 'NamedType',
+            name: { kind: 'Name', value: 'MediaFormat' },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'sort' } },
+          type: {
+            kind: 'ListType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'MediaSort' },
+            },
+          },
+          defaultValue: {
+            kind: 'ListValue',
+            values: [{ kind: 'EnumValue', value: 'POPULARITY_DESC' }],
+          },
         },
       ],
       selectionSet: {
@@ -103,6 +184,23 @@ export const AnimeListDocument = {
               selections: [
                 {
                   kind: 'Field',
+                  name: { kind: 'Name', value: 'pageInfo' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'currentPage' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'hasNextPage' },
+                      },
+                    ],
+                  },
+                },
+                {
+                  kind: 'Field',
                   name: { kind: 'Name', value: 'media' },
                   arguments: [
                     {
@@ -112,8 +210,27 @@ export const AnimeListDocument = {
                     },
                     {
                       kind: 'Argument',
+                      name: { kind: 'Name', value: 'search' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'search' },
+                      },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'format' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'format' },
+                      },
+                    },
+                    {
+                      kind: 'Argument',
                       name: { kind: 'Name', value: 'sort' },
-                      value: { kind: 'EnumValue', value: 'POPULARITY_DESC' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'sort' },
+                      },
                     },
                   ],
                   selectionSet: {
