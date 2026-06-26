@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { SearchX, ServerCrash } from 'lucide-react';
+import { Hourglass, SearchX, ServerCrash } from 'lucide-react';
 import { StatusState } from './status-state';
 import { Button } from '../button/button';
 
@@ -24,9 +24,22 @@ export const Empty: Story = {
 export const Error: Story = {
   name: 'Erro ao carregar',
   args: {
+    tone: 'danger',
     icon: <ServerCrash />,
     title: 'Erro ao carregar',
     message: 'Não foi possível buscar os animes. Verifique sua conexão.',
+    action: <Button>Tentar de novo</Button>,
+  },
+};
+
+export const RateLimit: Story = {
+  name: 'Limite de requisições (429)',
+  args: {
+    tone: 'warning',
+    icon: <Hourglass />,
+    title: 'Muitas buscas',
+    message:
+      'Você fez muitas buscas em pouco tempo. Aguarde alguns segundos e tente de novo.',
     action: <Button>Tentar de novo</Button>,
   },
 };
