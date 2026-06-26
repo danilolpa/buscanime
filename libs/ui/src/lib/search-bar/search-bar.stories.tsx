@@ -17,7 +17,7 @@ function SearchBarEmpty() {
     <SearchBar
       value={value}
       onChange={setValue}
-      onSearch={() => alert(`Buscando: ${value}`)}
+      onSearch={() => console.log(`Buscando: ${value}`)}
     />
   );
 }
@@ -28,7 +28,7 @@ function SearchBarFilled() {
     <SearchBar
       value={value}
       onChange={setValue}
-      onSearch={() => alert(`Buscando: ${value}`)}
+      onSearch={() => console.log(`Buscando: ${value}`)}
     />
   );
 }
