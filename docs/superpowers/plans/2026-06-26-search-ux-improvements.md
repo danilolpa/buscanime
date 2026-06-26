@@ -275,7 +275,7 @@ git commit -m "feat: wire clear button into AnimeBrowser"
 
 ```graphql
 query AnimeFormatCounts($search: String) {
-  ALL: Page(perPage: 1) {
+  ALL: Page(perPage: 50) {
     pageInfo {
       total
     }
@@ -283,7 +283,7 @@ query AnimeFormatCounts($search: String) {
       id
     }
   }
-  TV: Page(perPage: 1) {
+  TV: Page(perPage: 50) {
     pageInfo {
       total
     }
@@ -291,7 +291,7 @@ query AnimeFormatCounts($search: String) {
       id
     }
   }
-  MOVIE: Page(perPage: 1) {
+  MOVIE: Page(perPage: 50) {
     pageInfo {
       total
     }
@@ -299,7 +299,7 @@ query AnimeFormatCounts($search: String) {
       id
     }
   }
-  TV_SHORT: Page(perPage: 1) {
+  TV_SHORT: Page(perPage: 50) {
     pageInfo {
       total
     }
@@ -307,7 +307,7 @@ query AnimeFormatCounts($search: String) {
       id
     }
   }
-  SPECIAL: Page(perPage: 1) {
+  SPECIAL: Page(perPage: 50) {
     pageInfo {
       total
     }
@@ -315,7 +315,7 @@ query AnimeFormatCounts($search: String) {
       id
     }
   }
-  OVA: Page(perPage: 1) {
+  OVA: Page(perPage: 50) {
     pageInfo {
       total
     }
@@ -323,7 +323,7 @@ query AnimeFormatCounts($search: String) {
       id
     }
   }
-  ONA: Page(perPage: 1) {
+  ONA: Page(perPage: 50) {
     pageInfo {
       total
     }
@@ -331,7 +331,7 @@ query AnimeFormatCounts($search: String) {
       id
     }
   }
-  MUSIC: Page(perPage: 1) {
+  MUSIC: Page(perPage: 50) {
     pageInfo {
       total
     }
