@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { setupServer } from 'msw/node';
@@ -8,16 +8,25 @@ import {
   it,
   expect,
   beforeAll,
+  beforeEach,
   afterEach,
   afterAll,
   vi,
 } from 'vitest';
 import type { ReactNode } from 'react';
 
+// Mock dinâmico: `replace` reescreve os searchParams (lidos pelo binding vivo), pra que
+// clicar "Buscar"/trocar formato reflita na URL como no app real.
+let searchParams = new URLSearchParams();
+const replace = vi.fn((url: string) => {
+  const qs = url.includes('?') ? url.slice(url.indexOf('?') + 1) : '';
+  searchParams = new URLSearchParams(qs);
+});
+
 vi.mock('next/navigation', () => ({
-  useRouter: () => ({ replace: vi.fn() }),
+  useRouter: () => ({ replace }),
   usePathname: () => '/',
-  useSearchParams: () => new URLSearchParams(),
+  useSearchParams: () => searchParams,
 }));
 
 import { AnimeBrowser } from './anime-browser';
@@ -57,6 +66,10 @@ const server = setupServer(
   ),
 );
 beforeAll(() => server.listen());
+beforeEach(() => {
+  searchParams = new URLSearchParams();
+  replace.mockClear();
+});
 afterEach(() => server.resetHandlers());
 afterAll(() => server.close());
 
@@ -120,5 +133,32 @@ describe('AnimeBrowser', () => {
       screen.getByRole('button', { name: /tentar de novo/i }),
     );
     expect(await screen.findByText('Naruto')).toBeInTheDocument();
+  });
+
+  it('digitar não dispara busca; só o botão "Buscar" dispara', async () => {
+    const searches: (string | undefined)[] = [];
+    server.use(
+      graphql.query('AnimeList', ({ variables }) => {
+        searches.push(variables.search as string | undefined);
+        return HttpResponse.json({ data: { Page: page1 } });
+      }),
+    );
+    render(<AnimeBrowser endpoint={TEST_ENDPOINT} />, { wrapper });
+    await screen.findByText('Naruto');
+
+    const input = screen.getByRole('searchbox', { name: 'Buscar anime' });
+    const button = screen.getByRole('button', { name: 'Buscar' });
+
+    // input vazio → botão desabilitado
+    expect(button).toBeDisabled();
+
+    // digitar NÃO dispara busca (sem debounce), e habilita o botão
+    await userEvent.type(input, 'naruto');
+    expect(button).toBeEnabled();
+    expect(searches.every((s) => s == null)).toBe(true);
+
+    // clicar "Buscar" dispara a busca com o termo digitado
+    await userEvent.click(button);
+    await waitFor(() => expect(searches).toContain('naruto'));
   });
 });

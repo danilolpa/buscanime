@@ -1,4 +1,5 @@
 'use client';
+import { useEffect, useRef, useState } from 'react';
 import { Plus, SearchX, ServerCrash } from 'lucide-react';
 import {
   AnimeGrid,
@@ -20,7 +21,8 @@ export interface AnimeBrowserProps {
 }
 
 export function AnimeBrowser({ endpoint }: AnimeBrowserProps) {
-  const { format, q, text, setFormat, onChangeText, flush } = useAnimeFilters();
+  const { format, q, text, setFormat, onChangeText, submitSearch } =
+    useAnimeFilters();
   const query = useAnimeList({
     search: q,
     format: toMediaFormat(format),
@@ -28,7 +30,22 @@ export function AnimeBrowser({ endpoint }: AnimeBrowserProps) {
   });
 
   const animes = query.data?.pages.flatMap((p) => p.items) ?? [];
-  const searching = query.isFetching && !query.isFetchingNextPage;
+  const fetchingResults = query.isFetching && !query.isFetchingNextPage;
+
+  // O botão "Buscar" só mostra loading quando a busca foi disparada por clique/Enter —
+  // não no load inicial nem ao trocar de formato. Liga no clique e desliga quando o fetch
+  // resultante termina (transição de fetching true -> false).
+  const [searchPending, setSearchPending] = useState(false);
+  const wasFetching = useRef(false);
+  useEffect(() => {
+    if (wasFetching.current && !query.isFetching) setSearchPending(false);
+    wasFetching.current = query.isFetching;
+  }, [query.isFetching]);
+
+  function handleSearch() {
+    setSearchPending(true);
+    submitSearch();
+  }
 
   return (
     <Container>
@@ -41,12 +58,12 @@ export function AnimeBrowser({ endpoint }: AnimeBrowserProps) {
         <SearchBar
           value={text}
           onChange={onChangeText}
-          onSearch={flush}
-          loading={searching}
+          onSearch={handleSearch}
+          loading={searchPending && query.isFetching}
         />
 
-        {/* aria-busy usa `searching` (não só isLoading) pra sinalizar refetch de filtro/busca, não só a carga inicial. */}
-        <div aria-live="polite" aria-busy={searching}>
+        {/* aria-busy sinaliza qualquer refetch de resultados (filtro/busca), não só a carga inicial. */}
+        <div aria-live="polite" aria-busy={fetchingResults}>
           {query.isLoading ? (
             <AnimeGridSkeleton count={12} />
           ) : query.isError ? (
