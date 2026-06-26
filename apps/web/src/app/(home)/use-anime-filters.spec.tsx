@@ -2,6 +2,9 @@ import { renderHook, act } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
 const replace = vi.fn();
+// `let` (não `const`): cada beforeEach reatribui `params`, e o factory do mock lê o
+// binding vivo (`() => params`) a cada render. NÃO trocar por `() => new URLSearchParams()`
+// — isso quebraria o reset por teste.
 let params = new URLSearchParams();
 
 vi.mock('next/navigation', () => ({
