@@ -56,9 +56,6 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Build libs
-        run: pnpm exec nx run-many -t build --exclude=web,web-e2e
-
       - name: Unit tests
         run: pnpm exec nx run-many -t test
 
