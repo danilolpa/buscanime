@@ -40,5 +40,18 @@ export function useAnimeFilters() {
 
   const submitSearch = useCallback(() => commit({ q: text }), [commit, text]);
 
-  return { format, q, text, setFormat, onChangeText, submitSearch };
+  const clearSearch = useCallback(() => {
+    setText('');
+    commit({ q: '' }); // q vazio → params.delete('q') → volta pra lista popular
+  }, [commit]);
+
+  return {
+    format,
+    q,
+    text,
+    setFormat,
+    onChangeText,
+    submitSearch,
+    clearSearch,
+  };
 }

@@ -42,4 +42,13 @@ describe('useAnimeFilters', () => {
     act(() => result.current.submitSearch());
     expect(replace).toHaveBeenCalledWith('/?q=one+piece', { scroll: false });
   });
+
+  it('clearSearch zera o texto e remove o q da URL', () => {
+    params = new URLSearchParams('q=naruto');
+    const { result } = renderHook(() => useAnimeFilters());
+    expect(result.current.text).toBe('naruto');
+    act(() => result.current.clearSearch());
+    expect(result.current.text).toBe('');
+    expect(replace).toHaveBeenCalledWith('/', { scroll: false });
+  });
 });
