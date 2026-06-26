@@ -115,3 +115,12 @@ it('usa SEARCH_MATCH quando há busca e passa search/format às variáveis', asy
     perPage: 12,
   });
 });
+
+it('funciona com o endpoint padrão (proxy relativo resolvido pra absoluto)', async () => {
+  // Sem endpoint explícito, usa o proxy default '/api/anilist'. graphql-request faz
+  // `new URL(endpoint)` internamente, então a URL relativa precisa ser resolvida pra
+  // absoluta — senão estoura "Invalid URL" e a query nunca dispara (o bug em produção).
+  const { result } = renderHook(() => useAnimeList(), { wrapper });
+  await waitFor(() => expect(result.current.isSuccess).toBe(true));
+  expect(result.current.data?.pages[0].items).toEqual([narutoAnime]);
+});
