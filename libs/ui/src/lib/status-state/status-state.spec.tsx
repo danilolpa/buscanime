@@ -109,4 +109,17 @@ describe('StatusState', () => {
     );
     expect(await axe(container)).toHaveNoViolations();
   });
+
+  it('sem violações de a11y no tone warning com action', async () => {
+    const { container } = render(
+      <StatusState
+        tone="warning"
+        icon={<SearchX />}
+        title="Muitas buscas"
+        message="Você fez muitas buscas em pouco tempo. Aguarde alguns segundos e tente de novo."
+        action={<button>Tentar de novo</button>}
+      />,
+    );
+    expect(await axe(container)).toHaveNoViolations();
+  });
 });
