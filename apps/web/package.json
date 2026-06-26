@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@buscanime/anime-data-access": "workspace:*",
+    "@buscanime/shared-types": "workspace:*",
     "@buscanime/ui": "workspace:*",
     "@sentry/nextjs": "10.59.0",
     "@tanstack/react-query": "^5.101.0",

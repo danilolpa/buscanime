@@ -243,6 +243,9 @@ importers:
       '@buscanime/anime-data-access':
         specifier: workspace:*
         version: link:../../libs/anime/data-access
+      '@buscanime/shared-types':
+        specifier: workspace:*
+        version: link:../../libs/shared/types
       '@buscanime/ui':
         specifier: workspace:*
         version: link:../../libs/ui
