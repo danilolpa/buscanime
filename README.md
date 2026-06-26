@@ -1,6 +1,6 @@
 # buscanime
 
-Nx monorepo — foundation stage of an AniList anime-listing app built as a job challenge. The current codebase establishes the full infrastructure pipeline from browser to the AniList GraphQL API; the UI layer is a placeholder pending implementation.
+Nx monorepo — an AniList anime-listing app built as a job challenge. It establishes the full infrastructure pipeline from browser to the AniList GraphQL API, a `@buscanime/ui` design system, and the listing page that composes them (format filter, debounced search, "Ver mais" pagination, and loading/empty/error states).
 
 ---
 
