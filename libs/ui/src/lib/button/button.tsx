@@ -15,7 +15,7 @@ const button = cva(
         solid: 'bg-brand text-white hover:bg-brand/80',
         outline: 'border-2 border-brand text-brand md:hover:bg-brand/20',
       },
-      size: { md: 'h-8 px-6 text-sm', lg: 'h-12 px-6 text-semibold' },
+      size: { md: 'h-8 px-6 text-sm', lg: 'h-12 px-6' },
       active: { true: '', false: '' },
     },
     compoundVariants: [
