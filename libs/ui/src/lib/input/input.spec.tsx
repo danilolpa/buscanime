@@ -36,6 +36,17 @@ describe('Input', () => {
     expect(screen.getByTestId('search-icon')).toBeInTheDocument();
   });
 
+  it('aplica a altura do size (md = h-9, lg = h-12, iguais ao Button)', () => {
+    const { rerender } = render(
+      <Input aria-label="x" value="" onChange={() => undefined} />,
+    );
+    expect(screen.getByRole('textbox')).toHaveClass('h-9');
+    rerender(
+      <Input size="lg" aria-label="x" value="" onChange={() => undefined} />,
+    );
+    expect(screen.getByRole('textbox')).toHaveClass('h-12');
+  });
+
   it('sem violações de a11y', async () => {
     const { container } = render(
       <Input aria-label="Buscar anime" value="" onChange={() => undefined} />,

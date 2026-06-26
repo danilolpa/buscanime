@@ -17,6 +17,7 @@ export function SearchBar({ value, onChange, onSearch }: SearchBarProps) {
   return (
     <form role="search" onSubmit={handleSubmit} className="flex w-full gap-2">
       <Input
+        size="lg"
         type="search"
         aria-label="Buscar anime"
         value={value}
@@ -25,7 +26,7 @@ export function SearchBar({ value, onChange, onSearch }: SearchBarProps) {
         }
         placeholder="Ex: Naruto, One Piece..."
       />
-      <Button type="submit" variant="solid">
+      <Button type="submit" variant="solid" size="lg">
         Buscar
       </Button>
     </form>

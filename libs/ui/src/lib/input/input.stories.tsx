@@ -28,3 +28,12 @@ export const WithIcon: Story = {
     icon: <Search size={16} />,
   },
 };
+
+export const Large: Story = {
+  args: {
+    size: 'lg',
+    'aria-label': 'Buscar anime',
+    placeholder: 'Buscar anime...',
+    value: '',
+  },
+};
