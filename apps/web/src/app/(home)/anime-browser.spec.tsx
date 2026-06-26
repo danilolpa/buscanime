@@ -135,6 +135,26 @@ describe('AnimeBrowser', () => {
     expect(await screen.findByText('Naruto')).toBeInTheDocument();
   });
 
+  it('× limpa a busca e volta pra lista', async () => {
+    render(<AnimeBrowser endpoint={TEST_ENDPOINT} />, { wrapper });
+    await screen.findByText('Naruto');
+    await userEvent.type(
+      screen.getByRole('searchbox', { name: 'Buscar anime' }),
+      'naruto',
+    );
+    await userEvent.click(screen.getByRole('button', { name: 'Buscar' }));
+    const clear = await screen.findByRole('button', { name: 'Limpar busca' });
+    await userEvent.click(clear);
+    await waitFor(() =>
+      expect(
+        screen.queryByRole('button', { name: 'Limpar busca' }),
+      ).not.toBeInTheDocument(),
+    );
+    expect(screen.getByRole('searchbox', { name: 'Buscar anime' })).toHaveValue(
+      '',
+    );
+  });
+
   it('digitar não dispara busca; só o botão "Buscar" dispara', async () => {
     const searches: (string | undefined)[] = [];
     server.use(

@@ -21,8 +21,15 @@ export interface AnimeBrowserProps {
 }
 
 export function AnimeBrowser({ endpoint }: AnimeBrowserProps) {
-  const { format, q, text, setFormat, onChangeText, submitSearch } =
-    useAnimeFilters();
+  const {
+    format,
+    q,
+    text,
+    setFormat,
+    onChangeText,
+    submitSearch,
+    clearSearch,
+  } = useAnimeFilters();
   const query = useAnimeList({
     search: q,
     format: toMediaFormat(format),
@@ -60,6 +67,8 @@ export function AnimeBrowser({ endpoint }: AnimeBrowserProps) {
           onChange={onChangeText}
           onSearch={handleSearch}
           loading={searchPending && query.isFetching}
+          onClear={clearSearch}
+          searchActive={Boolean(q)}
         />
 
         {/* aria-busy sinaliza qualquer refetch de resultados (filtro/busca), não só a carga inicial. */}
