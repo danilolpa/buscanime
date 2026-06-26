@@ -1,29 +1,19 @@
 import { type HTMLAttributes, type ReactNode } from 'react';
-import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '../utils/cn';
 
-const chip = cva(
-  'inline-flex items-center rounded-sm px-1.5 py-0.5 text-xs font-semibold',
-  {
-    variants: {
-      variant: {
-        default: 'bg-brand/10 text-brand',
-        onImage: 'bg-black/60 text-white',
-      },
-    },
-    defaultVariants: { variant: 'default' },
-  },
-);
-
-export interface ChipProps
-  extends HTMLAttributes<HTMLSpanElement>,
-    VariantProps<typeof chip> {
+export interface ChipProps extends HTMLAttributes<HTMLSpanElement> {
   children: ReactNode;
 }
 
-export function Chip({ className, variant, children, ...props }: ChipProps) {
+export function Chip({ className, children, ...props }: ChipProps) {
   return (
-    <span className={cn(chip({ variant }), className)} {...props}>
+    <span
+      className={cn(
+        'inline-flex items-center rounded-sm bg-brand px-1.5 py-0.5 text-xs font-semibold text-white',
+        className,
+      )}
+      {...props}
+    >
       {children}
     </span>
   );

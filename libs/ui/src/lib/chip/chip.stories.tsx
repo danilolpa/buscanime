@@ -11,17 +11,15 @@ export default meta;
 type Story = StoryObj<typeof Chip>;
 
 export const Default: Story = {
-  args: { children: 'Action', variant: 'default' },
+  args: { children: 'Action' },
 };
 
-export const OnImage: Story = {
-  name: 'On Image',
-  args: { children: 'Drama', variant: 'onImage' },
-  decorators: [
-    (Story) => (
-      <div className="bg-gray-800 p-4 rounded">
-        <Story />
-      </div>
-    ),
-  ],
+export const Group: Story = {
+  render: () => (
+    <div className="flex flex-wrap gap-1">
+      <Chip>Action</Chip>
+      <Chip>Adventure</Chip>
+      <Chip>Fantasy</Chip>
+    </div>
+  ),
 };

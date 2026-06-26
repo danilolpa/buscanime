@@ -31,13 +31,12 @@ export const AnimeCard = memo(function AnimeCard({ anime }: AnimeCardProps) {
           loaded ? 'scale-100 opacity-100' : 'scale-105 opacity-0',
         )}
       />
-      <div className="absolute inset-x-0 top-0 bg-gradient-to-b from-black/85 to-transparent p-3 pb-12">
-        <h3 className="font-bold text-white">{anime.title}</h3>
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-1/2 bg-gradient-to-b from-black/85 to-transparent" />
+      <div className="absolute inset-x-0 top-0 p-3">
+        <h3 className="text-lg font-bold text-white">{anime.title}</h3>
         <div className="mt-1 flex flex-wrap gap-1">
           {anime.genres.slice(0, 3).map((g) => (
-            <Chip key={g} variant="onImage">
-              {g}
-            </Chip>
+            <Chip key={g}>{g}</Chip>
           ))}
         </div>
       </div>
