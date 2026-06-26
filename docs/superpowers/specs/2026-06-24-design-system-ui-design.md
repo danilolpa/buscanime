@@ -53,26 +53,25 @@ Os tokens vivem em **um único arquivo**: `libs/ui/src/styles/theme.css` (`@impo
 
 **Supersede a fundação:** o `global.css` hoje tem tokens placeholder `--color-score-low/mid/high/ink` (criados na Onda 2 da fundação, com cores diferentes — `#e53e3e`/`#38a169`). Eles são **removidos** e substituídos pelos abaixo. O `global.css` passa a conter só o import do tema + o `@source` (o caminho exato do import — relativo vs export do pacote `@buscanime/ui` — fica a critério do plano).
 
-| Token                 | Valor                | Uso                                        |
-| --------------------- | -------------------- | ------------------------------------------ |
-| `--color-brand`       | violet-700 `#6d28d9` | Header, Footer, filtro ativo, botão Buscar |
-| `--color-accent`      | yellow-300           | Botão "Ver mais"                           |
-| `--color-rating-low`  | rose-600 #e11d48     | Rating < 50 (texto branco)                 |
-| `--color-rating-mid`  | yellow-300           | Rating 50–80 (texto ink)                   |
-| `--color-rating-high` | teal-700 `#0f766e`   | Rating > 80 (texto branco)                 |
-| `--color-ink`         | `#1a1a1a`            | Texto escuro sobre amarelo                 |
+| Token            | Valor                | Uso                                        |
+| ---------------- | -------------------- | ------------------------------------------ |
+| `--color-brand`  | violet-700 `#6d28d9` | Header, Footer, filtro ativo, botão Buscar |
+| `--color-accent` | yellow-300           | Botão "Ver mais"                           |
+| `--color-ink`    | `#1a1a1a`            | Texto escuro sobre amarelo                 |
+
+> As cores do **rating** não são tokens — são aplicadas como **classes Tailwind diretas** no componente (ver §4.2).
 
 ### 4.2 `AnimeRating` — cor por faixa, **com contraste WCAG AA**
 
-O mock usa texto branco sobre teal/amarelo, que **reprova** (~1.8–2.3:1). Corrigido:
+As cores são **classes Tailwind diretas** no componente (não tokens). O mock usa texto branco sobre teal/amarelo, que **reprova** (~1.8–2.3:1). Corrigido:
 
-| Faixa (score %) | Fundo        | Texto     | Contraste |
-| --------------- | ------------ | --------- | --------- |
-| `< 50`          | rose-600     | branco    | ~4.7:1 ✓  |
-| `50–80`         | yellow-300   | `#1a1a1a` | ~13:1 ✓   |
-| `> 80`          | **teal-700** | branco    | ~5.5:1 ✓  |
+| Faixa (score %) | Fundo (classe)  | Texto         | Contraste |
+| --------------- | --------------- | ------------- | --------- |
+| `< 50`          | `bg-rose-600`   | branco        | ~4.7:1 ✓  |
+| `50–80`         | `bg-yellow-300` | `neutral-900` | ~13:1 ✓   |
+| `> 80`          | `bg-teal-700`   | branco        | ~5.5:1 ✓  |
 
-> O badge usa `text-sm font-bold` (14px bold), que **não qualifica** como "texto grande" no WCAG (o limite é ≥ 14pt bold = 18,66px). Portanto, o limiar WCAG AA aplicável é **4,5:1** (não 3:1). Por isso `rating-low` usa rose-600 (4,70:1) — rose-500 (3,67:1) reprovaria. teal-700 e yellow-300 com ink passam com folga.
+> O badge usa um tamanho/peso que **não qualifica** como "texto grande" no WCAG (o limite é ≥ 14pt bold = 18,66px), então o limiar AA aplicável é **4,5:1** (não 3:1). Por isso o tier baixo usa `bg-rose-600` (4,70:1) — rose-500 (3,67:1) reprovaria. teal-700 e yellow-300 com texto escuro passam com folga.
 
 ## 5. Inventário de componentes
 
@@ -95,7 +94,7 @@ Todos em `libs/ui/src/lib/<componente>/`. Cada um: `*.tsx` + `*.stories.tsx` + `
 | --------------------- | ----------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
 | **AnimeCard**         | `anime: Anime`                                  | Capa com `alt`, overlay gradiente no rodapé, título, `Chip` de gêneros, `AnimeRating` no canto inf. direito |
 | **AnimeGrid**         | `children`                                      | Grid responsivo 1→2→4 col                                                                                   |
-| **FormatFilter**      | `options: {label,value}[]`, `value`, `onChange` | Linha de `Button`s; `aria-pressed`; só um ativo                                                             |
+| **ToggleGroup**       | `options: {label,value}[]`, `value`, `onChange` | Linha de `Button`s; `aria-pressed`; só um ativo                                                             |
 | **SearchBar**         | `value`, `onChange`, `onSearch`                 | `Input` + `Button` "Buscar"                                                                                 |
 | **AnimeCardSkeleton** | —                                               | Layout do card em shimmer; `aria-busy`                                                                      |
 | **AnimeGridSkeleton** | `count?: number`                                | Grid de N `AnimeCardSkeleton`                                                                               |
@@ -113,21 +112,21 @@ Todos em `libs/ui/src/lib/<componente>/`. Cada um: `*.tsx` + `*.stories.tsx` + `
 
 - Overlay gradiente no `AnimeCard` (legibilidade do título sobre imagem variável).
 - `AnimeRating` com as cores/texto da §4.2.
-- `aria-pressed` no `FormatFilter`; `aria-label` no `Input`/`SearchBar`; `alt` nas capas; `aria-busy` nos skeletons.
+- `aria-pressed` no `ToggleGroup`; `aria-label` no `Input`/`SearchBar`; `alt` nas capas; `aria-busy` nos skeletons.
 - `aria-live` da área de resultados fica na **fase de feature** (não é do DS).
 - `eslint-plugin-jsx-a11y` já enforça em dev; **vitest-axe** valida nos testes.
 
 ## 7. Testes
 
 - **Vitest + Testing Library** por componente: render, variantes (cva), interação (clicks/onChange), estados.
-- **vitest-axe** (`expect.toHaveNoViolations`) nos componentes-chave (Button, Chip, AnimeRating, Input, AnimeCard, FormatFilter, SearchBar, StatusState).
+- **vitest-axe** (`expect.toHaveNoViolations`) nos componentes-chave (Button, Chip, AnimeRating, Input, AnimeCard, ToggleGroup, SearchBar, StatusState).
 - **Stories do Storybook** como catálogo: cada variante/estado vira uma story (inclui ratings verde/amarelo/vermelho, Button solid/outline/active, skeletons, empty/error).
 
 ## 8. Sequência de construção
 
 1. **Setup** — `@nx/storybook` no `ui` com **builder Vite** (não webpack — o default do generator pode trazer webpack) + `@tailwindcss/postcss` no Storybook; importar `theme.css` no `.storybook/preview`; instalar cva, tailwind-merge, lucide-react, vitest-axe; mover tokens p/ `theme.css` e limpar `global.css`; remover o stub `ui.tsx`.
 2. **Primitivos** — Button, Chip, AnimeRating, Input, Skeleton, Logo.
-3. **Compostos** — AnimeCard, AnimeGrid, FormatFilter, SearchBar, AnimeCardSkeleton, AnimeGridSkeleton.
+3. **Compostos** — AnimeCard, AnimeGrid, ToggleGroup, SearchBar, AnimeCardSkeleton, AnimeGridSkeleton.
 4. **Layout/estados** — Container, Header, Footer, StatusState.
 5. **Fechamento** — catálogo Storybook completo; axe verde; `nx run-many -t lint test typecheck build` verde; Storybook buildável.
 

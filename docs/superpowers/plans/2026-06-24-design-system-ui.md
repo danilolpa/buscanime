@@ -47,7 +47,7 @@ libs/ui/
 │   │   ├── logo/                            → Logo
 │   │   ├── anime-card/                      → AnimeCard
 │   │   ├── anime-grid/                      → AnimeGrid
-│   │   ├── format-filter/                   → FormatFilter
+│   │   ├── toggle-group/                   → ToggleGroup
 │   │   ├── search-bar/                      → SearchBar
 │   │   ├── anime-card-skeleton/             → AnimeCardSkeleton + AnimeGridSkeleton
 │   │   ├── container/                       → Container
@@ -97,12 +97,11 @@ Create `libs/ui/src/styles/theme.css`:
 @theme {
   --color-brand: #6d28d9; /* violet-700 */
   --color-accent: #fde047; /* yellow-300 */
-  --color-rating-low: #f43f5e; /* rose-500 */
-  --color-rating-mid: #fde047; /* yellow-300 */
-  --color-rating-high: #0f766e; /* teal-700 */
   --color-ink: #1a1a1a;
 }
 ```
+
+> As cores do **rating** não são tokens — o `AnimeRating` usa classes Tailwind diretas (ver Task 4).
 
 Then edit `apps/web/src/app/global.css` to **remove** the old `@theme { --color-score-* }` block and its `@source`, replacing the top with an import of the lib theme (relative path from `apps/web/src/app/` → `../../../../libs/ui/src/styles/theme.css`):
 
@@ -285,16 +284,16 @@ export interface AnimeRatingProps {
   value: number;
 }
 function tone(value: number) {
-  if (value < 50) return 'bg-rating-low text-white';
-  if (value <= 80) return 'bg-rating-mid text-ink';
-  return 'bg-rating-high text-white';
+  if (value < 50) return 'bg-rose-600 text-white';
+  if (value <= 80) return 'bg-yellow-300 text-neutral-900';
+  return 'bg-teal-700 text-white';
 }
 export function AnimeRating({ value }: AnimeRatingProps) {
   return <span className={cn('inline-flex items-center rounded-md px-2 py-0.5 text-sm font-bold', tone(value))}>{Math.round(value)}%</span>;
 }
 ```
 
-- Se o axe reprovar `rating-low` + branco, ajustar token `--color-rating-low` p/ rose-600 (`#e11d48`) no `theme.css` e re-rodar. Story: Low/Mid/High. Commit `a11y: add AnimeRating with WCAG-safe color tiers`.
+- Cores via **classes Tailwind diretas** (`bg-rose-600` / `bg-yellow-300 text-neutral-900` / `bg-teal-700`), não tokens. Se o axe (browser) reprovar contraste, ajustar o shade no componente. Story: Low/Mid/High. Commit `a11y: add AnimeRating with WCAG-safe color tiers`.
 
 ### Task 5: Input
 
@@ -382,9 +381,9 @@ Story: card normal + sem score + título longo. Commit `feat: add AnimeCard comp
 
 API: `children`. `div` com `grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4`. Spec: renderiza N filhos. Story: grid de AnimeCards. Commit `feat: add AnimeGrid component`.
 
-### Task 10: FormatFilter
+### Task 10: ToggleGroup
 
-API: `options: {label:string; value:string}[]`, `value: string`, `onChange: (value:string)=>void`. Renderiza um `Button` por opção (`size=md`), `active={opt.value===value}`, `aria-pressed={opt.value===value}`, `onClick`. Spec: clica numa opção → `onChange` com o value; `aria-pressed` correto; axe. Story: barra com formatos (All/TV/Movie/...). Commit `feat: add FormatFilter component`.
+API: `options: {label:string; value:string}[]`, `value: string`, `onChange: (value:string)=>void`. Renderiza um `Button` por opção (`size=md`), `active={opt.value===value}`, `aria-pressed={opt.value===value}`, `onClick`. Spec: clica numa opção → `onChange` com o value; `aria-pressed` correto; axe. Story: barra com formatos (All/TV/Movie/...). Commit `feat: add ToggleGroup component`.
 
 ### Task 11: SearchBar
 
@@ -416,7 +415,7 @@ API: `icon: ReactNode`, `title: string`, `message?: string`, `action?: ReactNode
 
 ### Task 16: Barrel, catálogo e verificação
 
-- [ ] **Step 1:** Garantir que `libs/ui/src/index.ts` exporta **todos** os componentes (Button, Chip, AnimeRating, Input, Skeleton, Logo, AnimeCard, AnimeGrid, FormatFilter, SearchBar, AnimeCardSkeleton, AnimeGridSkeleton, Container, Header, Footer, StatusState) + tipos de props públicos.
+- [ ] **Step 1:** Garantir que `libs/ui/src/index.ts` exporta **todos** os componentes (Button, Chip, AnimeRating, Input, Skeleton, Logo, AnimeCard, AnimeGrid, ToggleGroup, SearchBar, AnimeCardSkeleton, AnimeGridSkeleton, Container, Header, Footer, StatusState) + tipos de props públicos.
 - [ ] **Step 2:** `pnpm exec nx build-storybook ui` → catálogo builda com todas as stories.
 - [ ] **Step 3:** `pnpm exec nx run-many -t lint test typecheck build` → tudo verde (axe sem violações nos componentes-chave).
 - [ ] **Step 4:** Atualizar `README.md` com uma linha sobre o DS + como rodar o Storybook (`pnpm exec nx storybook ui`).
@@ -430,7 +429,7 @@ API: `icon: ReactNode`, `title: string`, `message?: string`, `action?: ReactNode
 - [ ] 16 componentes implementados, exportados pelo barrel, cada um com story + spec.
 - [ ] `AnimeRating` passa axe nas 3 faixas; contraste conforme spec §4.2.
 - [ ] `Button` cobre solid/outline/active × md/lg × com/sem ícone (stories + specs).
-- [ ] vitest-axe sem violações nos componentes-chave (Button, Chip, AnimeRating, Input, AnimeCard, FormatFilter, SearchBar, StatusState).
+- [ ] vitest-axe sem violações nos componentes-chave (Button, Chip, AnimeRating, Input, AnimeCard, ToggleGroup, SearchBar, StatusState).
 - [ ] Boundaries intactas: `ui` não importa `data-access`; `AnimeCard` usa `Anime` de `shared-types`.
 - [ ] Tokens em fonte única (`theme.css`); `global.css` sem os placeholders antigos.
 - [ ] `nx run-many -t lint test typecheck build` verde.
