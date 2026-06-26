@@ -18,7 +18,7 @@ export const AnimeCard = memo(function AnimeCard({ anime }: AnimeCardProps) {
   }, []);
 
   return (
-    <article className="relative aspect-[10/9] overflow-hidden rounded-lg bg-black/5 hover:ring-2 hover:ring-purple-500 transition-all duration-300">
+    <article className="relative aspect-[10/6] md:aspect-[10/9] overflow-hidden rounded-lg bg-black/5 hover:ring-2 hover:ring-purple-500 transition-all duration-300">
       <img
         ref={imgRef}
         src={anime.coverImage}

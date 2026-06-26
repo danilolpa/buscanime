@@ -1,3 +1,4 @@
+import { cn } from '../utils/cn';
 import { Button } from '../button/button';
 
 export interface ToggleGroupOption {
@@ -10,11 +11,17 @@ export interface ToggleGroupProps {
   options: ToggleGroupOption[];
   value: string;
   onChange: (value: string) => void;
+  className?: string;
 }
 
-export function ToggleGroup({ options, value, onChange }: ToggleGroupProps) {
+export function ToggleGroup({
+  options,
+  value,
+  onChange,
+  className,
+}: ToggleGroupProps) {
   return (
-    <div className="flex flex-wrap gap-2" role="group">
+    <div className={cn('flex flex-wrap gap-2', className)} role="group">
       {options.map((opt) => {
         const isActive = opt.value === value;
         return (

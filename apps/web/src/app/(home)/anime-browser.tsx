@@ -42,6 +42,10 @@ export function AnimeBrowser({ endpoint }: AnimeBrowserProps) {
 
   const animes = query.data?.pages.flatMap((p) => p.items) ?? [];
   const fetchingResults = query.isFetching && !query.isFetchingNextPage;
+  // Estados em branco (erro / nada encontrado) centralizam na altura disponível;
+  // a grade e o skeleton ficam no topo.
+  const isBlankState =
+    query.isError || (!query.isLoading && animes.length === 0);
 
   // O botão "Buscar" só mostra loading quando a busca foi disparada por clique/Enter —
   // não no load inicial nem ao trocar de formato. Liga no clique e desliga quando o fetch
@@ -70,9 +74,16 @@ export function AnimeBrowser({ endpoint }: AnimeBrowserProps) {
   }
 
   return (
-    <Container>
-      <div className="flex flex-col gap-6 py-8">
-        <ToggleGroup options={options} value={format} onChange={setFormat} />
+    <Container className="flex flex-1 flex-col">
+      <div className="flex flex-1 flex-col gap-6 py-8">
+        <div className="-mx-4 overflow-x-auto py-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden md:mx-0 md:overflow-visible md:py-0">
+          <ToggleGroup
+            options={options}
+            value={format}
+            onChange={setFormat}
+            className="w-max flex-nowrap px-4 md:w-auto md:flex-wrap md:px-0"
+          />
+        </div>
         <SearchBar
           value={text}
           onChange={onChangeText}
@@ -83,7 +94,11 @@ export function AnimeBrowser({ endpoint }: AnimeBrowserProps) {
         />
 
         {/* aria-busy sinaliza qualquer refetch de resultados (filtro/busca), não só a carga inicial. */}
-        <div aria-live="polite" aria-busy={fetchingResults}>
+        <div
+          aria-live="polite"
+          aria-busy={fetchingResults}
+          className={`flex flex-1 flex-col${isBlankState ? ' justify-center' : ''}`}
+        >
           {query.isLoading ? (
             <AnimeGridSkeleton count={12} />
           ) : query.isError ? (

@@ -4,9 +4,9 @@ import { AnimeBrowser } from './(home)/anime-browser';
 
 export default function Index() {
   return (
-    <>
-      <Header />
-      <main>
+    <div className="flex min-h-screen flex-col">
+      <Header className="sticky top-0 z-40" />
+      <main className="flex flex-1 flex-col">
         <Suspense
           fallback={
             <Container>
@@ -20,6 +20,6 @@ export default function Index() {
         </Suspense>
       </main>
       <Footer />
-    </>
+    </div>
   );
 }
