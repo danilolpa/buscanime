@@ -17,6 +17,14 @@ describe('Button', () => {
     expect(screen.getByTestId('ic')).toBeInTheDocument();
   });
 
+  it('mostra spinner, desabilita e marca aria-busy quando loading', () => {
+    render(<Button loading>Buscar</Button>);
+    const btn = screen.getByRole('button', { name: 'Buscar' });
+    expect(btn).toBeDisabled();
+    expect(btn).toHaveAttribute('aria-busy', 'true');
+    expect(btn.querySelector('svg.animate-spin')).toBeInTheDocument();
+  });
+
   it('sem violações de a11y', async () => {
     const { container } = render(<Button>OK</Button>);
     expect(await axe(container)).toHaveNoViolations();

@@ -1,5 +1,6 @@
 import { type ButtonHTMLAttributes, type ReactNode, forwardRef } from 'react';
 import { cva, type VariantProps } from 'class-variance-authority';
+import { Loader2 } from 'lucide-react';
 import { cn } from '../utils/cn';
 
 const button = cva(
@@ -33,20 +34,39 @@ export interface ButtonProps
   extends ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof button> {
   icon?: ReactNode;
+  loading?: boolean;
 }
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   function Button(
-    { className, variant, size, active, icon, children, ...props },
+    {
+      className,
+      variant,
+      size,
+      active,
+      icon,
+      loading,
+      children,
+      disabled,
+      ...props
+    },
     ref,
   ) {
     return (
       <button
         ref={ref}
         className={cn(button({ variant, size, active }), className)}
+        disabled={disabled || loading}
+        aria-busy={loading || undefined}
         {...props}
       >
-        {icon && <span aria-hidden="true">{icon}</span>}
+        {loading ? (
+          <span aria-hidden="true">
+            <Loader2 className="animate-spin" />
+          </span>
+        ) : (
+          icon && <span aria-hidden="true">{icon}</span>
+        )}
         {children}
       </button>
     );

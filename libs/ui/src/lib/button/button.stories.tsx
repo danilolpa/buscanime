@@ -42,3 +42,7 @@ export const WithIconSearch: Story = {
   name: 'With Icon Search',
   args: { children: 'Buscar', icon: <Search size={16} /> },
 };
+
+export const Loading: Story = {
+  args: { children: 'Buscar', loading: true },
+};
