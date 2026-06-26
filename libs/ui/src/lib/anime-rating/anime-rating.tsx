@@ -5,16 +5,16 @@ export interface AnimeRatingProps {
 }
 
 function tone(value: number) {
-  if (value < 50) return 'bg-rating-low text-white';
-  if (value <= 80) return 'bg-rating-mid text-ink';
-  return 'bg-rating-high text-white';
+  if (value < 50) return 'bg-rose-600 text-white';
+  if (value <= 80) return 'bg-yellow-300 text-neutral-900';
+  return 'bg-teal-700 text-white';
 }
 
 export function AnimeRating({ value }: AnimeRatingProps) {
   return (
     <span
       className={cn(
-        'inline-flex items-center rounded-md px-2 py-0.5 text-sm font-bold',
+        'inline-flex items-center rounded-md px-2 py-0.5 text-lg font-medium',
         tone(value),
       )}
     >
