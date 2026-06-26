@@ -1,1 +1,8 @@
 @import '../../../../libs/ui/src/styles/theme.css';
+
+/* Always reserve space for the vertical scrollbar so the centered
+   max-w-7xl layout keeps a constant width whether the page scrolls
+   (anime grid) or not (empty/error states) — no horizontal shift. */
+html {
+  scrollbar-gutter: stable;
+}
