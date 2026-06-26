@@ -198,6 +198,22 @@ describe('AnimeBrowser', () => {
     expect(screen.getByText('11')).toBeInTheDocument();
   });
 
+  it('mostra o estado de rate limit (429) com botão "Tentar de novo"', async () => {
+    server.use(
+      graphql.query('AnimeList', () =>
+        HttpResponse.json(
+          { errors: [{ message: 'Too Many Requests' }] },
+          { status: 429 },
+        ),
+      ),
+    );
+    render(<AnimeBrowser endpoint={TEST_ENDPOINT} />, { wrapper });
+    expect(await screen.findByText('Muitas buscas')).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: /tentar de novo/i }),
+    ).toBeInTheDocument();
+  });
+
   it('digitar não dispara busca; só o botão "Buscar" dispara', async () => {
     const searches: (string | undefined)[] = [];
     server.use(

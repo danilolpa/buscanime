@@ -1,6 +1,6 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
-import { Plus, SearchX, ServerCrash } from 'lucide-react';
+import { Hourglass, Plus, SearchX, ServerCrash } from 'lucide-react';
 import {
   AnimeGrid,
   AnimeCard,
@@ -14,6 +14,7 @@ import {
 import {
   useAnimeList,
   useAnimeFormatCounts,
+  isRateLimitError,
 } from '@buscanime/anime-data-access';
 import { useAnimeFilters } from './use-anime-filters';
 import { FORMAT_OPTIONS, toMediaFormat } from './format-options';
@@ -86,16 +87,34 @@ export function AnimeBrowser({ endpoint }: AnimeBrowserProps) {
           {query.isLoading ? (
             <AnimeGridSkeleton count={12} />
           ) : query.isError ? (
-            <StatusState
-              icon={<ServerCrash />}
-              title="Erro ao carregar"
-              message="Algo deu errado ao buscar os animes."
-              action={
-                <Button onClick={() => query.refetch()}>Tentar de novo</Button>
-              }
-            />
+            isRateLimitError(query.error) ? (
+              <StatusState
+                tone="warning"
+                icon={<Hourglass />}
+                title="Muitas buscas"
+                message="Você fez muitas buscas em pouco tempo. Aguarde alguns segundos e tente de novo."
+                action={
+                  <Button onClick={() => query.refetch()}>
+                    Tentar de novo
+                  </Button>
+                }
+              />
+            ) : (
+              <StatusState
+                tone="danger"
+                icon={<ServerCrash />}
+                title="Erro ao carregar"
+                message="Algo deu errado ao buscar os animes."
+                action={
+                  <Button onClick={() => query.refetch()}>
+                    Tentar de novo
+                  </Button>
+                }
+              />
+            )
           ) : animes.length === 0 ? (
             <StatusState
+              tone="neutral"
               icon={<SearchX />}
               title="Nada encontrado"
               message="Tente outro filtro ou outra busca."
