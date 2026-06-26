@@ -1,33 +1,33 @@
 query AnimeFormatCounts($search: String) {
-  ALL: Page(perPage: 1) {
+  ALL: Page(perPage: 50) {
     pageInfo { total }
     media(type: ANIME, search: $search) { id }
   }
-  TV: Page(perPage: 1) {
+  TV: Page(perPage: 50) {
     pageInfo { total }
     media(type: ANIME, search: $search, format: TV) { id }
   }
-  MOVIE: Page(perPage: 1) {
+  MOVIE: Page(perPage: 50) {
     pageInfo { total }
     media(type: ANIME, search: $search, format: MOVIE) { id }
   }
-  TV_SHORT: Page(perPage: 1) {
+  TV_SHORT: Page(perPage: 50) {
     pageInfo { total }
     media(type: ANIME, search: $search, format: TV_SHORT) { id }
   }
-  SPECIAL: Page(perPage: 1) {
+  SPECIAL: Page(perPage: 50) {
     pageInfo { total }
     media(type: ANIME, search: $search, format: SPECIAL) { id }
   }
-  OVA: Page(perPage: 1) {
+  OVA: Page(perPage: 50) {
     pageInfo { total }
     media(type: ANIME, search: $search, format: OVA) { id }
   }
-  ONA: Page(perPage: 1) {
+  ONA: Page(perPage: 50) {
     pageInfo { total }
     media(type: ANIME, search: $search, format: ONA) { id }
   }
-  MUSIC: Page(perPage: 1) {
+  MUSIC: Page(perPage: 50) {
     pageInfo { total }
     media(type: ANIME, search: $search, format: MUSIC) { id }
   }

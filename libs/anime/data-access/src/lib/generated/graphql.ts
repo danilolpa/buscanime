@@ -164,7 +164,7 @@ export const AnimeFormatCountsDocument = {
               {
                 kind: 'Argument',
                 name: { kind: 'Name', value: 'perPage' },
-                value: { kind: 'IntValue', value: '1' },
+                value: { kind: 'IntValue', value: '50' },
               },
             ],
             selectionSet: {
@@ -216,7 +216,7 @@ export const AnimeFormatCountsDocument = {
               {
                 kind: 'Argument',
                 name: { kind: 'Name', value: 'perPage' },
-                value: { kind: 'IntValue', value: '1' },
+                value: { kind: 'IntValue', value: '50' },
               },
             ],
             selectionSet: {
@@ -273,7 +273,7 @@ export const AnimeFormatCountsDocument = {
               {
                 kind: 'Argument',
                 name: { kind: 'Name', value: 'perPage' },
-                value: { kind: 'IntValue', value: '1' },
+                value: { kind: 'IntValue', value: '50' },
               },
             ],
             selectionSet: {
@@ -330,7 +330,7 @@ export const AnimeFormatCountsDocument = {
               {
                 kind: 'Argument',
                 name: { kind: 'Name', value: 'perPage' },
-                value: { kind: 'IntValue', value: '1' },
+                value: { kind: 'IntValue', value: '50' },
               },
             ],
             selectionSet: {
@@ -387,7 +387,7 @@ export const AnimeFormatCountsDocument = {
               {
                 kind: 'Argument',
                 name: { kind: 'Name', value: 'perPage' },
-                value: { kind: 'IntValue', value: '1' },
+                value: { kind: 'IntValue', value: '50' },
               },
             ],
             selectionSet: {
@@ -444,7 +444,7 @@ export const AnimeFormatCountsDocument = {
               {
                 kind: 'Argument',
                 name: { kind: 'Name', value: 'perPage' },
-                value: { kind: 'IntValue', value: '1' },
+                value: { kind: 'IntValue', value: '50' },
               },
             ],
             selectionSet: {
@@ -501,7 +501,7 @@ export const AnimeFormatCountsDocument = {
               {
                 kind: 'Argument',
                 name: { kind: 'Name', value: 'perPage' },
-                value: { kind: 'IntValue', value: '1' },
+                value: { kind: 'IntValue', value: '50' },
               },
             ],
             selectionSet: {
@@ -558,7 +558,7 @@ export const AnimeFormatCountsDocument = {
               {
                 kind: 'Argument',
                 name: { kind: 'Name', value: 'perPage' },
-                value: { kind: 'IntValue', value: '1' },
+                value: { kind: 'IntValue', value: '50' },
               },
             ],
             selectionSet: {

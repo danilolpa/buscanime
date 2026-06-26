@@ -96,7 +96,7 @@ Criar `libs/anime/data-access/src/lib/queries/anime-format-counts.graphql` com *
 
 ```graphql
 query AnimeFormatCounts($search: String) {
-  ALL: Page(perPage: 1) {
+  ALL: Page(perPage: 50) {
     pageInfo {
       total
     }
@@ -104,7 +104,7 @@ query AnimeFormatCounts($search: String) {
       id
     }
   }
-  TV: Page(perPage: 1) {
+  TV: Page(perPage: 50) {
     pageInfo {
       total
     }
@@ -112,7 +112,7 @@ query AnimeFormatCounts($search: String) {
       id
     }
   }
-  MOVIE: Page(perPage: 1) {
+  MOVIE: Page(perPage: 50) {
     pageInfo {
       total
     }
@@ -120,7 +120,7 @@ query AnimeFormatCounts($search: String) {
       id
     }
   }
-  TV_SHORT: Page(perPage: 1) {
+  TV_SHORT: Page(perPage: 50) {
     pageInfo {
       total
     }
@@ -128,7 +128,7 @@ query AnimeFormatCounts($search: String) {
       id
     }
   }
-  SPECIAL: Page(perPage: 1) {
+  SPECIAL: Page(perPage: 50) {
     pageInfo {
       total
     }
@@ -136,7 +136,7 @@ query AnimeFormatCounts($search: String) {
       id
     }
   }
-  OVA: Page(perPage: 1) {
+  OVA: Page(perPage: 50) {
     pageInfo {
       total
     }
@@ -144,7 +144,7 @@ query AnimeFormatCounts($search: String) {
       id
     }
   }
-  ONA: Page(perPage: 1) {
+  ONA: Page(perPage: 50) {
     pageInfo {
       total
     }
@@ -152,7 +152,7 @@ query AnimeFormatCounts($search: String) {
       id
     }
   }
-  MUSIC: Page(perPage: 1) {
+  MUSIC: Page(perPage: 50) {
     pageInfo {
       total
     }
@@ -164,8 +164,8 @@ query AnimeFormatCounts($search: String) {
 ```
 
 - Re-rodar `pnpm codegen` → gera `AnimeFormatCounts` no SDK (`getSdk`) + tipos (`AnimeFormatCountsQuery` com `ALL/TV/.../MUSIC` cada `{ pageInfo: { total } }`).
-- `pageInfo.total` reflete o total filtrado por `search` (+ `format` quando presente). `media(perPage: 1)` é só pra a Page ser válida; usamos só `pageInfo.total`.
-- **Custo de complexidade:** 8 `Page` num request. Se a AniList recusar por complexidade (improvável com `perPage: 1` + só `id`), o fallback é quebrar em menos aliases — anotar no plano, mas a expectativa é 1 request.
+- `pageInfo.total` reflete o total filtrado por `search` (+ `format`). **`perPage: 50` (máx da AniList) é obrigatório:** com `perPage: 1` o `total` satura no cap de páginas da AniList e retorna `5000` em vez da contagem real (validado contra a API). O `media(...){ id }` é necessário pros filtros (`search`/`format`) valerem; usamos só o `total`.
+- **Custo de complexidade:** 8 `Page` num request. Se a AniList recusar por complexidade (improvável com `perPage: 50` + só `id`), o fallback é quebrar em menos aliases — anotar no plano, mas a expectativa é 1 request.
 
 ### B.2 Hook `useAnimeFormatCounts` (`libs/anime/data-access/src/lib/use-anime-format-counts.ts`)
 
