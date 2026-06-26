@@ -72,6 +72,45 @@ export type MediaSort =
   | 'VOLUMES'
   | 'VOLUMES_DESC';
 
+export type AnimeFormatCountsQueryVariables = Exact<{
+  search?: string | null | undefined;
+}>;
+
+export type AnimeFormatCountsQuery = {
+  ALL: {
+    pageInfo: { total: number | null } | null;
+    media: Array<{ id: number } | null> | null;
+  } | null;
+  TV: {
+    pageInfo: { total: number | null } | null;
+    media: Array<{ id: number } | null> | null;
+  } | null;
+  MOVIE: {
+    pageInfo: { total: number | null } | null;
+    media: Array<{ id: number } | null> | null;
+  } | null;
+  TV_SHORT: {
+    pageInfo: { total: number | null } | null;
+    media: Array<{ id: number } | null> | null;
+  } | null;
+  SPECIAL: {
+    pageInfo: { total: number | null } | null;
+    media: Array<{ id: number } | null> | null;
+  } | null;
+  OVA: {
+    pageInfo: { total: number | null } | null;
+    media: Array<{ id: number } | null> | null;
+  } | null;
+  ONA: {
+    pageInfo: { total: number | null } | null;
+    media: Array<{ id: number } | null> | null;
+  } | null;
+  MUSIC: {
+    pageInfo: { total: number | null } | null;
+    media: Array<{ id: number } | null> | null;
+  } | null;
+};
+
 export type AnimeListQueryVariables = Exact<{
   page?: number | null | undefined;
   perPage?: number | null | undefined;
@@ -97,6 +136,482 @@ export type AnimeListQuery = {
   } | null;
 };
 
+export const AnimeFormatCountsDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'AnimeFormatCounts' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'search' },
+          },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            alias: { kind: 'Name', value: 'ALL' },
+            name: { kind: 'Name', value: 'Page' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'perPage' },
+                value: { kind: 'IntValue', value: '1' },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'pageInfo' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'total' } },
+                    ],
+                  },
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'media' },
+                  arguments: [
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'type' },
+                      value: { kind: 'EnumValue', value: 'ANIME' },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'search' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'search' },
+                      },
+                    },
+                  ],
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+          {
+            kind: 'Field',
+            alias: { kind: 'Name', value: 'TV' },
+            name: { kind: 'Name', value: 'Page' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'perPage' },
+                value: { kind: 'IntValue', value: '1' },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'pageInfo' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'total' } },
+                    ],
+                  },
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'media' },
+                  arguments: [
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'type' },
+                      value: { kind: 'EnumValue', value: 'ANIME' },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'search' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'search' },
+                      },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'format' },
+                      value: { kind: 'EnumValue', value: 'TV' },
+                    },
+                  ],
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+          {
+            kind: 'Field',
+            alias: { kind: 'Name', value: 'MOVIE' },
+            name: { kind: 'Name', value: 'Page' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'perPage' },
+                value: { kind: 'IntValue', value: '1' },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'pageInfo' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'total' } },
+                    ],
+                  },
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'media' },
+                  arguments: [
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'type' },
+                      value: { kind: 'EnumValue', value: 'ANIME' },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'search' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'search' },
+                      },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'format' },
+                      value: { kind: 'EnumValue', value: 'MOVIE' },
+                    },
+                  ],
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+          {
+            kind: 'Field',
+            alias: { kind: 'Name', value: 'TV_SHORT' },
+            name: { kind: 'Name', value: 'Page' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'perPage' },
+                value: { kind: 'IntValue', value: '1' },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'pageInfo' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'total' } },
+                    ],
+                  },
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'media' },
+                  arguments: [
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'type' },
+                      value: { kind: 'EnumValue', value: 'ANIME' },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'search' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'search' },
+                      },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'format' },
+                      value: { kind: 'EnumValue', value: 'TV_SHORT' },
+                    },
+                  ],
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+          {
+            kind: 'Field',
+            alias: { kind: 'Name', value: 'SPECIAL' },
+            name: { kind: 'Name', value: 'Page' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'perPage' },
+                value: { kind: 'IntValue', value: '1' },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'pageInfo' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'total' } },
+                    ],
+                  },
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'media' },
+                  arguments: [
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'type' },
+                      value: { kind: 'EnumValue', value: 'ANIME' },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'search' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'search' },
+                      },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'format' },
+                      value: { kind: 'EnumValue', value: 'SPECIAL' },
+                    },
+                  ],
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+          {
+            kind: 'Field',
+            alias: { kind: 'Name', value: 'OVA' },
+            name: { kind: 'Name', value: 'Page' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'perPage' },
+                value: { kind: 'IntValue', value: '1' },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'pageInfo' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'total' } },
+                    ],
+                  },
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'media' },
+                  arguments: [
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'type' },
+                      value: { kind: 'EnumValue', value: 'ANIME' },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'search' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'search' },
+                      },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'format' },
+                      value: { kind: 'EnumValue', value: 'OVA' },
+                    },
+                  ],
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+          {
+            kind: 'Field',
+            alias: { kind: 'Name', value: 'ONA' },
+            name: { kind: 'Name', value: 'Page' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'perPage' },
+                value: { kind: 'IntValue', value: '1' },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'pageInfo' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'total' } },
+                    ],
+                  },
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'media' },
+                  arguments: [
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'type' },
+                      value: { kind: 'EnumValue', value: 'ANIME' },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'search' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'search' },
+                      },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'format' },
+                      value: { kind: 'EnumValue', value: 'ONA' },
+                    },
+                  ],
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+          {
+            kind: 'Field',
+            alias: { kind: 'Name', value: 'MUSIC' },
+            name: { kind: 'Name', value: 'Page' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'perPage' },
+                value: { kind: 'IntValue', value: '1' },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'pageInfo' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'total' } },
+                    ],
+                  },
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'media' },
+                  arguments: [
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'type' },
+                      value: { kind: 'EnumValue', value: 'ANIME' },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'search' },
+                      value: {
+                        kind: 'Variable',
+                        name: { kind: 'Name', value: 'search' },
+                      },
+                    },
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'format' },
+                      value: { kind: 'EnumValue', value: 'MUSIC' },
+                    },
+                  ],
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode;
 export const AnimeListDocument = {
   kind: 'Document',
   definitions: [
@@ -310,6 +825,24 @@ export function getSdk(
   withWrapper: SdkFunctionWrapper = defaultWrapper,
 ) {
   return {
+    AnimeFormatCounts(
+      variables?: AnimeFormatCountsQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+      signal?: RequestInit['signal'],
+    ): Promise<AnimeFormatCountsQuery> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.request<AnimeFormatCountsQuery>({
+            document: AnimeFormatCountsDocument,
+            variables,
+            requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders },
+            signal,
+          }),
+        'AnimeFormatCounts',
+        'query',
+        variables,
+      );
+    },
     AnimeList(
       variables?: AnimeListQueryVariables,
       requestHeaders?: GraphQLClientRequestHeaders,
