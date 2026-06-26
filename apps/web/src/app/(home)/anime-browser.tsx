@@ -45,7 +45,8 @@ export function AnimeBrowser({ endpoint }: AnimeBrowserProps) {
           loading={searching}
         />
 
-        <div aria-live="polite" aria-busy={query.isLoading}>
+        {/* aria-busy usa `searching` (não só isLoading) pra sinalizar refetch de filtro/busca, não só a carga inicial. */}
+        <div aria-live="polite" aria-busy={searching}>
           {query.isLoading ? (
             <AnimeGridSkeleton count={12} />
           ) : query.isError ? (
