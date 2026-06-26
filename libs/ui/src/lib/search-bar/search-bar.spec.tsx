@@ -82,4 +82,54 @@ describe('SearchBar', () => {
     );
     expect(await axe(container)).toHaveNoViolations();
   });
+
+  it('mostra × e dispara onClear quando há texto', async () => {
+    const onClear = vi.fn();
+    render(
+      <SearchBar
+        value="naruto"
+        onChange={vi.fn()}
+        onSearch={vi.fn()}
+        onClear={onClear}
+      />,
+    );
+    await userEvent.click(screen.getByRole('button', { name: 'Limpar busca' }));
+    expect(onClear).toHaveBeenCalledOnce();
+  });
+
+  it('mostra × quando o input está vazio mas há busca ativa', () => {
+    render(
+      <SearchBar
+        value=""
+        onChange={vi.fn()}
+        onSearch={vi.fn()}
+        onClear={vi.fn()}
+        searchActive
+      />,
+    );
+    expect(
+      screen.getByRole('button', { name: 'Limpar busca' }),
+    ).toBeInTheDocument();
+  });
+
+  it('não mostra × quando vazio e sem busca ativa', () => {
+    render(
+      <SearchBar
+        value=""
+        onChange={vi.fn()}
+        onSearch={vi.fn()}
+        onClear={vi.fn()}
+      />,
+    );
+    expect(
+      screen.queryByRole('button', { name: 'Limpar busca' }),
+    ).not.toBeInTheDocument();
+  });
+
+  it('não mostra × sem onClear', () => {
+    render(<SearchBar value="naruto" onChange={vi.fn()} onSearch={vi.fn()} />);
+    expect(
+      screen.queryByRole('button', { name: 'Limpar busca' }),
+    ).not.toBeInTheDocument();
+  });
 });
