@@ -3,6 +3,7 @@ import { Button } from '../button/button';
 export interface ToggleGroupOption {
   label: string;
   value: string;
+  badge?: string | number;
 }
 
 export interface ToggleGroupProps {
@@ -26,6 +27,11 @@ export function ToggleGroup({ options, value, onChange }: ToggleGroupProps) {
             onClick={() => onChange(opt.value)}
           >
             {opt.label}
+            {opt.badge != null && (
+              <span className="ml-2 rounded-full bg-current/15 px-1.5 text-xs font-semibold tabular-nums">
+                {opt.badge}
+              </span>
+            )}
           </Button>
         );
       })}

@@ -43,4 +43,26 @@ describe('ToggleGroup', () => {
     );
     expect(await axe(container)).toHaveNoViolations();
   });
+
+  it('renderiza a badge de contagem quando a option tem badge', () => {
+    render(
+      <ToggleGroup
+        options={[{ label: 'TV Show', value: 'TV', badge: 9 }]}
+        value="ALL"
+        onChange={vi.fn()}
+      />,
+    );
+    expect(screen.getByText('9')).toBeInTheDocument();
+  });
+
+  it('renderiza a badge "0"', () => {
+    render(
+      <ToggleGroup
+        options={[{ label: 'Music', value: 'MUSIC', badge: 0 }]}
+        value="ALL"
+        onChange={vi.fn()}
+      />,
+    );
+    expect(screen.getByText('0')).toBeInTheDocument();
+  });
 });
