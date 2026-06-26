@@ -1,17 +1,17 @@
 import { Button } from '../button/button';
 
-export interface FormatOption {
+export interface ToggleGroupOption {
   label: string;
   value: string;
 }
 
-export interface FormatFilterProps {
-  options: FormatOption[];
+export interface ToggleGroupProps {
+  options: ToggleGroupOption[];
   value: string;
   onChange: (value: string) => void;
 }
 
-export function FormatFilter({ options, value, onChange }: FormatFilterProps) {
+export function ToggleGroup({ options, value, onChange }: ToggleGroupProps) {
   return (
     <div className="flex flex-wrap gap-2" role="group">
       {options.map((opt) => {

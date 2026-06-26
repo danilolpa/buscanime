@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { useState } from 'react';
-import { FormatFilter } from './format-filter';
+import { ToggleGroup } from './toggle-group';
 
 const options = [
   { label: 'Todos', value: 'ALL' },
@@ -11,22 +11,22 @@ const options = [
   { label: 'Especial', value: 'SPECIAL' },
 ];
 
-const meta: Meta<typeof FormatFilter> = {
-  title: 'Composites/FormatFilter',
-  component: FormatFilter,
+const meta: Meta<typeof ToggleGroup> = {
+  title: 'Composites/ToggleGroup',
+  component: ToggleGroup,
   tags: ['autodocs'],
 };
 
 export default meta;
-type Story = StoryObj<typeof FormatFilter>;
+type Story = StoryObj<typeof ToggleGroup>;
 
-function FormatFilterInteractive() {
+function ToggleGroupInteractive() {
   const [value, setValue] = useState('ALL');
-  return <FormatFilter options={options} value={value} onChange={setValue} />;
+  return <ToggleGroup options={options} value={value} onChange={setValue} />;
 }
 
 export const Default: Story = {
-  render: () => <FormatFilterInteractive />,
+  render: () => <ToggleGroupInteractive />,
 };
 
 export const TVSelected: Story = {

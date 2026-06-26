@@ -124,7 +124,7 @@ pnpm exec nx e2e web-e2e
 | ------------------- | -------------------------------------------------------------------------------------------------------------- |
 | `AnimeCard`         | Takes an `Anime` object; renders cover image, gradient overlay, title, up to 3 genre chips, and a rating badge |
 | `AnimeGrid`         | Responsive CSS Grid wrapper (1 → 2 → 4 columns)                                                                |
-| `FormatFilter`      | Single-select row of outline `Button`s with `aria-pressed` per option                                          |
+| `ToggleGroup`       | Single-select toggle button group (one active, `aria-pressed`); used e.g. for format filtering                 |
 | `SearchBar`         | Controlled `Input` + submit `Button` wrapped in a `role="search"` form                                         |
 | `AnimeCardSkeleton` | `aria-busy` loading placeholder matching `AnimeCard` dimensions                                                |
 | `AnimeGridSkeleton` | Grid of `AnimeCardSkeleton`s; `count` prop (default 12)                                                        |
