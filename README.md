@@ -247,3 +247,46 @@ O deploy na Vercel é automático a cada merge na `main`.
 | Variável                 | Obrigatória | Descrição                                                                |
 | ------------------------ | ----------- | ------------------------------------------------------------------------ |
 | `NEXT_PUBLIC_SENTRY_DSN` | Não         | DSN do Sentry para captura de erros. O app funciona normalmente sem ela. |
+
+---
+
+## Rotas
+
+Poucas rotas, mas cada caminho de erro tem uma resposta pensada — nada cai num 500 genérico ou numa tela em branco.
+
+### Páginas e endpoints
+
+| Rota                      | Tipo                   | Descrição                                                                       |
+| ------------------------- | ---------------------- | ------------------------------------------------------------------------------- |
+| `/`                       | Página (SSR + cliente) | Home — listagem com filtros, busca e scroll infinito. 1ª página vem do servidor |
+| `/anime/[id]/[[...slug]]` | Página (SSR)           | Detalhe de um anime, renderizado no servidor com `generateMetadata` para SEO    |
+| `/api/anilist`            | Route Handler (`POST`) | Proxy transparente para a API GraphQL da AniList (ver _Por baixo do capô_)      |
+
+### Home — parâmetros de busca
+
+O estado da home vive na URL, então todo filtro/busca é deep-link compartilhável — abrir o link restaura filtro ativo, input e resultados.
+
+| Parâmetro | Valores                                                            | Exemplo       |
+| --------- | ------------------------------------------------------------------ | ------------- |
+| `format`  | `ALL`, `TV`, `MOVIE`, `TV_SHORT`, `SPECIAL`, `OVA`, `ONA`, `MUSIC` | `/?format=TV` |
+| `q`       | termo de busca livre                                               | `/?q=naruto`  |
+
+```
+/                        # todos os formatos, sem busca
+/?format=MOVIE           # só filmes
+/?q=naruto               # busca por "naruto"
+/?format=TV&q=one+piece  # filtro + busca combinados
+```
+
+### Tratamento de erro e redirecionamentos
+
+| Situação                                     | Onde                                   | Resposta                                                                           |
+| -------------------------------------------- | -------------------------------------- | ---------------------------------------------------------------------------------- |
+| ID não numérico ou anime inexistente         | `anime/[id]/[[...slug]]/not-found.tsx` | Página **404 dedicada** (HTTP 404 real), com Header/Footer e botão "Voltar à home" |
+| Slug ausente ou incorreto                    | `anime/[id]/[[...slug]]/page.tsx`      | **Redirect permanente (308)** para a URL canônica `/anime/{id}/{slug}` (SEO)       |
+| Falha ao carregar o detalhe (429 / upstream) | `anime/[id]/[[...slug]]/error.tsx`     | Estado de erro específico (rate limit vs. genérico) com botão de retry             |
+| Erro não tratado em qualquer página          | `app/error.tsx`                        | Error boundary com captura no Sentry e retry                                       |
+| Erro no próprio layout raiz                  | `app/global-error.tsx`                 | Fallback de último recurso (substitui o `<html>`), com captura no Sentry           |
+| Proxy não consegue chegar na AniList         | `app/api/anilist/route.ts`             | Responde **502** com o erro capturado no Sentry                                    |
+
+Na home, os estados de carregamento e de falha aparecem inline (rate limit 429, erro de upstream e busca sem resultados) — detalhados em _Por baixo do capô_.
