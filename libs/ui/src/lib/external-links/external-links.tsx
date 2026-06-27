@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { Youtube, ShoppingCart, ExternalLink, Play } from 'lucide-react';
+import { Video, ShoppingCart, ExternalLink, Play } from 'lucide-react';
 import { buttonVariants } from '../button/button';
 import { cn } from '../utils/cn';
 
@@ -14,8 +14,7 @@ export interface ExternalLinksProps {
 
 function siteIcon(site: string): ReactNode {
   const lower = site.toLowerCase();
-  if (lower.includes('youtube'))
-    return <Youtube aria-hidden="true" size={16} />;
+  if (lower.includes('youtube')) return <Video aria-hidden="true" size={16} />;
   if (lower.includes('amazon'))
     return <ShoppingCart aria-hidden="true" size={16} />;
   if (
