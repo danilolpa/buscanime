@@ -5,6 +5,7 @@ export * from './lib/primitives/anime-rating/anime-rating';
 export * from './lib/primitives/input/input';
 export * from './lib/primitives/skeleton/skeleton';
 export * from './lib/primitives/logo/logo';
+export * from './lib/primitives/glow-background/glow-background';
 
 // composites
 export * from './lib/composites/anime-card/anime-card';
