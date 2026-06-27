@@ -153,13 +153,31 @@ pnpm exec nx test anime-data-access
 
 ### Testes E2E
 
-Os testes E2E sobem o servidor automaticamente antes de rodar.
+Os testes E2E sobem o servidor automaticamente antes de rodar. Eles exercitam o app no browser com a **API real** (AniList via proxy `/api/anilist`), complementando os testes unitários que usam MSW.
 
 ```bash
 # Instalar os browsers do Playwright (primeira vez)
 pnpm exec playwright install
 
 pnpm exec nx e2e web-e2e
+```
+
+Cenários cobertos em `apps/web-e2e/src/anime-list.spec.ts`:
+
+| Teste                                                   | O que valida                                                                                                                 |
+| ------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| **carrega, filtra e busca animes**                      | Home carrega a grade, filtro "TV Show" reflete `format=TV` na URL, busca por "naruto" reflete `q=naruto` e mantém resultados |
+| **restaura filtro e busca a partir da URL (deep link)** | Abrir `/?format=TV&q=naruto` restaura filtro ativo, input preenchido e resultados                                            |
+| **"Ver mais" carrega a próxima página de resultados**   | Paginação acumula mais cards na grade após clicar em "Ver mais"                                                              |
+| **limpar busca remove o termo da URL e volta à lista**  | Botão "Limpar busca" zera o input, remove `q` da URL e volta à listagem                                                      |
+| **busca sem resultados mostra estado vazio**            | Termo inexistente exibe "Nada encontrado" e a grade fica vazia                                                               |
+
+Estados de erro (502, 429) e badges de contagem por formato ficam nos testes de integração com MSW em `anime-browser.spec.tsx` — são mais rápidos e determinísticos para mockar respostas da API.
+
+Para rodar só no Chromium (mais rápido localmente):
+
+```bash
+cd apps/web-e2e && pnpm exec playwright test --project=chromium
 ```
 
 ---
