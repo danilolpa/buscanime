@@ -19,8 +19,11 @@ export async function fetchAnimeDetail(
       variables: { id },
     }),
     // cast like fetchViaSsr — the lib's tsconfig (types: ["node"]) lacks Next's fetch augmentation
-    ...({ next: { revalidate: 3600 } } as RequestInit),
+    ...({ next: { revalidate: 3600 } } as RequestInit), // detail pages rarely change; 1h ISR cache
   });
+
+  // AniList returns 404 for a non-existent Media id — that's "not found", not an error.
+  if (res.status === 404) return null;
 
   if (!res.ok) {
     const err = new Error(`AniList request failed: ${res.status}`) as Error & {
@@ -31,6 +34,9 @@ export async function fetchAnimeDetail(
   }
 
   const json = (await res.json()) as { data?: AnimeDetailQuery };
-  const media = json.data?.Media;
+  if (!json.data) {
+    throw new Error('AniList response missing data'); // mirror fetchViaSsr — surface GraphQL-layer failures
+  }
+  const media = json.data.Media;
   return media ? toAnimeDetail(media) : null;
 }

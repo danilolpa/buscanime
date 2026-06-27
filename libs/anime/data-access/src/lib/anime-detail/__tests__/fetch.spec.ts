@@ -10,7 +10,7 @@ function mockFetch(status: number, body: unknown) {
   } as Response);
 }
 
-afterEach(() => vi.restoreAllMocks());
+afterEach(() => vi.unstubAllGlobals());
 
 describe('fetchAnimeDetail', () => {
   it('returns a mapped AnimeDetail on success', async () => {
@@ -48,6 +48,16 @@ describe('fetchAnimeDetail', () => {
   it('returns null when Media is null', async () => {
     vi.stubGlobal('fetch', mockFetch(200, { data: { Media: null } }));
     expect(await fetchAnimeDetail(999999)).toBeNull();
+  });
+
+  it('returns null on a 404 (non-existent id)', async () => {
+    vi.stubGlobal('fetch', mockFetch(404, { data: { Media: null } }));
+    expect(await fetchAnimeDetail(123)).toBeNull();
+  });
+
+  it('throws on a malformed 200 with no data', async () => {
+    vi.stubGlobal('fetch', mockFetch(200, {}));
+    await expect(fetchAnimeDetail(1)).rejects.toThrow('missing data');
   });
 
   it('throws a rate-limit-detectable error on 429', async () => {

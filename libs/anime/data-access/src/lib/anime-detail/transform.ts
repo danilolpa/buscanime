@@ -47,6 +47,7 @@ export function toAnimeDetail(media: Media): AnimeDetail {
           }
         : null,
     externalLinks: (media.externalLinks ?? [])
+      // reject blank URLs too (generated url type is string | null); narrows url to string
       .filter(
         (l): l is NonNullable<typeof l> & { url: string } =>
           typeof l?.url === 'string' && l.url.length > 0,
