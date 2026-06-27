@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { createAnilistSdk } from './anilist-client.js';
+import { createAnilistSdk } from '../anilist/client.js';
 
 const FORMAT_KEYS = [
   'ALL',
@@ -20,6 +20,10 @@ export interface UseAnimeFormatCountsParams {
   endpoint?: string;
 }
 
+/**
+ * Contagens por formato para a busca ativa (badges nos filtros).
+ * Só dispara quando há termo de busca (`search` não vazio).
+ */
 export function useAnimeFormatCounts({
   search,
   endpoint,

@@ -1,10 +1,12 @@
 import { cn } from '../utils/cn';
-import { Button } from '../button/button';
+import { Button, buttonVariants } from '../button/button';
 
 export interface ToggleGroupOption {
   label: string;
   value: string;
   badge?: string | number;
+  /** URL real para navegação sem JS (progressive enhancement). */
+  href?: string;
 }
 
 export interface ToggleGroupProps {
@@ -24,6 +26,38 @@ export function ToggleGroup({
     <div className={cn('flex flex-wrap gap-2', className)} role="group">
       {options.map((opt) => {
         const isActive = opt.value === value;
+        const content = (
+          <>
+            {opt.label}
+            {opt.badge != null && (
+              <span className="ml-2 rounded-full bg-current/15 px-1.5 text-xs font-semibold tabular-nums">
+                {opt.badge}
+              </span>
+            )}
+          </>
+        );
+
+        if (opt.href) {
+          return (
+            <a
+              key={opt.value}
+              href={opt.href}
+              onClick={(e) => {
+                e.preventDefault();
+                onChange(opt.value);
+              }}
+              className={buttonVariants({
+                variant: 'outline',
+                size: 'md',
+                active: isActive,
+              })}
+              aria-current={isActive ? 'page' : undefined}
+            >
+              {content}
+            </a>
+          );
+        }
+
         return (
           <Button
             key={opt.value}
@@ -33,12 +67,7 @@ export function ToggleGroup({
             aria-pressed={isActive}
             onClick={() => onChange(opt.value)}
           >
-            {opt.label}
-            {opt.badge != null && (
-              <span className="ml-2 rounded-full bg-current/15 px-1.5 text-xs font-semibold tabular-nums">
-                {opt.badge}
-              </span>
-            )}
+            {content}
           </Button>
         );
       })}

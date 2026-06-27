@@ -28,7 +28,7 @@ test('carrega, filtra e busca animes', async ({ page }) => {
   await expect(page.getByRole('banner')).toBeVisible();
   await expectGridLoaded(page);
 
-  await page.getByRole('button', { name: 'TV Show' }).click();
+  await page.getByRole('link', { name: 'TV Show' }).click();
   await expect(page).toHaveURL(/format=TV/);
 
   await submitSearch(page, 'naruto');
@@ -43,9 +43,9 @@ test('restaura filtro e busca a partir da URL (deep link)', async ({
 
   await expect(page).toHaveURL(/format=TV/);
   await expect(page).toHaveURL(/q=naruto/);
-  await expect(page.getByRole('button', { name: 'TV Show' })).toHaveAttribute(
-    'aria-pressed',
-    'true',
+  await expect(page.getByRole('link', { name: 'TV Show' })).toHaveAttribute(
+    'aria-current',
+    'page',
   );
   await expect(
     page.getByRole('searchbox', { name: 'Buscar anime' }),
@@ -57,6 +57,8 @@ test('"Ver mais" carrega a próxima página de resultados', async ({ page }) => 
   await page.goto('/');
 
   await expectGridLoaded(page);
+  // Aguarda hidratação estabilizar (SSR pode renderizar cards reais antes do mock client-side).
+  await expect(loadedCards(page)).toHaveCount(1, { timeout: RESULTS_TIMEOUT });
   const initialCount = await loadedCards(page).count();
 
   const loadMore = page.getByRole('button', { name: 'Ver mais' });
@@ -76,13 +78,13 @@ test('limpar busca remove o termo da URL e volta à lista', async ({ page }) => 
   await expect(page).toHaveURL(/q=naruto/);
   await expectGridLoaded(page);
 
-  await page.getByRole('button', { name: 'Limpar busca' }).click();
+  await page.getByRole('link', { name: 'Limpar busca' }).click();
   await expect(page).not.toHaveURL(/q=/);
   await expect(
     page.getByRole('searchbox', { name: 'Buscar anime' }),
   ).toHaveValue('');
   await expect(
-    page.getByRole('button', { name: 'Limpar busca' }),
+    page.getByRole('link', { name: 'Limpar busca' }),
   ).not.toBeVisible();
   await expectGridLoaded(page);
 });

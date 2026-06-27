@@ -37,6 +37,50 @@ describe('ToggleGroup', () => {
     expect(onChange).toHaveBeenCalledWith('TV');
   });
 
+  it('renderiza links quando a option tem href', () => {
+    render(
+      <ToggleGroup
+        options={[{ label: 'TV', value: 'TV', href: '/?format=TV' }]}
+        value="ALL"
+        onChange={vi.fn()}
+      />,
+    );
+    expect(screen.getByRole('link', { name: 'TV' })).toHaveAttribute(
+      'href',
+      '/?format=TV',
+    );
+  });
+
+  it('marca aria-current na opção ativa com href', () => {
+    render(
+      <ToggleGroup
+        options={[
+          { label: 'Todos', value: 'ALL', href: '/' },
+          { label: 'TV', value: 'TV', href: '/?format=TV' },
+        ]}
+        value="TV"
+        onChange={vi.fn()}
+      />,
+    );
+    expect(screen.getByRole('link', { name: 'TV' })).toHaveAttribute(
+      'aria-current',
+      'page',
+    );
+  });
+
+  it('chama onChange ao clicar em link (client navigation)', async () => {
+    const onChange = vi.fn();
+    render(
+      <ToggleGroup
+        options={[{ label: 'TV', value: 'TV', href: '/?format=TV' }]}
+        value="ALL"
+        onChange={onChange}
+      />,
+    );
+    await userEvent.click(screen.getByRole('link', { name: 'TV' }));
+    expect(onChange).toHaveBeenCalledWith('TV');
+  });
+
   it('sem violações de a11y', async () => {
     const { container } = render(
       <ToggleGroup options={options} value="ALL" onChange={vi.fn()} />,

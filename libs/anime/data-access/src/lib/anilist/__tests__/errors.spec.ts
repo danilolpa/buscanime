@@ -1,9 +1,13 @@
 import { describe, it, expect } from 'vitest';
-import { isRateLimitError } from './anilist-error.js';
+import { isRateLimitError } from '../errors.js';
 
 describe('isRateLimitError', () => {
   it('true para ClientError com response.status 429', () => {
     expect(isRateLimitError({ response: { status: 429 } })).toBe(true);
+  });
+
+  it('true para fetch SSR com status 429', () => {
+    expect(isRateLimitError({ status: 429 })).toBe(true);
   });
 
   it('false para outros status (500)', () => {

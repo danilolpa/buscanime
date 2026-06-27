@@ -1,16 +1,12 @@
 import { GraphQLClient } from 'graphql-request';
-import { getSdk } from './generated/graphql.js';
+import { getSdk } from '../graphql/generated/graphql.js';
 
 /** O browser fala com o Route Handler, não com a AniList direto. */
 export const ANILIST_PROXY_ENDPOINT = '/api/anilist';
 
 /**
- * graphql-request faz `new URL(endpoint)` internamente, que rejeita URL relativa
- * (tanto no browser quanto em node/jsdom). Quando nenhum endpoint absoluto é passado,
- * resolvemos o proxy relativo contra a origin atual pra produzir uma URL absoluta.
- *
- * Acessamos a origin via `globalThis` (e não `window`) porque a lib é tipada só com
- * `types: ["node"]` — sem o lib DOM, `window` não existe no typecheck.
+ * Resolve o endpoint do SDK `graphql-request`.
+ * URLs relativas são convertidas para absolutas usando `location.origin` no browser.
  */
 function resolveEndpoint(endpoint?: string): string {
   if (endpoint) return endpoint;
@@ -22,6 +18,10 @@ function resolveEndpoint(endpoint?: string): string {
   return ANILIST_PROXY_ENDPOINT;
 }
 
+/**
+ * SDK tipado para queries AniList via proxy `/api/anilist`.
+ * Usar no browser e em testes com MSW (`endpoint` absoluto).
+ */
 export function createAnilistSdk(endpoint?: string) {
   return getSdk(new GraphQLClient(resolveEndpoint(endpoint)));
 }

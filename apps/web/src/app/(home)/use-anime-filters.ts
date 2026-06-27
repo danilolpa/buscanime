@@ -1,34 +1,38 @@
 'use client';
 import { useCallback, useState } from 'react';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
+import { buildAnimeListUrl } from './anime-list-url';
 
-export function useAnimeFilters() {
+export interface UseAnimeFiltersOptions {
+  initialFormat?: string;
+  initialQ?: string;
+}
+
+export function useAnimeFilters({
+  initialFormat = 'ALL',
+  initialQ = '',
+}: UseAnimeFiltersOptions = {}) {
   const router = useRouter();
   const pathname = usePathname();
-  const searchParams = useSearchParams();
 
-  const format = searchParams.get('format') ?? 'ALL';
-  const q = searchParams.get('q') ?? '';
-
-  // O input guarda o texto localmente; só vira busca (grava `q` na URL) quando o
-  // usuário clica "Buscar"/Enter (submitSearch). Não há busca automática ao digitar.
-  const [text, setText] = useState(q);
+  const [format, setFormatState] = useState(initialFormat);
+  const [q, setQState] = useState(initialQ);
+  const [text, setText] = useState(initialQ);
 
   const commit = useCallback(
     (next: { format?: string; q?: string }) => {
-      const params = new URLSearchParams(searchParams.toString());
-      if (next.format !== undefined) {
-        if (next.format === 'ALL') params.delete('format');
-        else params.set('format', next.format);
-      }
-      if (next.q !== undefined) {
-        if (!next.q.trim()) params.delete('q');
-        else params.set('q', next.q);
-      }
-      const qs = params.toString();
-      router.replace(qs ? `${pathname}?${qs}` : pathname, { scroll: false });
+      const nextFormat = next.format ?? format;
+      const nextQ = next.q !== undefined ? next.q : q;
+
+      setFormatState(nextFormat);
+      setQState(nextQ);
+      if (next.q !== undefined) setText(nextQ);
+
+      router.replace(buildAnimeListUrl(pathname, nextFormat, nextQ), {
+        scroll: false,
+      });
     },
-    [router, pathname, searchParams],
+    [router, pathname, format, q],
   );
 
   const setFormat = useCallback(
@@ -42,7 +46,7 @@ export function useAnimeFilters() {
 
   const clearSearch = useCallback(() => {
     setText('');
-    commit({ q: '' }); // q vazio → params.delete('q') → volta pra lista popular
+    commit({ q: '' });
   }, [commit]);
 
   return {

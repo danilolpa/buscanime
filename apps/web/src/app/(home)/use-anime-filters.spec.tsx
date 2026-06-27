@@ -2,22 +2,16 @@ import { renderHook, act } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 const replace = vi.fn();
-// `let` (não `const`): cada beforeEach reatribui `params`, e o factory do mock lê o
-// binding vivo (`() => params`) a cada render. NÃO trocar por `() => new URLSearchParams()`
-// — isso quebraria o reset por teste.
-let params = new URLSearchParams();
 
 vi.mock('next/navigation', () => ({
   useRouter: () => ({ replace }),
   usePathname: () => '/',
-  useSearchParams: () => params,
 }));
 
 import { useAnimeFilters } from './use-anime-filters';
 
 beforeEach(() => {
   replace.mockClear();
-  params = new URLSearchParams();
 });
 
 describe('useAnimeFilters', () => {
@@ -44,11 +38,21 @@ describe('useAnimeFilters', () => {
   });
 
   it('clearSearch zera o texto e remove o q da URL', () => {
-    params = new URLSearchParams('q=naruto');
-    const { result } = renderHook(() => useAnimeFilters());
+    const { result } = renderHook(() =>
+      useAnimeFilters({ initialQ: 'naruto' }),
+    );
     expect(result.current.text).toBe('naruto');
     act(() => result.current.clearSearch());
     expect(result.current.text).toBe('');
     expect(replace).toHaveBeenCalledWith('/', { scroll: false });
+  });
+
+  it('inicializa format e q a partir das props do server', () => {
+    const { result } = renderHook(() =>
+      useAnimeFilters({ initialFormat: 'TV', initialQ: 'bleach' }),
+    );
+    expect(result.current.format).toBe('TV');
+    expect(result.current.q).toBe('bleach');
+    expect(result.current.text).toBe('bleach');
   });
 });

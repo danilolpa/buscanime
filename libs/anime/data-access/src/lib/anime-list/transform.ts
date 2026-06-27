@@ -1,8 +1,9 @@
 import type { Anime, MediaFormat } from '@buscanime/shared-types';
-import type { AnimeListQuery } from './generated/graphql.js';
+import type { AnimeListQuery } from '../graphql/generated/graphql.js';
 
 type Media = NonNullable<NonNullable<AnimeListQuery['Page']>['media']>[number];
 
+/** Converte um item GraphQL `Media` no tipo de domínio `Anime`. */
 export function toAnime(media: NonNullable<Media>): Anime {
   return {
     id: media.id,

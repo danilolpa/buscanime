@@ -1,23 +1,20 @@
-import { Suspense } from 'react';
-import { Header, Footer, Container, AnimeGridSkeleton } from '@buscanime/ui';
-import { AnimeBrowser } from './(home)/anime-browser';
+import { Header, Footer } from '@buscanime/ui';
+import { HomeWithData } from './(home)/home-with-data';
 
-export default function Index() {
+export default async function Index({
+  searchParams,
+}: {
+  searchParams: Promise<{ format?: string; q?: string }>;
+}) {
+  const params = await searchParams;
+  const initialFormat = params.format ?? 'ALL';
+  const initialQ = params.q ?? '';
+
   return (
     <div className="flex min-h-screen flex-col">
       <Header className="sticky top-0 z-40" />
       <main className="flex flex-1 flex-col">
-        <Suspense
-          fallback={
-            <Container>
-              <div className="py-8">
-                <AnimeGridSkeleton count={12} />
-              </div>
-            </Container>
-          }
-        >
-          <AnimeBrowser />
-        </Suspense>
+        <HomeWithData initialFormat={initialFormat} initialQ={initialQ} />
       </main>
       <Footer />
     </div>

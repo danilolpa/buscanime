@@ -17,8 +17,12 @@ export default defineConfig({
   webServer: {
     command: 'npx nx run web:dev',
     url: 'http://localhost:3000',
-    reuseExistingServer: true,
+    reuseExistingServer: false,
     cwd: workspaceRoot,
+    env: {
+      ...process.env,
+      PLAYWRIGHT_TEST: '1',
+    },
   },
   projects: [
     {
