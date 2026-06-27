@@ -7,7 +7,7 @@ import type { Anime } from '@buscanime/shared-types';
 const anime: Anime = {
   id: 1,
   title: 'Naruto',
-  coverImage: 'n.jpg',
+  coverImage: 'https://s4.anilist.co/n.jpg',
   averageScore: 88,
   format: 'TV',
   genres: ['Action', 'Drama'],

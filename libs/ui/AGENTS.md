@@ -105,6 +105,12 @@ export const Default: Story = { args: { children: 'New' } };
 - Export CVA variants when useful externally: `export { badge as badgeVariants }`.
 - Always spread `...props` and merge `className` last via `cn(..., className)`.
 - Icons: `lucide-react`, marked `aria-hidden="true"` when decorative.
+- **Imagens: use `next/image`**, nunca `<img>` cru (otimização + LCP — ver
+  `apps/web/AGENTS.md`). Como esta lib roda no Storybook (Vite, sem runtime do
+  Next), `next/image` é aliasado para um stub `<img>` em
+  `.storybook/main.ts` (`viteFinal`) → `.storybook/next-image-stub.tsx`. Use
+  `fill`+`sizes` para imagem que preenche o container e `priority` para imagem
+  acima da dobra. Stories renderizam via stub — não precisam de config extra.
 
 ## Before committing UI changes
 

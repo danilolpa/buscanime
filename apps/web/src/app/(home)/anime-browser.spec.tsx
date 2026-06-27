@@ -33,7 +33,7 @@ const page1 = {
     {
       id: 1,
       title: { romaji: 'Naruto', english: null },
-      coverImage: { large: 'n.jpg' },
+      coverImage: { large: 'https://s4.anilist.co/n.jpg' },
       averageScore: 80,
       format: 'TV',
       genres: ['Action'],
@@ -46,7 +46,7 @@ const page2 = {
     {
       id: 2,
       title: { romaji: 'Bleach', english: null },
-      coverImage: { large: 'b.jpg' },
+      coverImage: { large: 'https://s4.anilist.co/b.jpg' },
       averageScore: 75,
       format: 'TV',
       genres: ['Action'],
@@ -95,7 +95,7 @@ describe('AnimeBrowser', () => {
             {
               id: 99,
               title: 'Server Anime',
-              coverImage: 's.jpg',
+              coverImage: 'https://s4.anilist.co/s.jpg',
               averageScore: 90,
               format: 'TV',
               genres: ['Action'],

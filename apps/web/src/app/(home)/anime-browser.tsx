@@ -156,13 +156,14 @@ export function AnimeBrowser({
           ) : (
             <>
               <AnimeGrid>
-                {animes.map((anime) => (
+                {animes.map((anime, i) => (
                   <Link
                     key={anime.id}
                     href={animeHref(anime.id, anime.title)}
-                    className="block rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500"
+                    className="block rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-brand"
                   >
-                    <AnimeCard anime={anime} />
+                    {/* capas acima da dobra carregam sem lazy (LCP) */}
+                    <AnimeCard anime={anime} priority={i < 4} />
                   </Link>
                 ))}
               </AnimeGrid>

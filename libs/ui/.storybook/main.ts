@@ -2,6 +2,7 @@ import { fileURLToPath } from 'node:url';
 import { dirname } from 'node:path';
 
 import type { StorybookConfig } from '@storybook/react-vite';
+import { mergeConfig } from 'vite';
 
 const config: StorybookConfig = {
   stories: ['../src/lib/**/*.@(mdx|stories.@(js|jsx|ts|tsx))'],
@@ -14,6 +15,18 @@ const config: StorybookConfig = {
       },
     },
   },
+  // `next/image` precisa do runtime do Next, ausente no builder Vite do
+  // Storybook. Aliasamos para um stub `<img>` para as stories renderizarem.
+  viteFinal: (viteConfig) =>
+    mergeConfig(viteConfig, {
+      resolve: {
+        alias: {
+          'next/image': fileURLToPath(
+            new URL('./next-image-stub.tsx', import.meta.url),
+          ),
+        },
+      },
+    }),
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

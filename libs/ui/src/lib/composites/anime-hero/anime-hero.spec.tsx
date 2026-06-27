@@ -7,8 +7,8 @@ it('renderiza título como h1, capa e nota', () => {
   render(
     <AnimeHero
       title="Attack on Titan"
-      coverImage="c.jpg"
-      bannerImage="b.jpg"
+      coverImage="https://s4.anilist.co/c.jpg"
+      bannerImage="https://s4.anilist.co/b.jpg"
       score={85}
       meta={['TV', '25 eps']}
     />,
@@ -24,7 +24,12 @@ it('renderiza título como h1, capa e nota', () => {
 });
 it('sem violações de a11y', async () => {
   const { container } = render(
-    <AnimeHero title="X" coverImage="c.jpg" bannerImage={null} score={null} />,
+    <AnimeHero
+      title="X"
+      coverImage="https://s4.anilist.co/c.jpg"
+      bannerImage={null}
+      score={null}
+    />,
   );
   expect(await axe(container)).toHaveNoViolations();
 });

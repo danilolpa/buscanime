@@ -10,6 +10,12 @@ const nextConfig = {
     '@buscanime/anime-data-access',
     '@buscanime/shared-types',
   ],
+  images: {
+    remotePatterns: [
+      { protocol: 'https', hostname: 's4.anilist.co' },
+      { protocol: 'https', hostname: 'img.anili.st' },
+    ],
+  },
 };
 
 module.exports = withSentryConfig(nextConfig, { silent: true });

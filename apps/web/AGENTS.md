@@ -21,6 +21,17 @@ composition.
   when you need browser state/effects/handlers. Data hooks (`useAnimeList`) are client.
 - **Data:** import hooks/functions from `@buscanime/anime-data-access`, never
   re-implement GraphQL fetching in the app. Server-side detail fetch uses `fetchAnimeDetail`.
+- **Imagens:** SEMPRE `next/image` (`import Image from 'next/image'`), nunca
+  `<img>` cru. O `next/image` redimensiona, serve AVIF/WebP e faz lazy por
+  default — é o que mantém o LCP e o "image delivery" do Lighthouse no verde. Não
+  jogue imagem para client-side achando que resolve: SSR é o caminho certo, o
+  navegador busca a imagem de qualquer jeito.
+  - Imagem **acima da dobra** (hero, 1ª fileira de cards): passe `priority`
+    (eager + preload). Lazy é só para o que está abaixo da dobra.
+  - Domínio remoto novo? Adicione em `images.remotePatterns` no `next.config.js`
+    (hoje: `s4.anilist.co`, `img.anili.st`) — senão o `next/image` quebra.
+  - Componentes de UI compartilhados já usam `next/image` (ver `libs/ui`); por
+    isso a `libs/ui` aliasa `next/image` no Storybook.
 
 ## Known Next 16 gotchas (don't repeat the bug)
 
