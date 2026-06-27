@@ -236,10 +236,13 @@ No Storybook aberto (`http://localhost:6006`), abra o painel **Testing** na
 barra lateral e clique em **Run tests** — cada story é executada e marcada com
 ✓/✗, com link direto para depurar a que falhar.
 
-A configuração vive em `vitest.workspace.ts` (projeto `storybook`) e em
-`libs/ui/.storybook/main.ts` (addon registrado). O projeto usa
-`passWithNoTests` para não falhar quando rodado solto pela CLI sem o contexto do
-Storybook — o fluxo suportado é pelo painel da UI acima.
+A configuração vive em `vitest.config.ts` na raiz (projeto `storybook`) e em
+`libs/ui/.storybook/main.ts` (addon registrado). Precisa ser `vitest.config.ts`
+(não `vitest.workspace.ts`) porque o Vitest 4 removeu o suporte a workspace
+files — o addon resolve o config subindo a partir de `libs/ui` e o Vitest só
+auto-carrega `vitest.config.*`/`vite.config.*`. O projeto usa `passWithNoTests`
+para não falhar quando rodado solto pela CLI sem o contexto do Storybook — o
+fluxo suportado é pelo painel da UI acima.
 
 ---
 
