@@ -14,15 +14,19 @@ export const Normal: Story = {
   args: {
     links: [
       {
+        url: 'https://www.youtube.com/watch?v=abc123',
+        site: 'YouTube',
+        color: '#ff0000',
+      },
+      {
+        url: 'https://www.amazon.com/dp/B09XYZ',
+        site: 'Amazon',
+        color: '#ff9900',
+      },
+      {
         url: 'https://www.crunchyroll.com/naruto',
         site: 'Crunchyroll',
         color: '#f47521',
-      },
-      { url: 'https://naruto.com', site: 'Official Site', color: '#003087' },
-      {
-        url: 'https://www.funimation.com/shows/naruto',
-        site: 'Funimation',
-        color: null,
       },
     ],
   },

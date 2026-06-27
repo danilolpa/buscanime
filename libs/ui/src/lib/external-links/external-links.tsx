@@ -1,3 +1,8 @@
+import type { ReactNode } from 'react';
+import { Youtube, ShoppingCart, ExternalLink, Play } from 'lucide-react';
+import { buttonVariants } from '../button/button';
+import { cn } from '../utils/cn';
+
 export interface ExternalLinkItem {
   url: string;
   site: string;
@@ -5,6 +10,22 @@ export interface ExternalLinkItem {
 }
 export interface ExternalLinksProps {
   links: ExternalLinkItem[];
+}
+
+function siteIcon(site: string): ReactNode {
+  const lower = site.toLowerCase();
+  if (lower.includes('youtube'))
+    return <Youtube aria-hidden="true" size={16} />;
+  if (lower.includes('amazon'))
+    return <ShoppingCart aria-hidden="true" size={16} />;
+  if (
+    lower.includes('funimation') ||
+    lower.includes('hidive') ||
+    lower.includes('netflix') ||
+    lower.includes('prime video')
+  )
+    return <Play aria-hidden="true" size={16} />;
+  return <ExternalLink aria-hidden="true" size={16} />;
 }
 
 export function ExternalLinks({ links }: ExternalLinksProps) {
@@ -17,13 +38,12 @@ export function ExternalLinks({ links }: ExternalLinksProps) {
             href={l.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-2 rounded-md border border-neutral-200 px-3 py-2 text-sm font-medium text-neutral-800 transition-colors hover:bg-neutral-50"
-            style={
-              l.color
-                ? { borderLeftColor: l.color, borderLeftWidth: 3 }
-                : undefined
-            }
+            className={cn(
+              buttonVariants({ variant: 'outline', size: 'md' }),
+              'w-full justify-start gap-2',
+            )}
           >
+            <span aria-hidden="true">{siteIcon(l.site)}</span>
             {l.site}
           </a>
         </li>
