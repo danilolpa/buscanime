@@ -11,10 +11,10 @@ it('não renderiza nada sem youtubeId', () => {
 });
 it('carrega o iframe só após o clique', () => {
   render(<TrailerEmbed youtubeId="abc123" thumbnail="t.jpg" title="Trailer" />);
-  expect(document.querySelector('iframe')).toBeNull();
+  expect(screen.queryByTitle('Trailer')).not.toBeInTheDocument();
   fireEvent.click(screen.getByRole('button', { name: /reproduzir trailer/i }));
-  const iframe = document.querySelector('iframe');
-  expect(iframe?.getAttribute('src')).toContain('abc123');
+  const iframe = screen.getByTitle('Trailer');
+  expect(iframe).toHaveAttribute('src', expect.stringContaining('abc123'));
 });
 it('sem violações de a11y', async () => {
   const { container } = render(

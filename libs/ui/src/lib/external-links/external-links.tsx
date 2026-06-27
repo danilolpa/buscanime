@@ -12,7 +12,7 @@ export function ExternalLinks({ links }: ExternalLinksProps) {
   return (
     <ul className="flex flex-col gap-2">
       {links.map((l) => (
-        <li key={l.url}>
+        <li key={`${l.site}-${l.url}`}>
           <a
             href={l.url}
             target="_blank"

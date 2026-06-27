@@ -5,10 +5,11 @@ export interface TagListProps {
 }
 
 export function TagList({ items }: TagListProps) {
-  if (items.length === 0) return null;
+  const unique = Array.from(new Set(items));
+  if (unique.length === 0) return null;
   return (
     <ul className="flex flex-wrap gap-1.5">
-      {items.map((item) => (
+      {unique.map((item) => (
         <li key={item}>
           <Chip>{item}</Chip>
         </li>

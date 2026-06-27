@@ -21,7 +21,7 @@ export function AnimeHero({
   score,
 }: AnimeHeroProps) {
   return (
-    <section className="relative">
+    <section className="relative" aria-labelledby="anime-hero-title">
       <div
         className="h-48 w-full bg-cover bg-center md:h-64"
         style={{
@@ -40,7 +40,10 @@ export function AnimeHero({
           />
         )}
         <div className="flex flex-1 flex-col gap-2 pb-2">
-          <h1 className="text-2xl font-bold text-neutral-900 md:text-3xl">
+          <h1
+            id="anime-hero-title"
+            className="text-2xl font-bold text-neutral-900 md:text-3xl"
+          >
             {title}
           </h1>
           {nativeTitle && (

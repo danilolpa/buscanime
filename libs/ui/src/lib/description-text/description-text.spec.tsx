@@ -14,8 +14,9 @@ describe('stripAniListHtml', () => {
       'Tom & Jerry — ok',
     );
   });
-  it('returns empty string for null', () => {
+  it('returns empty string for null/undefined', () => {
     expect(stripAniListHtml(null)).toBe('');
+    expect(stripAniListHtml(undefined)).toBe('');
   });
 });
 
