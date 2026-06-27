@@ -56,4 +56,22 @@ export default [
     // Override or add rules here
     rules: {},
   },
+  {
+    // Design system: forbid raw Tailwind colors. Use semantic tokens
+    // (bg-brand, text-accent, text-ink). Missing a token? Add it to
+    // libs/ui/src/styles/theme.css before using.
+    files: ['libs/ui/**/*.{ts,tsx}', 'apps/web/**/*.{ts,tsx}'],
+    ignores: ['**/*.spec.{ts,tsx}', '**/*.stories.{ts,tsx}'],
+    rules: {
+      'no-restricted-syntax': [
+        'error',
+        {
+          selector:
+            "Literal[value=/\\b(bg|text|border|ring|fill|stroke|from|via|to|outline|divide|decoration|shadow|accent|caret|ring-offset)-(red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|blue|indigo|violet|purple|fuchsia|pink|rose|gray|slate|zinc|neutral|stone)-\\d{2,3}\\b/]",
+          message:
+            'Raw Tailwind colors are forbidden. Use semantic tokens (bg-brand, text-accent, text-ink) — add a token to libs/ui/src/styles/theme.css if one is missing.',
+        },
+      ],
+    },
+  },
 ];
