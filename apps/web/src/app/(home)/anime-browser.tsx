@@ -1,5 +1,6 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
+import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Hourglass, Plus, SearchX, ServerCrash } from 'lucide-react';
 import {
@@ -18,6 +19,7 @@ import {
   isRateLimitError,
   type AnimeListPageResult,
 } from '@buscanime/anime-data-access';
+import { animeHref } from '@buscanime/shared-types';
 import { useAnimeFilters } from './use-anime-filters';
 import { FORMAT_OPTIONS, toMediaFormat } from './format-options';
 import { buildAnimeListUrl } from './anime-list-url';
@@ -155,7 +157,13 @@ export function AnimeBrowser({
             <>
               <AnimeGrid>
                 {animes.map((anime) => (
-                  <AnimeCard key={anime.id} anime={anime} />
+                  <Link
+                    key={anime.id}
+                    href={animeHref(anime.id, anime.title)}
+                    className="block rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500"
+                  >
+                    <AnimeCard anime={anime} />
+                  </Link>
                 ))}
               </AnimeGrid>
               {query.hasNextPage && (

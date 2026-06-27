@@ -120,6 +120,10 @@ describe('AnimeBrowser', () => {
       0,
     );
     expect(await screen.findByText('Naruto')).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /naruto/i })).toHaveAttribute(
+      'href',
+      '/anime/1/naruto',
+    );
   });
 
   it('"Ver mais" acumula a próxima página', async () => {
