@@ -22,9 +22,12 @@ export function AnimeHero({
 }: AnimeHeroProps) {
   return (
     <section className="relative" aria-labelledby="anime-hero-title">
-      <div className="overflow-hidden">
+      <div
+        className="overflow-hidden"
+        style={{ backgroundColor: coverColor ?? '#1a1a1a' }}
+      >
         <div
-          className="h-48 w-full bg-cover bg-center motion-safe:animate-scale-down md:h-64"
+          className="h-48 w-full bg-cover bg-center motion-safe:animate-scale-in md:h-64"
           style={{
             backgroundColor: coverColor ?? '#1a1a1a',
             backgroundImage: bannerImage ? `url(${bannerImage})` : undefined,
@@ -33,13 +36,13 @@ export function AnimeHero({
         />
       </div>
       <div className="pointer-events-none absolute inset-x-0 top-0 h-48 bg-gradient-to-b from-black/40 to-transparent md:h-64" />
-      <Container className="relative -mt-20 flex flex-col gap-4 md:-mt-24 md:flex-row md:items-end">
+      <Container className="relative -mt-20 flex flex-col items-center gap-4 text-center md:-mt-24 md:flex-row md:items-end md:text-left">
         {coverImage && (
           <div className="flex-none overflow-hidden rounded-lg shadow-lg md:sticky md:top-20 md:self-start">
             <img
               src={coverImage}
               alt={title}
-              className="h-48 w-32 object-cover motion-safe:animate-scale-down md:h-64 md:w-44"
+              className="h-48 w-32 object-cover motion-safe:animate-scale-in md:h-64 md:w-44"
             />
           </div>
         )}
@@ -53,7 +56,7 @@ export function AnimeHero({
           {nativeTitle && (
             <p className="text-sm text-neutral-500">{nativeTitle}</p>
           )}
-          <div className="flex flex-wrap items-center gap-2">
+          <div className="flex flex-wrap items-center justify-center gap-2 md:justify-start">
             {score != null && <AnimeRating value={score} />}
             {meta.map((m) => (
               <span key={m} className="text-sm text-neutral-600">

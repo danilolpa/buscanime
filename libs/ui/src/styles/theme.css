@@ -7,7 +7,7 @@
   --color-ink: #1a1a1a;
 
   --animate-status-in: status-in 0.3s ease-out;
-  --animate-scale-down: scale-down 0.6s ease-out;
+  --animate-scale-in: scale-in 0.6s ease-out;
 }
 
 @keyframes status-in {
@@ -21,9 +21,9 @@
   }
 }
 
-@keyframes scale-down {
+@keyframes scale-in {
   from {
-    transform: scale(1.06);
+    transform: scale(0.95);
   }
   to {
     transform: scale(1);
