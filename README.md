@@ -217,6 +217,10 @@ Outras decisões que contribuíram para o score:
 - A área de resultados usa `aria-live="polite"` e `aria-busy` para avisar leitores de tela quando uma nova busca está em andamento.
 - `SearchBar` é um `<form role="search">`, botões de toggle têm `aria-pressed`, e o layout usa elementos semânticos (`<article>`, `<header>`, `<footer>`) em vez de `<div>` genérico.
 
+![Lighthouse — 100 em todas as categorias](apps/web/public/lighthouse-scores.png)
+
+![Detalhes de acessibilidade no Lighthouse](apps/web/public/lighthouse-accessibility.png.png)
+
 ---
 
 ## CI/CD
