@@ -59,6 +59,7 @@ buscanime/
 │   │   │   │   ├── anime-browser.tsx       # Componente principal da página
 │   │   │   │   ├── use-anime-filters.ts    # Hook de filtros sincronizados com a URL
 │   │   │   │   └── format-options.ts       # Constantes e conversões de formato
+│   │   │   ├── anime/[id]/[slug]/  # Rota de detalhe — página SSR de um anime
 │   │   │   ├── api/anilist/        # Route Handler — proxy para a API do AniList
 │   │   │   ├── layout.tsx          # Layout raiz com metadata
 │   │   │   ├── providers.tsx       # QueryClient e configuração de retry
@@ -111,6 +112,12 @@ Na interface, cada situação tem seu estado próprio:
 - **Sem resultados** — diferencia de erro: informa que a busca não encontrou nada.
 
 Quando o proxy falha em chegar na AniList, o erro é capturado pelo Sentry antes de devolver um 502 pro cliente.
+
+**Mas o proxy não é a única forma de chegar na AniList.**
+
+A home é uma superfície interativa — filtros, busca, scroll infinito — então faz sentido buscar os dados no browser, via React Query e o proxy. A página de detalhe (`/anime/[id]/[slug]`) é o oposto: capa, banner, sinopse, estúdios, gêneros, trailer — conteúdo praticamente estático de um único anime. Aí o servidor faz o fetch direto na AniList, sem passar pelo proxy.
+
+O resultado: o HTML já chega populado (sem spinner), o `generateMetadata` consegue emitir `<title>` e `og:image` antes de qualquer JS rodar (link indexável, compartilhável), e a gente economiza o hop do proxy — que existe só pra dar controle sobre o que o browser faz. Mesma fonte de dados, estratégia de render por superfície.
 
 ---
 
