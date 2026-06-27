@@ -15,3 +15,4 @@ export * from './lib/header/header';
 export * from './lib/footer/footer';
 export * from './lib/status-state/status-state';
 export * from './lib/description-text/description-text';
+export * from './lib/tag-list/tag-list';
