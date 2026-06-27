@@ -1,5 +1,5 @@
 'use client';
-import { memo } from 'react';
+import { memo, useState } from 'react';
 import Image from 'next/image';
 import type { Anime } from '@buscanime/shared-types';
 import { Chip } from '../../primitives/chip/chip';
@@ -29,6 +29,7 @@ export const AnimeCard = memo(function AnimeCard({
   anime,
   priority = false,
 }: AnimeCardProps) {
+  const [loaded, setLoaded] = useState(false);
   const [c0, c1, c2] =
     GLOW_PALETTES[Math.abs(anime.id) % GLOW_PALETTES.length] ??
     GLOW_PALETTES[0];
@@ -62,7 +63,8 @@ export const AnimeCard = memo(function AnimeCard({
         fill
         sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
         priority={priority}
-        className="object-cover transition duration-400 ease-out hover:scale-110"
+        onLoad={() => setLoaded(true)}
+        className={`object-cover transition duration-500 ease-out hover:scale-110 ${loaded ? 'scale-100 opacity-100' : 'scale-105 opacity-0'}`}
       />
       <div className="pointer-events-none absolute inset-x-0 top-0 h-2/3 bg-gradient-to-b from-black to-transparent" />
       <div className="absolute inset-x-0 top-0 p-4">
