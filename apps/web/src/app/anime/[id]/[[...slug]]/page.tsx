@@ -13,7 +13,31 @@ import {
   stripAniListHtml,
 } from '@buscanime/ui';
 import { fetchAnimeDetail } from '@buscanime/anime-data-access';
-import { slugify, animeHref, type AnimeDetail } from '@buscanime/shared-types';
+import {
+  slugify,
+  animeHref,
+  type AnimeDate,
+  type AnimeDetail,
+} from '@buscanime/shared-types';
+
+function fmtDate(d: AnimeDate | null): string | null {
+  if (!d?.year) return null;
+  if (d.day && d.month) {
+    return `${String(d.day).padStart(2, '0')}/${String(d.month).padStart(2, '0')}/${d.year}`;
+  }
+  if (d.month) return `${String(d.month).padStart(2, '0')}/${d.year}`;
+  return String(d.year);
+}
+
+function airedRange(
+  start: AnimeDate | null,
+  end: AnimeDate | null,
+): string | null {
+  const s = fmtDate(start);
+  if (!s) return null;
+  const e = fmtDate(end);
+  return e && e !== s ? `${s} – ${e}` : s;
+}
 
 interface RouteParams {
   params: Promise<{ id: string; slug?: string[] }>;
@@ -84,6 +108,7 @@ export default async function AnimeDetailPage({ params }: RouteParams) {
       label: 'Temporada',
       value: [anime.season, anime.seasonYear].filter(Boolean).join(' ') || null,
     },
+    { label: 'Exibição', value: airedRange(anime.startDate, anime.endDate) },
     { label: 'Formato', value: anime.format },
     { label: 'Fonte', value: anime.source },
     { label: 'Estúdio', value: anime.studios.join(', ') || null },
@@ -121,7 +146,12 @@ export default async function AnimeDetailPage({ params }: RouteParams) {
           <div className="flex flex-col gap-6">
             <DescriptionText html={anime.description} />
             <TagList
-              items={[...anime.genres, ...anime.tags.map((t) => t.name)]}
+              items={[
+                ...anime.genres,
+                ...[...anime.tags]
+                  .sort((a, b) => (b.rank ?? 0) - (a.rank ?? 0))
+                  .map((t) => t.name),
+              ]}
             />
             <TrailerEmbed
               youtubeId={

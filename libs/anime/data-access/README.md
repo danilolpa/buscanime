@@ -17,6 +17,7 @@ src/lib/
 │   └── generated/         # Tipos + SDK gerados pelo codegen (não editar)
 ├── anilist/               # Infra HTTP compartilhada (endpoint, SDK proxy, erros)
 ├── anime-list/            # Listagem paginada (SSR + infinite query)
+├── anime-detail/          # Detalhe de um anime por id (SSR)
 └── format-counts/         # Badges de contagem por formato durante a busca
 ```
 
@@ -64,6 +65,8 @@ flowchart TB
 | Badges por formato durante busca   | `useAnimeFormatCounts`                                   |
 | Prefetch / SSR no Server Component | `fetchAnimeListPage`, `getAnimeListInfiniteQueryOptions` |
 | Tipo de retorno da listagem        | `AnimeListPageResult`                                    |
+| Detalhe de um anime (SSR)          | `fetchAnimeDetail`                                       |
+| Tipo de retorno do detalhe         | `AnimeDetail` (em `@buscanime/shared-types`)             |
 | Detectar rate limit (429)          | `isRateLimitError`                                       |
 | Flag SSR nos e2e                   | `isSsrListingEnabled` em `apps/web` (não nesta lib)      |
 
@@ -297,6 +300,58 @@ Hook React: `useInfiniteQuery(getAnimeListInfiniteQueryOptions(params))`.
 
 ---
 
+### `anime-detail/` — detalhe de um anime (SSR)
+
+Feature de detalhe: busca um único anime por id no servidor e mapeia o resultado para o tipo de domínio `AnimeDetail`.
+
+#### `fetchAnimeDetail(id)`
+
+**Arquivo:** `anime-detail/fetch.ts`
+
+Busca um anime pelo `id` AniList diretamente na API GraphQL — sem passar pelo proxy `/api/anilist`. Usa o `fetch` nativo do Next.js com `next: { revalidate: 3600 }` (Data Cache de 1 hora, compatível com ISR).
+
+| Parâmetro | Descrição           |
+| --------- | ------------------- |
+| `id`      | ID numérico AniList |
+
+**Retorno:** `AnimeDetail | null`
+
+- `null` — AniList retornou 404 (id não existe / media removida)
+- Lança `Error & { status: number }` para qualquer outro status não-ok (ex.: 429 rate limit, 502 upstream). Detectável via `isRateLimitError`.
+
+**Por que existe:** a página de detalhe é conteúdo praticamente estático de um único anime — HTML chega populado (sem spinner), `generateMetadata` emite `<title>` e `og:image` antes de qualquer JS rodar. Vai direto à AniList em vez do proxy porque o controle de CORS só é necessário no browser. Espelha a estratégia `fetchViaSsr` do `anime-list/`.
+
+**Quem usa:** `AnimeDetailPage` e `generateMetadata` em `apps/web/src/app/anime/[id]/[[...slug]]/page.tsx`.
+
+---
+
+#### `toAnimeDetail(media)`
+
+**Arquivo:** `anime-detail/transform.ts`
+
+Converte o resultado GraphQL `AnimeDetailQuery['Media']` no tipo de domínio `AnimeDetail` (`@buscanime/shared-types`):
+
+- Título: `english` → fallback `romaji` → `'Untitled'`
+- `coverImage`: `extraLarge` → fallback `large`
+- `startDate` / `endDate`: mapeados para `AnimeDate | null` (shape `{ year, month, day }`)
+- `tags`: lista de `{ name, rank }` preservando o `rank` para ordenação pelo consumidor
+- `studios`: apenas estúdios marcados como `isMain`
+
+**Por que existe:** isola o shape da API AniList do que a UI consome. Se a query GraphQL mudar campos, só este arquivo (e `fetch.ts`) precisam atualizar.
+
+**Quem usa:** `fetchAnimeDetail`. Exportado para testes e reuso futuro.
+
+---
+
+#### Tipos exportados (via `@buscanime/shared-types`)
+
+| Tipo          | Descrição                                                              |
+| ------------- | ---------------------------------------------------------------------- |
+| `AnimeDetail` | Tipo de domínio completo retornado por `fetchAnimeDetail`              |
+| `AnimeDate`   | `{ year: number \| null; month: number \| null; day: number \| null }` |
+
+---
+
 ### `format-counts/` — contagens por formato
 
 #### `useAnimeFormatCounts({ search?, endpoint? })`
@@ -403,6 +458,9 @@ animeListQueryKey, mapAnimeListQuery, normalizeAnimeListParams,
 getAnimeListSort, toAnime, ANIME_LIST_PER_PAGE
 + tipos AnimeListPageResult, AnimeListQueryParams, UseAnimeListParams,
   FetchAnimeListPageParams, AnimeListTransport
+
+// anime-detail
+fetchAnimeDetail, toAnimeDetail
 
 // format-counts
 useAnimeFormatCounts + tipos FormatCounts, UseAnimeFormatCountsParams

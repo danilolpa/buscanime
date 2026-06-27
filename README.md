@@ -59,7 +59,7 @@ buscanime/
 │   │   │   │   ├── anime-browser.tsx       # Componente principal da página
 │   │   │   │   ├── use-anime-filters.ts    # Hook de filtros sincronizados com a URL
 │   │   │   │   └── format-options.ts       # Constantes e conversões de formato
-│   │   │   ├── anime/[id]/[slug]/  # Rota de detalhe — página SSR de um anime
+│   │   │   ├── anime/[id]/[[...slug]]/  # Rota de detalhe — página SSR de um anime
 │   │   │   ├── api/anilist/        # Route Handler — proxy para a API do AniList
 │   │   │   ├── layout.tsx          # Layout raiz com metadata
 │   │   │   ├── providers.tsx       # QueryClient e configuração de retry
