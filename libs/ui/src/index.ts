@@ -1,23 +1,27 @@
-// components exported here as tasks complete
-export * from './lib/button/button';
-export * from './lib/chip/chip';
-export * from './lib/anime-rating/anime-rating';
-export * from './lib/input/input';
-export * from './lib/skeleton/skeleton';
-export * from './lib/logo/logo';
-export * from './lib/anime-card/anime-card';
-export * from './lib/anime-grid/anime-grid';
-export * from './lib/toggle-group/toggle-group';
-export * from './lib/search-bar/search-bar';
-export * from './lib/anime-card-skeleton/anime-card-skeleton';
-export * from './lib/container/container';
-export * from './lib/header/header';
-export * from './lib/footer/footer';
-export * from './lib/status-state/status-state';
-export * from './lib/description-text/description-text';
-export * from './lib/tag-list/tag-list';
-export * from './lib/stat-list/stat-list';
-export * from './lib/external-links/external-links';
-export * from './lib/trailer-embed/trailer-embed';
-export * from './lib/anime-hero/anime-hero';
-export * from './lib/breadcrumb/breadcrumb';
+// primitives
+export * from './lib/primitives/button/button';
+export * from './lib/primitives/chip/chip';
+export * from './lib/primitives/anime-rating/anime-rating';
+export * from './lib/primitives/input/input';
+export * from './lib/primitives/skeleton/skeleton';
+export * from './lib/primitives/logo/logo';
+
+// composites
+export * from './lib/composites/anime-card/anime-card';
+export * from './lib/composites/anime-grid/anime-grid';
+export * from './lib/composites/anime-card-skeleton/anime-card-skeleton';
+export * from './lib/composites/search-bar/search-bar';
+export * from './lib/composites/toggle-group/toggle-group';
+export * from './lib/composites/tag-list/tag-list';
+export * from './lib/composites/stat-list/stat-list';
+export * from './lib/composites/description-text/description-text';
+export * from './lib/composites/external-links/external-links';
+export * from './lib/composites/trailer-embed/trailer-embed';
+export * from './lib/composites/anime-hero/anime-hero';
+export * from './lib/composites/breadcrumb/breadcrumb';
+export * from './lib/composites/status-state/status-state';
+
+// layout
+export * from './lib/layout/container/container';
+export * from './lib/layout/header/header';
+export * from './lib/layout/footer/footer';
