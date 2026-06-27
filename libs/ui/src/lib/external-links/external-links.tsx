@@ -14,17 +14,16 @@ export interface ExternalLinksProps {
 
 function siteIcon(site: string): ReactNode {
   const lower = site.toLowerCase();
-  if (lower.includes('youtube')) return <Video aria-hidden="true" size={16} />;
-  if (lower.includes('amazon'))
-    return <ShoppingCart aria-hidden="true" size={16} />;
+  if (lower.includes('youtube')) return <Video size={16} />;
+  if (lower.includes('amazon')) return <ShoppingCart size={16} />;
   if (
     lower.includes('funimation') ||
     lower.includes('hidive') ||
     lower.includes('netflix') ||
     lower.includes('prime video')
   )
-    return <Play aria-hidden="true" size={16} />;
-  return <ExternalLink aria-hidden="true" size={16} />;
+    return <Play size={16} />;
+  return <ExternalLink size={16} />;
 }
 
 export function ExternalLinks({ links }: ExternalLinksProps) {

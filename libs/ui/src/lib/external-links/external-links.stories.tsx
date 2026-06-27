@@ -28,6 +28,11 @@ export const Normal: Story = {
         site: 'Crunchyroll',
         color: '#f47521',
       },
+      {
+        url: 'https://www.netflix.com/title/123',
+        site: 'Netflix',
+        color: null,
+      },
     ],
   },
 };

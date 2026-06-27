@@ -26,6 +26,26 @@ describe('Breadcrumb', () => {
     expect(current.tagName).not.toBe('A');
   });
 
+  it('renderiza itens intermediários com href como links e só o último como página atual', () => {
+    render(
+      <Breadcrumb
+        items={[
+          { label: 'Home', href: '/' },
+          { label: 'Buscar', href: '/buscar' },
+          { label: 'Naruto' },
+        ]}
+      />,
+    );
+    const home = screen.getByRole('link', { name: 'Home' });
+    expect(home).toHaveAttribute('href', '/');
+    const buscar = screen.getByRole('link', { name: 'Buscar' });
+    expect(buscar).toHaveAttribute('href', '/buscar');
+    expect(screen.queryByRole('link', { name: 'Naruto' })).toBeNull();
+    const current = screen.getByText('Naruto');
+    expect(current).toHaveAttribute('aria-current', 'page');
+    expect(current.tagName).not.toBe('A');
+  });
+
   it('sem violações de a11y', async () => {
     const { container } = render(<Breadcrumb items={items} />);
     expect(await axe(container)).toHaveNoViolations();
