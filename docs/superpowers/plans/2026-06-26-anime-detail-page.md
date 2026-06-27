@@ -534,6 +534,16 @@ describe('fetchAnimeDetail', () => {
     expect(await fetchAnimeDetail(999999)).toBeNull();
   });
 
+  it('returns null on a 404 (anime not found)', async () => {
+    vi.stubGlobal('fetch', mockFetch(404, { data: { Media: null } }));
+    expect(await fetchAnimeDetail(123)).toBeNull();
+  });
+
+  it('throws on a malformed 200 with no data', async () => {
+    vi.stubGlobal('fetch', mockFetch(200, {}));
+    await expect(fetchAnimeDetail(1)).rejects.toThrow('missing data');
+  });
+
   it('throws a rate-limit-detectable error on 429', async () => {
     vi.stubGlobal('fetch', mockFetch(429, {}));
     await expect(fetchAnimeDetail(1)).rejects.toSatisfy(isRateLimitError);
@@ -571,6 +581,9 @@ export async function fetchAnimeDetail(id: number): Promise<AnimeDetail | null> 
     ...({ next: { revalidate: 3600 } } as RequestInit),
   });
 
+  // AniList returns 404 for a non-existent Media id — that's "not found", not an error.
+  if (res.status === 404) return null;
+
   if (!res.ok) {
     const err = new Error(`AniList request failed: ${res.status}`) as Error & { status: number };
     err.status = res.status;
@@ -578,7 +591,10 @@ export async function fetchAnimeDetail(id: number): Promise<AnimeDetail | null> 
   }
 
   const json = (await res.json()) as { data?: AnimeDetailQuery };
-  const media = json.data?.Media;
+  if (!json.data) {
+    throw new Error('AniList response missing data'); // mirror fetchViaSsr — surface GraphQL-layer failures
+  }
+  const media = json.data.Media;
   return media ? toAnimeDetail(media) : null;
 }
 ```
