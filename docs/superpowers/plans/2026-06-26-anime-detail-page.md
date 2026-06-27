@@ -49,8 +49,7 @@
 - Create `src/app/anime/[id]/[[...slug]]/page.tsx` — RSC + `generateMetadata`.
 - Create `src/app/anime/[id]/[[...slug]]/loading.tsx` — hero skeleton.
 - Create `src/app/anime/[id]/[[...slug]]/error.tsx` — `'use client'` boundary.
-- Modify `src/app/api/anilist/route.ts` — use `getAnilistEndpoint()`.
-- Modify `src/app/(home)/anime-browser.tsx` — wrap cards with `next/link`.
+- Modify `src/app/(home)/anime-browser.tsx` — wrap cards with `next/link`. (The proxy `route.ts` is left untouched — only the SSR path needs `getAnilistEndpoint()`, which already exists.)
 
 **`apps/web-e2e`**
 
