@@ -210,6 +210,39 @@ Acesse em `http://localhost:6006`.
 
 ---
 
+### Testes de componente no Storybook (Vitest + Playwright)
+
+Além do catálogo, cada _story_ vira um **teste de componente** rodando em um
+browser real (Chromium via Playwright), através do
+[`@storybook/addon-vitest`](https://storybook.js.org/docs/writing-tests/integrations/vitest-addon).
+Diferente dos testes unitários (que rodam em jsdom), aqui o componente é
+montado num browser de verdade — pega erros de render e regressões de
+acessibilidade (axe) que o jsdom não enxerga. Os resultados aparecem no painel
+de testes da própria UI do Storybook.
+
+> **Atenção:** o `pnpm install` instala os pacotes JS do addon, mas **não**
+> baixa os binários de browser do Playwright (~150 MB, ficam num cache global).
+> Esse passo é manual e só precisa ser feito uma vez por máquina.
+
+```bash
+# 1. Baixar o browser do Playwright (primeira vez, uma vez por máquina)
+pnpm exec playwright install chromium
+
+# 2. Subir o Storybook
+pnpm exec nx storybook ui
+```
+
+No Storybook aberto (`http://localhost:6006`), abra o painel **Testing** na
+barra lateral e clique em **Run tests** — cada story é executada e marcada com
+✓/✗, com link direto para depurar a que falhar.
+
+A configuração vive em `vitest.workspace.ts` (projeto `storybook`) e em
+`libs/ui/.storybook/main.ts` (addon registrado). O projeto usa
+`passWithNoTests` para não falhar quando rodado solto pela CLI sem o contexto do
+Storybook — o fluxo suportado é pelo painel da UI acima.
+
+---
+
 ### Tudo de uma vez (lint + typecheck + testes + build)
 
 ```bash

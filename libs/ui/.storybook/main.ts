@@ -5,8 +5,8 @@ import type { StorybookConfig } from '@storybook/react-vite';
 import { mergeConfig } from 'vite';
 
 const config: StorybookConfig = {
-  stories: ['../src/lib/**/*.@(mdx|stories.@(js|jsx|ts|tsx))'],
-  addons: ['@storybook/addon-a11y'],
+  stories: ['../src/lib/**/*.stories.{js,jsx,ts,tsx}', '../src/lib/**/*.mdx'],
+  addons: ['@storybook/addon-a11y', getAbsolutePath('@storybook/addon-vitest')],
   framework: {
     name: getAbsolutePath('@storybook/react-vite'),
     options: {
