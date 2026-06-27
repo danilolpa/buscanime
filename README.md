@@ -70,8 +70,14 @@ buscanime/
 │
 ├── libs/
 │   ├── ui/                         # @buscanime/ui — biblioteca de componentes
-│   │   ├── src/lib/                # Componentes (Button, AnimeCard, SearchBar…)
-│   │   ├── src/styles/             # Design tokens (CSS custom properties)
+│   │   ├── src/
+│   │   │   ├── lib/
+│   │   │   │   ├── primitives/     # Blocos base sem domínio (Button, Chip, Input…)
+│   │   │   │   ├── composites/     # Combinam primitives + domínio anime (AnimeCard, AnimeHero…)
+│   │   │   │   ├── layout/         # Estrutura de página (Container, Header, Footer)
+│   │   │   │   └── utils/          # cn() — merge de classes Tailwind
+│   │   │   ├── styles/             # Design tokens — theme.css com @theme (CSS custom properties)
+│   │   │   └── index.ts            # Barrel export por camada (primitives → composites → layout)
 │   │   └── .storybook/             # Configuração do Storybook
 │   │
 │   ├── anime/
@@ -81,6 +87,9 @@ buscanime/
 │   └── shared/
 │       └── types/                  # @buscanime/shared-types — interfaces compartilhadas
 │
+├── .claude/
+│   └── skills/                     # Skills de projeto (validate, new-component, ds-check, storybook-check)
+├── AGENTS.md                       # Guia para agentes de IA (convenções, comandos, regras)
 ├── docs/                           # Specs e planos de cada fase (Spec Driven Development)
 └── .github/workflows/              # CI/CD (lint, testes, build)
 ```
