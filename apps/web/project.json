@@ -4,6 +4,9 @@
   "projectType": "application",
   "tags": ["type:app"],
   "targets": {
+    "build": {
+      "cache": false
+    },
     "test": {
       "executor": "@nx/vitest:test",
       "outputs": ["{options.reportsDirectory}"],
