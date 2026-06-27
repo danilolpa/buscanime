@@ -10,6 +10,7 @@ import {
   DescriptionText,
   TagList,
   TrailerEmbed,
+  Breadcrumb,
   stripAniListHtml,
 } from '@buscanime/ui';
 import { fetchAnimeDetail } from '@buscanime/anime-data-access';
@@ -130,6 +131,10 @@ export default async function AnimeDetailPage({ params }: RouteParams) {
           meta={meta}
         />
         <Container className="grid gap-8 py-8 md:grid-cols-[280px_1fr]">
+          <Breadcrumb
+            className="col-span-full"
+            items={[{ label: 'Home', href: '/' }, { label: anime.title }]}
+          />
           <aside
             aria-label="Detalhes e estatísticas"
             className="flex flex-col gap-6"

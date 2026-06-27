@@ -20,3 +20,4 @@ export * from './lib/stat-list/stat-list';
 export * from './lib/external-links/external-links';
 export * from './lib/trailer-embed/trailer-embed';
 export * from './lib/anime-hero/anime-hero';
+export * from './lib/breadcrumb/breadcrumb';
