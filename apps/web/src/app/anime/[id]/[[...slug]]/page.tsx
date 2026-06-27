@@ -126,10 +126,8 @@ export default async function AnimeDetailPage({ params }: RouteParams) {
     <div className="flex min-h-screen flex-col">
       <Header className="sticky top-0 z-40" />
       <main className="flex flex-1 flex-col">
-        <Container className="md:hidden">
-          <Breadcrumb className="py-3" items={breadcrumbItems} />
-        </Container>
         <AnimeHero
+          breadcrumb={<Breadcrumb items={breadcrumbItems} />}
           title={anime.title}
           nativeTitle={anime.nativeTitle}
           coverImage={anime.coverImage}
