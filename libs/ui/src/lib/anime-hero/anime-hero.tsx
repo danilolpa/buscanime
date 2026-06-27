@@ -33,11 +33,13 @@ export function AnimeHero({
       <div className="pointer-events-none absolute inset-x-0 top-0 h-48 bg-gradient-to-b from-black/40 to-transparent md:h-64" />
       <Container className="relative -mt-20 flex flex-col gap-4 md:-mt-24 md:flex-row md:items-end">
         {coverImage && (
-          <img
-            src={coverImage}
-            alt={title}
-            className="h-48 w-32 flex-none rounded-lg object-cover shadow-lg md:h-64 md:w-44"
-          />
+          <div className="flex-none md:sticky md:top-20 md:self-start">
+            <img
+              src={coverImage}
+              alt={title}
+              className="h-48 w-32 rounded-lg object-cover shadow-lg md:h-64 md:w-44"
+            />
+          </div>
         )}
         <div className="flex flex-1 flex-col gap-2 pb-2">
           <h1
