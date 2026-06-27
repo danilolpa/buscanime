@@ -48,6 +48,30 @@ genres/tags, studios, trailer, and external links. Relational sections
 
 ## Architecture
 
+### Why SSR + direct fetch here (vs. the client-side home)
+
+The home is an interactive **browse** surface: format filters, debounced search,
+and infinite scroll. That state lives in the browser, so it fetches client-side
+with React Query through the `/api/anilist` proxy (the proxy exists so the
+browser has a same-origin endpoint with logging/Sentry, instead of calling
+AniList cross-origin on every keystroke).
+
+The detail page is the opposite: a mostly-static **content** page for a single
+anime. There's no per-keystroke interactivity to drive, so we render it on the
+server and fetch the data there. The win is concrete:
+
+- The HTML arrives **already populated** — no loading spinner, no client round
+  trip, content visible on first paint.
+- Real SEO: `generateMetadata` can set `<title>`, description, and `og:image`
+  because the data is in hand at render time (a shareable, indexable page).
+- On the server there's no browser/CORS constraint, so we skip the `/api/anilist`
+  proxy and call AniList **directly** — one less hop, and the proxy's
+  per-keystroke logging concern doesn't apply to a single page load.
+
+So the two patterns coexist on purpose: client-side React Query for the
+interactive list, server-side direct fetch for the static detail page. Same
+AniList source, different rendering strategy chosen per surface.
+
 ### Routing & navigation
 
 - **File:** `apps/web/src/app/anime/[id]/[[...slug]]/page.tsx` (optional
@@ -172,6 +196,17 @@ Collapses to a single column on mobile.
   - Wrong/missing slug → redirect to canonical URL.
 - **Mocking:** MSW handlers for the `AnimeDetail` query (success, not-found,
   error).
+
+## Documentation
+
+- Update the project `README.md` as part of this work. Note: the README is in
+  **Portuguese** (PT-BR) with a documented voice (sections like "Por que um
+  monorepo?", "Tech stack") — the addition must match that language and tone.
+  - Add the new `/anime/[id]/[slug]` detail route to the feature/route list.
+  - Document the deliberate rendering split — client-side React Query for the
+    interactive home, **server-side SSR with a direct AniList fetch** for the
+    static detail page — and why (SEO, server-populated HTML, no proxy hop). This
+    mirrors the "Why SSR + direct fetch here" section above, condensed.
 
 ## Open questions
 
