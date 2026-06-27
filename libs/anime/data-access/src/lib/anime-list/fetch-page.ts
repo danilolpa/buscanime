@@ -12,28 +12,44 @@ import { mapAnimeListQuery } from './map-query.js';
 import { normalizeAnimeListParams } from './normalize.js';
 import type { AnimeListPageResult } from './types.js';
 
+/**
+ * Modo de transporte HTTP para a listagem.
+ *
+ * - `ssr`: `fetch` nativo → AniList direto (Server Components, Data Cache Next.js)
+ * - `proxy`: SDK → `/api/anilist` (browser, jsdom)
+ */
 export type AnimeListTransport = 'ssr' | 'proxy';
 
+/**
+ * Parâmetros de {@link fetchAnimeListPage}.
+ */
 export interface FetchAnimeListPageParams {
+  /** Número da página (1-based) */
   page: number;
+  /** Termo de busca */
   search?: string;
+  /** Filtro por formato AniList */
   format?: MediaFormat;
   /**
-   * `ssr`: `fetch` nativo → AniList direto (Server Components / prefetch).
-   * `proxy`: SDK → `/api/anilist` (browser / jsdom).
-   * Default: `ssr` no server, `proxy` no browser.
+   * Modo de transporte. Default: `ssr` no Node, `proxy` no browser.
+   * @see {@link AnimeListTransport}
    */
   transport?: AnimeListTransport;
-  /** Test-only: endpoint absoluto para MSW. */
+  /** Test-only: endpoint absoluto para MSW */
   endpoint?: string;
 }
 
+/** Escolhe `proxy` se `window` existe, senão `ssr`. */
 function defaultTransport(): AnimeListTransport {
   return typeof (globalThis as { window?: unknown }).window !== 'undefined'
     ? 'proxy'
     : 'ssr';
 }
 
+/**
+ * Fetch via `fetch` nativo → AniList direto (transporte SSR).
+ * Usa Data Cache Next.js com `revalidate: 60`.
+ */
 async function fetchViaSsr(
   page: number,
   trimmed: string | undefined,
@@ -75,6 +91,9 @@ async function fetchViaSsr(
   return mapAnimeListQuery(json.data);
 }
 
+/**
+ * Fetch via SDK `graphql-request` → `/api/anilist` (transporte proxy).
+ */
 async function fetchViaProxy(
   page: number,
   trimmed: string | undefined,
@@ -94,8 +113,19 @@ async function fetchViaProxy(
 }
 
 /**
- * Busca uma página da listagem AniList.
- * Ponto único de transporte — SSR e browser convergem aqui.
+ * Busca uma página da listagem AniList — ponto único de fetch.
+ *
+ * Unifica dois caminhos de rede numa API só. A UI e o React Query
+ * não precisam saber se estão no servidor ou no client.
+ *
+ * Fluxo: `normalizeAnimeListParams` → transporte → `mapAnimeListQuery`
+ *
+ * @param params - Página, filtros e modo de transporte
+ * @returns Uma página de animes + `pageInfo` para paginação
+ *
+ * @see {@link getAnimeListInfiniteQueryOptions} — usa esta função como `queryFn`
+ * @see {@link getAnilistEndpoint} — endpoint SSR
+ * @see {@link createAnilistSdk} — client proxy
  */
 export async function fetchAnimeListPage(
   params: FetchAnimeListPageParams,

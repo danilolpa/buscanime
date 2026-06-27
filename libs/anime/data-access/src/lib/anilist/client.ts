@@ -1,12 +1,17 @@
 import { GraphQLClient } from 'graphql-request';
 import { getSdk } from '../graphql/generated/graphql.js';
 
-/** O browser fala com o Route Handler, não com a AniList direto. */
+/**
+ * Caminho do Route Handler Next.js que faz proxy para a AniList.
+ *
+ * No browser não chamamos a AniList direto (CORS, rate limit).
+ * O SDK aponta para este path relativo, resolvido contra `location.origin`.
+ */
 export const ANILIST_PROXY_ENDPOINT = '/api/anilist';
 
 /**
- * Resolve o endpoint do SDK `graphql-request`.
- * URLs relativas são convertidas para absolutas usando `location.origin` no browser.
+ * Converte path relativo em URL absoluta no browser.
+ * Em Node/jsdom sem `location`, retorna o path relativo (testes passam URL absoluta).
  */
 function resolveEndpoint(endpoint?: string): string {
   if (endpoint) return endpoint;
@@ -19,8 +24,17 @@ function resolveEndpoint(endpoint?: string): string {
 }
 
 /**
- * SDK tipado para queries AniList via proxy `/api/anilist`.
- * Usar no browser e em testes com MSW (`endpoint` absoluto).
+ * Cria o SDK tipado para queries AniList via `graphql-request`.
+ *
+ * Centraliza a criação do client GraphQL — evita repetir `GraphQLClient` + `getSdk`
+ * em cada hook/fetch.
+ *
+ * @param endpoint - URL absoluta opcional. Default: `/api/anilist` resolvido no browser.
+ *   Em testes com MSW, passe URL absoluta (`http://localhost/api/anilist`) porque
+ *   jsdom rejeita path relativo.
+ *
+ * @see {@link fetchAnimeListPage} — usa este SDK no transporte `proxy`
+ * @see {@link useAnimeFormatCounts}
  */
 export function createAnilistSdk(endpoint?: string) {
   return getSdk(new GraphQLClient(resolveEndpoint(endpoint)));

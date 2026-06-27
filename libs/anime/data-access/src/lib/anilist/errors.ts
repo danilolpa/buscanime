@@ -1,6 +1,14 @@
 /**
  * Detecta HTTP 429 (rate limit) da AniList.
- * Cobre `fetch` SSR (`error.status`) e `graphql-request` (`error.response.status`).
+ *
+ * Unifica detecção entre transportes:
+ * - SSR (`fetch`): erro com `.status`
+ * - Browser (`graphql-request`): erro com `.response.status`
+ *
+ * Permite que a UI trate "tente novamente" sem acoplar ao tipo de transporte.
+ *
+ * @param error - Erro capturado no catch de fetch ou React Query
+ * @returns `true` se o status HTTP for 429
  */
 export function isRateLimitError(error: unknown): boolean {
   if (typeof error !== 'object' || error === null) return false;

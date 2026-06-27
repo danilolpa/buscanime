@@ -1,8 +1,15 @@
 const DEFAULT_ANILIST_ENDPOINT = 'https://graphql.anilist.co';
 
 /**
- * URL upstream da AniList GraphQL API.
- * Usado pelo transporte SSR (`fetch` nativo). Override via `ANILIST_ENDPOINT` em testes.
+ * Retorna a URL upstream da API GraphQL da AniList.
+ *
+ * Usada pelo transporte SSR (`fetchAnimeListPage` com `transport: 'ssr'`),
+ * que precisa de um endpoint absoluto no servidor.
+ *
+ * @returns URL da AniList. Default: `https://graphql.anilist.co`.
+ * Override em testes via env `ANILIST_ENDPOINT`.
+ *
+ * @see {@link fetchAnimeListPage}
  */
 export function getAnilistEndpoint(): string {
   return process.env['ANILIST_ENDPOINT'] ?? DEFAULT_ANILIST_ENDPOINT;

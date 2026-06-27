@@ -6,7 +6,20 @@ import type { AnimeListQueryParams } from './types.js';
 
 /**
  * Opções TanStack Query para a listagem infinita.
- * Usado pelo hook `useAnimeList` e pelo prefetch SSR em `apps/web`.
+ *
+ * Separa configuração do TanStack Query do hook React. Permite prefetch
+ * no servidor com as mesmas opções que o client usa na hidratação
+ * (`HydrationBoundary`).
+ *
+ * Configuração:
+ * - `queryKey` via {@link animeListQueryKey}
+ * - `queryFn` → {@link fetchAnimeListPage} (incrementa `pageParam`)
+ * - `getNextPageParam` → próxima página se `hasNextPage`
+ * - `staleTime: 60_000` (alinha com revalidate SSR)
+ *
+ * @param params - Filtros de busca e formato
+ *
+ * @see {@link useAnimeList} — consome estas opções
  */
 export function getAnimeListInfiniteQueryOptions(
   params: AnimeListQueryParams = {},

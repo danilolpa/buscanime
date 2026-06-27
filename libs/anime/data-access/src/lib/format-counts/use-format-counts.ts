@@ -12,17 +12,33 @@ const FORMAT_KEYS = [
   'MUSIC',
 ] as const;
 
+/**
+ * Totais de resultados por formato para o termo de busca atual.
+ *
+ * Chaves: `ALL`, `TV`, `MOVIE`, `TV_SHORT`, `SPECIAL`, `OVA`, `ONA`, `MUSIC`.
+ * Usado pelos badges nos chips de filtro durante a busca.
+ */
 export type FormatCounts = Record<(typeof FORMAT_KEYS)[number], number>;
 
+/** Parâmetros de {@link useAnimeFormatCounts}. */
 export interface UseAnimeFormatCountsParams {
+  /** Termo de busca — query só dispara quando não vazio após trim */
   search?: string;
-  /** Test-only: endpoint absoluto pro MSW (graphql-request rejeita URL relativa em jsdom). */
+  /** Test-only: endpoint absoluto para MSW */
   endpoint?: string;
 }
 
 /**
- * Contagens por formato para a busca ativa (badges nos filtros).
- * Só dispara quando há termo de busca (`search` não vazio).
+ * Hook que busca contagens por formato para a busca ativa.
+ *
+ * Dispara a query `AnimeFormatCounts` (8 sub-queries com `pageInfo.total`).
+ * Só executa quando há termo de busca — na listagem popular os badges
+ * não são necessários.
+ *
+ * @param params - Termo de busca e endpoint opcional para testes
+ * @returns Resultado padrão do TanStack Query com `data: FormatCounts`
+ *
+ * @see {@link createAnilistSdk}
  */
 export function useAnimeFormatCounts({
   search,

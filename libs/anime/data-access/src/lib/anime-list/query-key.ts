@@ -1,6 +1,17 @@
 import type { MediaFormat } from '@buscanime/shared-types';
 
-/** Query key estável para TanStack Query (listagem infinita). */
+/**
+ * Query key estável para TanStack Query (listagem infinita).
+ *
+ * Chaves previsíveis permitem prefetch SSR e invalidação correta ao mudar
+ * filtro/busca. Usa o mesmo trim que {@link normalizeAnimeListParams}.
+ *
+ * @param format - Filtro de formato (null = todos)
+ * @param search - Termo de busca (null = listagem popular)
+ * @returns `['anime-list', format, trimmedSearch]`
+ *
+ * @see {@link getAnimeListInfiniteQueryOptions}
+ */
 export function animeListQueryKey(
   format?: MediaFormat,
   search?: string,
