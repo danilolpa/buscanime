@@ -10,6 +10,8 @@
 
 **Spec:** `docs/superpowers/specs/2026-06-26-anime-detail-page-design.md`
 
+> **Reconciled 2026-06-26 after a data-access refactor** (commits `0e65510`, `c613c33`): the lib now uses feature folders (`anilist/`, `anime-list/`, `format-counts/`, `graphql/`), the home does SSR with progressive enhancement (SSR disabled under `PLAYWRIGHT_TEST`), and two primitives the original plan was going to create **already exist** — `getAnilistEndpoint()` (`lib/anilist/endpoint.ts`) and a `.status === 429`-aware `isRateLimitError` (`lib/anilist/errors.ts`). The detail SSR fetch mirrors `fetchViaSsr` in `lib/anime-list/fetch-page.ts`. Tasks 3–6, 16, 17 reflect this.
+
 ---
 
 ## File Structure
@@ -21,15 +23,16 @@
 - Create `src/lib/anime-detail.ts` — `AnimeDetail` + sub-types.
 - Modify `src/index.ts` — export both.
 
-**`@buscanime/anime-data-access` (`libs/anime/data-access`)**
+**`@buscanime/anime-data-access` (`libs/anime/data-access`)** — _refactored into feature folders; follow the `anime-list/` convention for the new `anime-detail/` folder_
 
-- Create `src/lib/queries/anime-detail.graphql`.
-- Regenerate `src/lib/generated/{graphql,schema-types}.ts` via `pnpm codegen`.
-- Create `src/lib/anilist-endpoint.ts` — `getAnilistEndpoint()` (env-configurable).
-- Create `src/lib/transform-detail.ts` + `src/lib/transform-detail.spec.ts` — `toAnimeDetail`.
-- Create `src/lib/fetch-anime-detail.ts` + `src/lib/fetch-anime-detail.spec.ts`.
-- Modify `src/lib/anilist-error.ts` — extend `isRateLimitError` to match a raw `status`.
-- Modify `src/index.ts` — export `fetchAnimeDetail`, `toAnimeDetail`, `getAnilistEndpoint`.
+- Create `src/lib/graphql/queries/anime-detail.graphql`.
+- Regenerate `src/lib/graphql/generated/{graphql,schema-types}.ts` via `pnpm codegen`.
+- Create `src/lib/anime-detail/transform.ts` — `toAnimeDetail` (mirrors `anime-list/transform.ts`).
+- Create `src/lib/anime-detail/fetch.ts` — `fetchAnimeDetail` (SSR; mirrors `fetchViaSsr`).
+- Create `src/lib/anime-detail/index.ts` — feature barrel.
+- Create `src/lib/anime-detail/__tests__/{transform,fetch}.spec.ts`.
+- Modify `src/index.ts` — add an `// --- Anime detail ---` export block.
+- **Already shipped by the refactor (do NOT recreate):** `getAnilistEndpoint()` (`src/lib/anilist/endpoint.ts`) and the `.status === 429`-aware `isRateLimitError` (`src/lib/anilist/errors.ts`).
 
 **`@buscanime/ui` (`libs/ui`)** — each component folder has `<name>.tsx` + `.spec.tsx` + `.stories.tsx`
 
@@ -51,9 +54,8 @@
 
 **`apps/web-e2e`**
 
-- Create `src/mock-server/anilist-mock.mjs` — standalone mock for server-side AniList calls.
-- Modify `src/fixtures/anilist-responses.ts` — add `resolveAnimeDetail(id)`.
-- Modify `playwright.config.ts` — start the mock server + pass `ANILIST_ENDPOINT` to the web server.
+- Create `src/mock-server/anilist-mock.mjs` — dependency-free mock for the detail page's server-side AniList fetch (fixture inlined).
+- Modify `playwright.config.ts` — convert `webServer` to an array (add the mock) and add `ANILIST_ENDPOINT` to the web server's existing `env`.
 - Create `src/anime-detail.spec.ts`.
 
 **Docs**
@@ -69,6 +71,7 @@
 - Run a single lib's unit tests: `pnpm nx test <project>` (`shared-types`, `anime-data-access`, `ui`, `web`).
 - Run e2e: `pnpm nx e2e web-e2e`.
 - After editing any UI lib, the web app consumes it from source in dev, but a full check is `pnpm nx build ui`.
+- `data-access` is organized into feature folders (`anilist/`, `anime-list/`, `anime-detail/`, `format-counts/`, `graphql/queries|generated`); unit tests live in a `__tests__/` subfolder and imports use the `.js` ESM suffix (e.g. `from '../transform.js'`).
 - Commit after each task. Use Conventional Commits. The pre-commit hook runs prettier + affected unit tests.
 
 ---
@@ -247,13 +250,13 @@ git commit -m "feat(shared-types): add AnimeDetail type"
 
 **Files:**
 
-- Create: `libs/anime/data-access/src/lib/queries/anime-detail.graphql`
-- Regenerate: `libs/anime/data-access/src/lib/generated/{graphql,schema-types}.ts`
+- Create: `libs/anime/data-access/src/lib/graphql/queries/anime-detail.graphql`
+- Regenerate: `libs/anime/data-access/src/lib/graphql/generated/{graphql,schema-types}.ts`
 
 - [ ] **Step 1: Write the query**
 
 ```graphql
-# libs/anime/data-access/src/lib/queries/anime-detail.graphql
+# libs/anime/data-access/src/lib/graphql/queries/anime-detail.graphql
 query AnimeDetail($id: Int) {
   Media(id: $id, type: ANIME) {
     id
@@ -326,7 +329,7 @@ Run: `pnpm nx typecheck anime-data-access`
 Expected: PASS.
 
 ```bash
-git add libs/anime/data-access/src/lib/queries/anime-detail.graphql libs/anime/data-access/src/lib/generated
+git add libs/anime/data-access/src/lib/graphql/queries/anime-detail.graphql libs/anime/data-access/src/lib/graphql/generated
 git commit -m "feat(anime-data-access): add AnimeDetail query and regenerate SDK"
 ```
 
@@ -336,16 +339,17 @@ git commit -m "feat(anime-data-access): add AnimeDetail query and regenerate SDK
 
 **Files:**
 
-- Create: `libs/anime/data-access/src/lib/transform-detail.ts`
-- Test: `libs/anime/data-access/src/lib/transform-detail.spec.ts`
+- Create: `libs/anime/data-access/src/lib/anime-detail/transform.ts`
+- Create: `libs/anime/data-access/src/lib/anime-detail/index.ts` (barrel)
+- Test: `libs/anime/data-access/src/lib/anime-detail/__tests__/transform.spec.ts`
 
 - [ ] **Step 1: Write the failing test**
 
 ```ts
-// libs/anime/data-access/src/lib/transform-detail.spec.ts
+// libs/anime/data-access/src/lib/anime-detail/__tests__/transform.spec.ts
 import { describe, it, expect } from 'vitest';
-import { toAnimeDetail } from './transform-detail';
-import type { AnimeDetailQuery } from './generated/graphql';
+import { toAnimeDetail } from '../transform.js';
+import type { AnimeDetailQuery } from '../../graphql/generated/graphql.js';
 
 type Media = NonNullable<AnimeDetailQuery['Media']>;
 
@@ -402,14 +406,14 @@ describe('toAnimeDetail', () => {
 - [ ] **Step 2: Run test to verify it fails**
 
 Run: `pnpm nx test anime-data-access`
-Expected: FAIL (cannot find `./transform-detail`).
+Expected: FAIL (cannot find `../transform`).
 
 - [ ] **Step 3: Write minimal implementation**
 
 ```ts
-// libs/anime/data-access/src/lib/transform-detail.ts
+// libs/anime/data-access/src/lib/anime-detail/transform.ts
 import type { AnimeDetail, AnimeDetailExternalLink, AnimeDetailTag, MediaFormat } from '@buscanime/shared-types';
-import type { AnimeDetailQuery } from './generated/graphql.js';
+import type { AnimeDetailQuery } from '../graphql/generated/graphql.js';
 
 type Media = NonNullable<AnimeDetailQuery['Media']>;
 
@@ -461,61 +465,30 @@ export function toAnimeDetail(media: Media): AnimeDetail {
 Run: `pnpm nx test anime-data-access`
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [ ] **Step 5: Add the barrel + commit**
+
+Create `libs/anime/data-access/src/lib/anime-detail/index.ts`:
+
+```ts
+export { toAnimeDetail } from './transform.js';
+```
 
 ```bash
-git add libs/anime/data-access/src/lib/transform-detail.ts libs/anime/data-access/src/lib/transform-detail.spec.ts
+git add libs/anime/data-access/src/lib/anime-detail
 git commit -m "feat(anime-data-access): add toAnimeDetail transform"
 ```
 
 ---
 
-### Task 5: Env-configurable AniList endpoint
+### Task 5: Confirm transport primitives (already shipped by the refactor)
 
-**Files:**
+No new code — the data-access refactor already provides what the detail fetch needs. Verify before Task 6:
 
-- Create: `libs/anime/data-access/src/lib/anilist-endpoint.ts`
-- Modify: `apps/web/src/app/api/anilist/route.ts:3`
+- [ ] **Step 1:** Confirm `getAnilistEndpoint()` exists in `libs/anime/data-access/src/lib/anilist/endpoint.ts` and is re-exported from `src/index.ts` (reads `process.env['ANILIST_ENDPOINT']`, defaults to `https://graphql.anilist.co`).
+- [ ] **Step 2:** Confirm `isRateLimitError` in `libs/anime/data-access/src/lib/anilist/errors.ts` already matches a raw `.status === 429` (SSR) **and** `.response.status === 429` (proxy). No change needed.
+- [ ] **Step 3:** Leave the proxy route `apps/web/src/app/api/anilist/route.ts` as-is — it keeps a hardcoded endpoint on purpose (only the SSR path uses `getAnilistEndpoint()`). Do **not** modify it.
 
-- [ ] **Step 1: Write the helper**
-
-```ts
-// libs/anime/data-access/src/lib/anilist-endpoint.ts
-/** Upstream AniList GraphQL endpoint. Overridable via env for tests/e2e. */
-export function getAnilistEndpoint(): string {
-  return process.env.ANILIST_ENDPOINT ?? 'https://graphql.anilist.co';
-}
-```
-
-- [ ] **Step 2: Use it in the proxy route**
-
-In `apps/web/src/app/api/anilist/route.ts` replace the hardcoded constant:
-
-```ts
-import { getAnilistEndpoint } from '@buscanime/anime-data-access';
-// ...
-const upstream = await fetch(getAnilistEndpoint(), {
-```
-
-(Remove the local `const ANILIST_ENDPOINT = 'https://graphql.anilist.co';`.)
-
-- [ ] **Step 3: Export + verify existing route test still passes**
-
-Add to `libs/anime/data-access/src/index.ts`:
-
-```ts
-export * from './lib/anilist-endpoint.js';
-```
-
-Run: `pnpm nx test web` (the existing `route.spec.ts` must still pass — default endpoint unchanged).
-Expected: PASS.
-
-- [ ] **Step 4: Commit**
-
-```bash
-git add libs/anime/data-access/src/lib/anilist-endpoint.ts libs/anime/data-access/src/index.ts apps/web/src/app/api/anilist/route.ts
-git commit -m "refactor(anime-data-access): centralize env-configurable AniList endpoint"
-```
+(Verification only — no commit.)
 
 ---
 
@@ -523,33 +496,20 @@ git commit -m "refactor(anime-data-access): centralize env-configurable AniList 
 
 **Files:**
 
-- Modify: `libs/anime/data-access/src/lib/anilist-error.ts`
-- Create: `libs/anime/data-access/src/lib/fetch-anime-detail.ts`
-- Test: `libs/anime/data-access/src/lib/fetch-anime-detail.spec.ts`
-- Modify: `libs/anime/data-access/src/index.ts`
+- Create: `libs/anime/data-access/src/lib/anime-detail/fetch.ts`
+- Test: `libs/anime/data-access/src/lib/anime-detail/__tests__/fetch.spec.ts`
+- Modify: `libs/anime/data-access/src/lib/anime-detail/index.ts` (add `fetchAnimeDetail`)
+- Modify: `libs/anime/data-access/src/index.ts` (add the `// --- Anime detail ---` block)
 
-- [ ] **Step 1: Extend `isRateLimitError`** (read the file first; it currently checks `error.response.status === 429`)
+> `isRateLimitError` already matches a raw `.status` (shipped by the refactor) — nothing to change here. The detail fetch throws an `Error & { status }` exactly like `fetchViaSsr`, so the 429 case stays detectable.
 
-Update the predicate so it also matches a raw `status` property:
-
-```ts
-// add a `status` branch alongside the existing response.status check
-export function isRateLimitError(error: unknown): boolean {
-  if (typeof error !== 'object' || error === null) return false;
-  const e = error as { status?: number; response?: { status?: number } };
-  return e.status === 429 || e.response?.status === 429;
-}
-```
-
-(Preserve the existing exported name/signature; keep its current spec green.)
-
-- [ ] **Step 2: Write the failing test**
+- [ ] **Step 1: Write the failing test**
 
 ```ts
-// libs/anime/data-access/src/lib/fetch-anime-detail.spec.ts
+// libs/anime/data-access/src/lib/anime-detail/__tests__/fetch.spec.ts
 import { describe, it, expect, vi, afterEach } from 'vitest';
-import { fetchAnimeDetail } from './fetch-anime-detail';
-import { isRateLimitError } from './anilist-error';
+import { fetchAnimeDetail } from '../fetch.js';
+import { isRateLimitError } from '../../anilist/errors.js';
 
 function mockFetch(status: number, body: unknown) {
   return vi.fn().mockResolvedValue({
@@ -587,20 +547,20 @@ describe('fetchAnimeDetail', () => {
 });
 ```
 
-- [ ] **Step 3: Run test to verify it fails**
+- [ ] **Step 2: Run test to verify it fails**
 
 Run: `pnpm nx test anime-data-access`
-Expected: FAIL (cannot find `./fetch-anime-detail`).
+Expected: FAIL (cannot find `../fetch`).
 
-- [ ] **Step 4: Write minimal implementation**
+- [ ] **Step 3: Write minimal implementation** (mirrors `fetchViaSsr` in `anime-list/fetch-page.ts`)
 
 ```ts
-// libs/anime/data-access/src/lib/fetch-anime-detail.ts
+// libs/anime/data-access/src/lib/anime-detail/fetch.ts
 import { print } from 'graphql';
 import type { AnimeDetail } from '@buscanime/shared-types';
-import { AnimeDetailDocument, type AnimeDetailQuery } from './generated/graphql.js';
-import { getAnilistEndpoint } from './anilist-endpoint.js';
-import { toAnimeDetail } from './transform-detail.js';
+import { AnimeDetailDocument, type AnimeDetailQuery } from '../graphql/generated/graphql.js';
+import { getAnilistEndpoint } from '../anilist/endpoint.js';
+import { toAnimeDetail } from './transform.js';
 
 /** SSR fetch: goes through Next's `fetch` (Data Cache + dedup with generateMetadata). */
 export async function fetchAnimeDetail(id: number): Promise<AnimeDetail | null> {
@@ -608,7 +568,8 @@ export async function fetchAnimeDetail(id: number): Promise<AnimeDetail | null> 
     method: 'POST',
     headers: { 'content-type': 'application/json', accept: 'application/json' },
     body: JSON.stringify({ query: print(AnimeDetailDocument), variables: { id } }),
-    next: { revalidate: 3600 },
+    // cast like fetchViaSsr — the lib's tsconfig (types: ["node"]) lacks Next's fetch augmentation
+    ...({ next: { revalidate: 3600 } } as RequestInit),
   });
 
   if (!res.ok) {
@@ -623,22 +584,28 @@ export async function fetchAnimeDetail(id: number): Promise<AnimeDetail | null> 
 }
 ```
 
-- [ ] **Step 5: Run test to verify it passes**
+- [ ] **Step 4: Run test to verify it passes**
 
 Run: `pnpm nx test anime-data-access`
 Expected: PASS (all four cases).
 
-- [ ] **Step 6: Export + commit**
+- [ ] **Step 5: Export + commit**
 
-Add to `libs/anime/data-access/src/index.ts`:
+Add `fetchAnimeDetail` to the feature barrel `libs/anime/data-access/src/lib/anime-detail/index.ts`:
 
 ```ts
-export * from './lib/transform-detail.js';
-export * from './lib/fetch-anime-detail.js';
+export { fetchAnimeDetail } from './fetch.js';
+```
+
+Add an export block to `libs/anime/data-access/src/index.ts` (mirrors the existing `// --- Anime list ---` block):
+
+```ts
+// --- Anime detail ---
+export { fetchAnimeDetail, toAnimeDetail } from './lib/anime-detail/index.js';
 ```
 
 ```bash
-git add libs/anime/data-access/src/lib/fetch-anime-detail.ts libs/anime/data-access/src/lib/fetch-anime-detail.spec.ts libs/anime/data-access/src/lib/anilist-error.ts libs/anime/data-access/src/index.ts
+git add libs/anime/data-access/src/lib/anime-detail libs/anime/data-access/src/index.ts
 git commit -m "feat(anime-data-access): add server-side fetchAnimeDetail"
 ```
 
@@ -1309,7 +1276,7 @@ git commit -m "feat(web): add detail route error boundary"
 
 ### Task 16: Home cards → links
 
-**Files:** Modify `apps/web/src/app/(home)/anime-browser.tsx:138-143` (the `animes.map` block).
+**Files:** Modify `apps/web/src/app/(home)/anime-browser.tsx` (the `animes.map` block, ~line 156) and its spec `anime-browser.spec.tsx`. `AnimeBrowser` is already a `'use client'` component, so `next/link` works there. (Note: the home now renders via `page.tsx` → `HomeWithData` → `AnimeBrowser`; the map block is unchanged in shape.)
 
 - [ ] **Step 1: Update the existing unit test** (`anime-browser.spec.tsx`)
 
@@ -1350,9 +1317,9 @@ git commit -m "feat(web): link home cards to the anime detail page"
 
 ## Phase 5 — E2E
 
-> Why this phase exists: the detail page fetches AniList **server-side**, which Playwright's `page.route` (browser-level) cannot intercept. We point the web server's `ANILIST_ENDPOINT` at a standalone mock started by Playwright.
+> Why this phase exists: the detail page fetches AniList **server-side**, which Playwright's `page.route` (browser-level) cannot intercept. (The home sidesteps this by disabling SSR under `PLAYWRIGHT_TEST` — see `ssr-listing.ts` — but the detail page is SSR-only, with no client fallback.) We point the web server's `ANILIST_ENDPOINT` at a standalone mock started by Playwright.
 
-### Task 17: AniList mock server + fixtures + Playwright wiring
+### Task 17: AniList mock server + Playwright wiring
 
 **Files:**
 
@@ -1414,24 +1381,28 @@ createServer((req, res) => {
 }).listen(port, () => console.log(`anilist-mock on :${port}`));
 ```
 
-- [ ] **Step 2: Wire Playwright** — convert the single `webServer` object into an array: keep the existing web entry **as-is** (`npx nx run web:dev`, same `url`/`reuseExistingServer`/`cwd`) and only add the `env` field; prepend the mock server. Do **not** switch to `web:start` (that needs a prior build).
+- [ ] **Step 2: Wire Playwright** — convert the single `webServer` object into an array: keep the web entry on `npx nx run web:dev` (same `url`/`reuseExistingServer: false`/`cwd`), add `ANILIST_ENDPOINT` to its **existing** `env`, and prepend the mock server. Do **not** switch to `web:start` (needs a prior build).
 
-Current config has a single `webServer: { command: 'npx nx run web:dev', url: 'http://localhost:3000', reuseExistingServer: true, cwd: workspaceRoot }`. Replace with:
+The real config is a single `webServer` object with `reuseExistingServer: false` and `env: { ...process.env, PLAYWRIGHT_TEST: '1' }`. Replace with (preserve `...process.env` and `PLAYWRIGHT_TEST`):
 
 ```ts
 webServer: [
   {
     command: 'node apps/web-e2e/src/mock-server/anilist-mock.mjs',
     url: 'http://127.0.0.1:4010',
-    reuseExistingServer: true,
+    reuseExistingServer: false,
     cwd: workspaceRoot,
   },
   {
     command: 'npx nx run web:dev',
     url: 'http://localhost:3000',
-    reuseExistingServer: true,
+    reuseExistingServer: false,
     cwd: workspaceRoot,
-    env: { ANILIST_ENDPOINT: 'http://127.0.0.1:4010' },
+    env: {
+      ...process.env,
+      PLAYWRIGHT_TEST: '1',
+      ANILIST_ENDPOINT: 'http://127.0.0.1:4010',
+    },
   },
 ],
 ```
