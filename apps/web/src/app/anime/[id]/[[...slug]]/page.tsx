@@ -117,10 +117,18 @@ export default async function AnimeDetailPage({ params }: RouteParams) {
     { label: 'Favoritos', value: anime.favourites?.toLocaleString('pt-BR') },
   ];
 
+  const breadcrumbItems = [
+    { label: 'Home', href: '/' },
+    { label: anime.title },
+  ];
+
   return (
     <div className="flex min-h-screen flex-col">
       <Header className="sticky top-0 z-40" />
       <main className="flex flex-1 flex-col">
+        <Container className="md:hidden">
+          <Breadcrumb className="py-3" items={breadcrumbItems} />
+        </Container>
         <AnimeHero
           title={anime.title}
           nativeTitle={anime.nativeTitle}
@@ -132,8 +140,8 @@ export default async function AnimeDetailPage({ params }: RouteParams) {
         />
         <Container className="grid gap-8 py-8 md:grid-cols-[280px_1fr]">
           <Breadcrumb
-            className="col-span-full"
-            items={[{ label: 'Home', href: '/' }, { label: anime.title }]}
+            className="col-span-full hidden md:block"
+            items={breadcrumbItems}
           />
           <aside
             aria-label="Detalhes e estatísticas"

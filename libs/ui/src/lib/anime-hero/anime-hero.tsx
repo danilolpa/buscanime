@@ -42,7 +42,7 @@ export function AnimeHero({
             <img
               src={coverImage}
               alt={title}
-              className="h-48 w-32 object-cover motion-safe:animate-scale-in md:h-64 md:w-44"
+              className="h-48 w-32 object-cover motion-safe:animate-scale-in motion-safe:[animation-delay:400ms] md:h-64 md:w-44"
             />
           </div>
         )}
