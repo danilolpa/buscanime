@@ -56,24 +56,64 @@ async function load(rawId: string): Promise<AnimeDetail> {
   return anime;
 }
 
+// Corta no limite de palavra e adiciona reticências (não corta no meio da palavra).
+function truncate(text: string, max = 160): string {
+  if (text.length <= max) return text;
+  const slice = text.slice(0, max);
+  const lastSpace = slice.lastIndexOf(' ');
+  return `${slice.slice(0, lastSpace > 0 ? lastSpace : max).trimEnd()}…`;
+}
+
+// Usa a sinopse da AniList; se vier vazia, sintetiza uma descrição com os metadados.
+function buildDescription(anime: AnimeDetail): string {
+  const synopsis = stripAniListHtml(anime.description).trim();
+  if (synopsis) return truncate(synopsis);
+  const facts = [
+    anime.format,
+    anime.seasonYear ? `de ${anime.seasonYear}` : null,
+    anime.episodes ? `${anime.episodes} episódios` : null,
+    anime.averageScore ? `nota ${anime.averageScore}%` : null,
+    anime.studios[0] ?? null,
+  ].filter(Boolean);
+  const lead = facts.length ? `${facts.join(' · ')}. ` : '';
+  return truncate(
+    `${lead}Veja sinopse, estúdio, gêneros, trailer e onde assistir ${anime.title} no BuscaAnime.`,
+  );
+}
+
 export async function generateMetadata({
   params,
 }: RouteParams): Promise<Metadata> {
   const { id } = await params;
   const numId = parseId(id);
-  if (numId === null) return { title: 'Anime não encontrado — BuscaAnime' };
+  if (numId === null) return { title: 'Anime não encontrado' };
   const anime = await fetchAnimeDetail(numId);
-  if (!anime) return { title: 'Anime não encontrado — BuscaAnime' };
-  const description =
-    stripAniListHtml(anime.description).slice(0, 160) || undefined;
-  const image = anime.coverImage ?? anime.bannerImage ?? undefined;
+  if (!anime) return { title: 'Anime não encontrado' };
+
+  const title = anime.seasonYear
+    ? `${anime.title} (${anime.seasonYear})`
+    : anime.title;
+  const description = buildDescription(anime);
+  // Banner é paisagem (ideal pro card 1200×630); capa é retrato. Fallback: OG da marca.
+  const image = anime.bannerImage ?? anime.coverImage ?? '/og-home.png';
+  const canonical = animeHref(anime.id, anime.title);
+
   return {
-    title: `${anime.title} — BuscaAnime`,
+    title,
     description,
+    alternates: { canonical },
     openGraph: {
-      title: anime.title,
+      type: 'website',
+      url: canonical,
+      title,
       description,
-      images: image ? [image] : undefined,
+      images: [{ url: image, alt: `Capa de ${anime.title}` }],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+      images: [image],
     },
   };
 }

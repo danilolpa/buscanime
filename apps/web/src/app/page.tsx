@@ -1,5 +1,12 @@
+import type { Metadata } from 'next';
 import { Header, Footer } from '@buscanime/ui';
 import { HomeWithData } from './(home)/home-with-data';
+
+// Título/descrição/OG vêm dos defaults do root layout (layout.tsx);
+// aqui só fixamos o canonical da home.
+export const metadata: Metadata = {
+  alternates: { canonical: '/' },
+};
 
 export default async function Index({
   searchParams,
