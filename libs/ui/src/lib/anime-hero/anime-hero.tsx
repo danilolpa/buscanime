@@ -1,4 +1,3 @@
-import { type ReactNode } from 'react';
 import { AnimeRating } from '../anime-rating/anime-rating';
 import { Container } from '../container/container';
 
@@ -10,8 +9,6 @@ export interface AnimeHeroProps {
   bannerImage: string | null;
   meta?: string[];
   score?: number | null;
-  /** Navegação opcional renderizada acima do título (no mobile). */
-  breadcrumb?: ReactNode;
 }
 
 export function AnimeHero({
@@ -22,7 +19,6 @@ export function AnimeHero({
   bannerImage,
   meta = [],
   score,
-  breadcrumb,
 }: AnimeHeroProps) {
   return (
     <section className="relative" aria-labelledby="anime-hero-title">
@@ -44,9 +40,6 @@ export function AnimeHero({
               className="h-48 w-32 object-cover motion-safe:animate-fade-in motion-safe:[animation-delay:400ms] md:h-64 md:w-44"
             />
           </div>
-        )}
-        {breadcrumb && (
-          <div className="w-full text-left md:hidden">{breadcrumb}</div>
         )}
         <div className="flex flex-1 flex-col gap-2 pb-2">
           <h1
