@@ -47,7 +47,10 @@ export function toAnimeDetail(media: Media): AnimeDetail {
           }
         : null,
     externalLinks: (media.externalLinks ?? [])
-      .filter((l): l is NonNullable<typeof l> => Boolean(l?.url))
+      .filter(
+        (l): l is NonNullable<typeof l> & { url: string } =>
+          typeof l?.url === 'string' && l.url.length > 0,
+      )
       .map(
         (l): AnimeDetailExternalLink => ({
           url: l.url,

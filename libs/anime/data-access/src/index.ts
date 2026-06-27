@@ -39,3 +39,6 @@ export {
   type FormatCounts,
   type UseAnimeFormatCountsParams,
 } from './lib/format-counts/index.js';
+
+// --- Anime detail ---
+export { fetchAnimeDetail, toAnimeDetail } from './lib/anime-detail/index.js';
