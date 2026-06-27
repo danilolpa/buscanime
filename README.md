@@ -153,7 +153,7 @@ pnpm exec nx test anime-data-access
 
 ### Testes E2E
 
-Os testes E2E sobem o servidor automaticamente antes de rodar. Eles exercitam o app no browser com a **API real** (AniList via proxy `/api/anilist`), complementando os testes unitários que usam MSW.
+Os testes E2E sobem o servidor automaticamente antes de rodar. A API AniList é **mockada** via interceptação do Playwright em `/api/anilist` (mesmos fixtures do MSW em `anime-browser.spec.tsx`), evitando rate limit (429) e tornando a suíte rápida e determinística. O proxy real continua coberto em `route.spec.ts` e nos testes de integração com MSW.
 
 ```bash
 # Instalar os browsers do Playwright (primeira vez)

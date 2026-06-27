@@ -1,11 +1,25 @@
-import { test, expect, type Page } from '@playwright/test';
+import { test, expect, type Page } from './fixtures/test';
 
 const RESULTS_TIMEOUT = 15_000;
 
+function loadedCards(page: Page) {
+  return page.locator('article:not([aria-busy="true"])');
+}
+
 async function expectGridLoaded(page: Page) {
-  await expect(page.getByRole('article').first()).toBeVisible({
+  await expect(loadedCards(page).first()).toBeVisible({
     timeout: RESULTS_TIMEOUT,
   });
+}
+
+async function submitSearch(page: Page, term: string) {
+  const searchbox = page.getByRole('searchbox', { name: 'Buscar anime' });
+  await searchbox.click();
+  await searchbox.fill('');
+  await searchbox.pressSequentially(term);
+  const submit = page.getByRole('button', { name: 'Buscar' });
+  await expect(submit).toBeEnabled();
+  await submit.click();
 }
 
 test('carrega, filtra e busca animes', async ({ page }) => {
@@ -17,8 +31,7 @@ test('carrega, filtra e busca animes', async ({ page }) => {
   await page.getByRole('button', { name: 'TV Show' }).click();
   await expect(page).toHaveURL(/format=TV/);
 
-  await page.getByRole('searchbox', { name: 'Buscar anime' }).fill('naruto');
-  await page.getByRole('button', { name: 'Buscar' }).click();
+  await submitSearch(page, 'naruto');
   await expect(page).toHaveURL(/q=naruto/);
   await expectGridLoaded(page);
 });
@@ -44,14 +57,14 @@ test('"Ver mais" carrega a próxima página de resultados', async ({ page }) => 
   await page.goto('/');
 
   await expectGridLoaded(page);
-  const initialCount = await page.getByRole('article').count();
+  const initialCount = await loadedCards(page).count();
 
   const loadMore = page.getByRole('button', { name: 'Ver mais' });
   await expect(loadMore).toBeVisible({ timeout: RESULTS_TIMEOUT });
   await loadMore.click();
 
   await expect
-    .poll(async () => page.getByRole('article').count())
+    .poll(async () => loadedCards(page).count())
     .toBeGreaterThan(initialCount);
 });
 
@@ -59,8 +72,7 @@ test('limpar busca remove o termo da URL e volta à lista', async ({ page }) => 
   await page.goto('/');
 
   await expectGridLoaded(page);
-  await page.getByRole('searchbox', { name: 'Buscar anime' }).fill('naruto');
-  await page.getByRole('button', { name: 'Buscar' }).click();
+  await submitSearch(page, 'naruto');
   await expect(page).toHaveURL(/q=naruto/);
   await expectGridLoaded(page);
 
@@ -79,13 +91,10 @@ test('busca sem resultados mostra estado vazio', async ({ page }) => {
   await page.goto('/');
 
   await expectGridLoaded(page);
-  await page
-    .getByRole('searchbox', { name: 'Buscar anime' })
-    .fill('zzzznonexistentanime999888777');
-  await page.getByRole('button', { name: 'Buscar' }).click();
+  await submitSearch(page, 'zzzznonexistentanime999888777');
 
   await expect(
     page.getByRole('heading', { name: 'Nada encontrado' }),
   ).toBeVisible({ timeout: RESULTS_TIMEOUT });
-  await expect(page.getByRole('article')).toHaveCount(0);
+  await expect(loadedCards(page)).toHaveCount(0);
 });
