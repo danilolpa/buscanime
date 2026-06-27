@@ -14,3 +14,4 @@ export * from './lib/container/container';
 export * from './lib/header/header';
 export * from './lib/footer/footer';
 export * from './lib/status-state/status-state';
+export * from './lib/description-text/description-text';
