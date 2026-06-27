@@ -1,9 +1,14 @@
 /** Fixtures alinhados ao MSW de `anime-browser.spec.tsx`. */
 
-const mediaItem = (id: number, title: string, cover = 'cover.jpg') => ({
+// next/image exige URL absoluta de um host em `remotePatterns` (next.config.js);
+// usamos s4.anilist.co (já configurado) para os fixtures espelharem o real.
+const cover = (file: string) =>
+  `https://s4.anilist.co/file/anilistcdn/media/anime/cover/${file}`;
+
+const mediaItem = (id: number, title: string, coverFile = 'cover.jpg') => ({
   id,
   title: { romaji: title, english: null },
-  coverImage: { large: cover },
+  coverImage: { large: cover(coverFile) },
   averageScore: 80,
   format: 'TV' as const,
   genres: ['Action'],

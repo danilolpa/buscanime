@@ -7,7 +7,8 @@ function resolveAnimeDetail(id) {
     id,
     title: { romaji: 'Naruto', english: 'Naruto', native: 'ナルト' },
     description: 'Um ninja determinado a se tornar Hokage.',
-    coverImage: { extraLarge: 'https://picsum.photos/seed/naruto/300/400', large: null, color: '#6d28d9' },
+    // URL absoluta de um host em `remotePatterns` (next.config.js) — next/image rejeita hosts não configurados.
+    coverImage: { extraLarge: 'https://s4.anilist.co/file/anilistcdn/media/anime/cover/naruto.jpg', large: null, color: '#6d28d9' },
     bannerImage: null,
     averageScore: 80,
     meanScore: 80,
