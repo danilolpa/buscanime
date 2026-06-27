@@ -1,4 +1,5 @@
 import { render, screen } from '@testing-library/react';
+import { axe } from 'vitest-axe';
 import { describe, it, expect } from 'vitest';
 import { AnimeGrid } from './anime-grid';
 
@@ -17,5 +18,15 @@ describe('AnimeGrid', () => {
   it('renderiza sem filhos', () => {
     const { container } = render(<AnimeGrid />);
     expect(container.firstChild).toBeInTheDocument();
+  });
+
+  it('sem violações de a11y', async () => {
+    const { container } = render(
+      <AnimeGrid>
+        <div>Card 1</div>
+        <div>Card 2</div>
+      </AnimeGrid>,
+    );
+    expect(await axe(container)).toHaveNoViolations();
   });
 });

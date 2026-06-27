@@ -4,7 +4,7 @@ import { cn } from '../../utils/cn';
 
 const input = cva(
   cn(
-    'w-full rounded-md border border-ink/20 bg-white text-ink placeholder:text-ink/40',
+    'w-full rounded-md border border-ink/20 bg-surface text-ink placeholder:text-ink/40',
     'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand',
     'disabled:opacity-50 disabled:pointer-events-none',
   ),
