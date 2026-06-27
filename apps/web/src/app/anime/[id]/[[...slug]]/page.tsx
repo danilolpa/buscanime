@@ -10,6 +10,7 @@ import {
   DescriptionText,
   TagList,
   TrailerEmbed,
+  stripAniListHtml,
 } from '@buscanime/ui';
 import { fetchAnimeDetail } from '@buscanime/anime-data-access';
 import { slugify, animeHref, type AnimeDetail } from '@buscanime/shared-types';
@@ -39,7 +40,7 @@ export async function generateMetadata({
   const anime = await fetchAnimeDetail(numId);
   if (!anime) return { title: 'Anime não encontrado — BuscaAnime' };
   const description =
-    anime.description?.replace(/<[^>]+>/g, ' ').slice(0, 160) ?? undefined;
+    stripAniListHtml(anime.description).slice(0, 160) || undefined;
   const image = anime.coverImage ?? anime.bannerImage ?? undefined;
   return {
     title: `${anime.title} — BuscaAnime`,
@@ -57,7 +58,7 @@ export default async function AnimeDetailPage({ params }: RouteParams) {
   const anime = await load(id);
 
   const canonical = slugify(anime.title);
-  if (slug?.[0] !== canonical) {
+  if (slug?.length !== 1 || slug[0] !== canonical) {
     // permanent (308) — canonical-slug redirect for SEO
     permanentRedirect(animeHref(anime.id, anime.title));
   }
@@ -104,7 +105,10 @@ export default async function AnimeDetailPage({ params }: RouteParams) {
           meta={meta}
         />
         <Container className="grid gap-8 py-8 md:grid-cols-[280px_1fr]">
-          <aside className="flex flex-col gap-6">
+          <aside
+            aria-label="Detalhes e estatísticas"
+            className="flex flex-col gap-6"
+          >
             <StatList items={stats} />
             <ExternalLinks
               links={anime.externalLinks.map(({ url, site, color }) => ({
