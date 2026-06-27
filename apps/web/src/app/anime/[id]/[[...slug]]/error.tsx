@@ -17,8 +17,8 @@ export default function Error({
         <StatusState
           tone="warning"
           icon={<Hourglass />}
-          title="Muitas buscas"
-          message="Você fez muitas requisições em pouco tempo. Aguarde alguns segundos e tente de novo."
+          title="Aguarde um momento"
+          message="A AniList limitou temporariamente o acesso. Aguarde alguns segundos e tente de novo."
           action={<Button onClick={reset}>Tentar de novo</Button>}
         />
       ) : (

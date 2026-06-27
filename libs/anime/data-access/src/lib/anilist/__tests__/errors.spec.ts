@@ -10,6 +10,11 @@ describe('isRateLimitError', () => {
     expect(isRateLimitError({ status: 429 })).toBe(true);
   });
 
+  it('true para bloqueio temporário 403 (Cloudflare / localhost)', () => {
+    expect(isRateLimitError({ status: 403 })).toBe(true);
+    expect(isRateLimitError({ response: { status: 403 } })).toBe(true);
+  });
+
   it('false para outros status (500)', () => {
     expect(isRateLimitError({ response: { status: 500 } })).toBe(false);
   });

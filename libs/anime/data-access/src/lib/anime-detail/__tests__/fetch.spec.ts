@@ -65,6 +65,11 @@ describe('fetchAnimeDetail', () => {
     await expect(fetchAnimeDetail(1)).rejects.toSatisfy(isRateLimitError);
   });
 
+  it('throws a throttle-detectable error on 403', async () => {
+    vi.stubGlobal('fetch', mockFetch(403, {}));
+    await expect(fetchAnimeDetail(1)).rejects.toSatisfy(isRateLimitError);
+  });
+
   it('throws on other non-OK responses', async () => {
     vi.stubGlobal('fetch', mockFetch(500, {}));
     await expect(fetchAnimeDetail(1)).rejects.toThrow();

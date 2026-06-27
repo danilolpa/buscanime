@@ -56,8 +56,10 @@ export function AnimeBrowser({
   // Hidratado no SSR: isLoading=false já no 1º render. Sem dados (e2e / troca de
   // filtro com cache frio): isLoading=true → skeleton.
   const isInitialLoading = query.isLoading;
+  const isInitialError = query.isError && animes.length === 0;
+  const isLoadMoreError = query.isError && animes.length > 0;
   const isBlankState =
-    query.isError || (!isInitialLoading && animes.length === 0);
+    isInitialError || (!isInitialLoading && animes.length === 0);
 
   const [searchPending, setSearchPending] = useState(false);
   const wasFetching = useRef(false);
@@ -112,13 +114,13 @@ export function AnimeBrowser({
         >
           {isInitialLoading ? (
             <AnimeGridSkeleton count={12} />
-          ) : query.isError ? (
+          ) : isInitialError ? (
             isRateLimitError(query.error) ? (
               <StatusState
                 tone="warning"
                 icon={<Hourglass />}
-                title="Muitas buscas"
-                message="Você fez muitas buscas em pouco tempo. Aguarde alguns segundos e tente de novo."
+                title="Aguarde um momento"
+                message="A AniList limitou temporariamente o acesso. Aguarde alguns segundos e tente de novo."
                 action={
                   <Button onClick={() => query.refetch()}>
                     Tentar de novo
@@ -159,7 +161,36 @@ export function AnimeBrowser({
                   </Link>
                 ))}
               </AnimeGrid>
-              {query.hasNextPage && (
+              {isLoadMoreError && (
+                <div className="mt-8">
+                  {isRateLimitError(query.error) ? (
+                    <StatusState
+                      tone="warning"
+                      icon={<Hourglass />}
+                      title="Aguarde um momento"
+                      message="Não foi possível carregar mais resultados agora. Aguarde alguns segundos e tente de novo."
+                      action={
+                        <Button onClick={() => query.fetchNextPage()}>
+                          Tentar de novo
+                        </Button>
+                      }
+                    />
+                  ) : (
+                    <StatusState
+                      tone="danger"
+                      icon={<ServerCrash />}
+                      title="Erro ao carregar mais"
+                      message="Algo deu errado ao buscar a próxima página."
+                      action={
+                        <Button onClick={() => query.fetchNextPage()}>
+                          Tentar de novo
+                        </Button>
+                      }
+                    />
+                  )}
+                </div>
+              )}
+              {query.hasNextPage && !isLoadMoreError && (
                 <div className="mt-8 flex justify-center">
                   <Button
                     variant="accent"

@@ -128,6 +128,27 @@ describe('AnimeBrowser', () => {
     expect(screen.getByText('Naruto')).toBeInTheDocument();
   });
 
+  it('"Ver mais" com 403 mantém a grade e mostra retry inline', async () => {
+    server.use(
+      graphql.query('AnimeList', ({ variables }) =>
+        variables.page === 1
+          ? HttpResponse.json({ data: { Page: page1 } })
+          : HttpResponse.json(
+              { errors: [{ message: 'rate limited' }] },
+              { status: 403 },
+            ),
+      ),
+    );
+    render(<AnimeBrowser endpoint={TEST_ENDPOINT} />, { wrapper });
+    await screen.findByText('Naruto');
+    await userEvent.click(screen.getByRole('button', { name: /ver mais/i }));
+    expect(await screen.findByText('Aguarde um momento')).toBeInTheDocument();
+    expect(screen.getByText('Naruto')).toBeInTheDocument();
+    expect(
+      screen.getByText(/não foi possível carregar mais resultados/i),
+    ).toBeInTheDocument();
+  });
+
   it('mostra o estado vazio quando não há resultados', async () => {
     server.use(
       graphql.query('AnimeList', () =>
@@ -227,7 +248,7 @@ describe('AnimeBrowser', () => {
       ),
     );
     render(<AnimeBrowser endpoint={TEST_ENDPOINT} />, { wrapper });
-    expect(await screen.findByText('Muitas buscas')).toBeInTheDocument();
+    expect(await screen.findByText('Aguarde um momento')).toBeInTheDocument();
     expect(
       screen.getByRole('button', { name: /tentar de novo/i }),
     ).toBeInTheDocument();

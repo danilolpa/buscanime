@@ -87,35 +87,41 @@ export async function generateMetadata({
   const { id } = await params;
   const numId = parseId(id);
   if (numId === null) return { title: 'Anime não encontrado' };
-  const anime = await fetchAnimeDetail(numId);
-  if (!anime) return { title: 'Anime não encontrado' };
 
-  const title = anime.seasonYear
-    ? `${anime.title} (${anime.seasonYear})`
-    : anime.title;
-  const description = buildDescription(anime);
-  // Banner é paisagem (ideal pro card 1200×630); capa é retrato. Fallback: OG da marca.
-  const image = anime.bannerImage ?? anime.coverImage ?? '/og-home.png';
-  const canonical = animeHref(anime.id, anime.title);
+  try {
+    const anime = await fetchAnimeDetail(numId);
+    if (!anime) return { title: 'Anime não encontrado' };
 
-  return {
-    title,
-    description,
-    alternates: { canonical },
-    openGraph: {
-      type: 'website',
-      url: canonical,
+    const title = anime.seasonYear
+      ? `${anime.title} (${anime.seasonYear})`
+      : anime.title;
+    const description = buildDescription(anime);
+    // Banner é paisagem (ideal pro card 1200×630); capa é retrato. Fallback: OG da marca.
+    const image = anime.bannerImage ?? anime.coverImage ?? '/og-home.png';
+    const canonical = animeHref(anime.id, anime.title);
+
+    return {
       title,
       description,
-      images: [{ url: image, alt: `Capa de ${anime.title}` }],
-    },
-    twitter: {
-      card: 'summary_large_image',
-      title,
-      description,
-      images: [image],
-    },
-  };
+      alternates: { canonical },
+      openGraph: {
+        type: 'website',
+        url: canonical,
+        title,
+        description,
+        images: [{ url: image, alt: `Capa de ${anime.title}` }],
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title,
+        description,
+        images: [image],
+      },
+    };
+  } catch {
+    // Upstream falhou (403/429/5xx) — não derruba o render; error.tsx cuida da UI.
+    return { title: 'Erro ao carregar' };
+  }
 }
 
 export default async function AnimeDetailPage({ params }: RouteParams) {

@@ -1,6 +1,10 @@
 import * as Sentry from '@sentry/nextjs';
+import {
+  ANILIST_JSON_HEADERS,
+  ANILIST_REVALIDATE_SECONDS,
+  getAnilistEndpoint,
+} from 'anime-data-access';
 
-const ANILIST_ENDPOINT = 'https://graphql.anilist.co';
 const UPSTREAM_TIMEOUT_MS = 10_000;
 // Queries GraphQL da AniList são pequenas; corta abuso de relay com payload gigante.
 const MAX_BODY_LENGTH = 100_000;
@@ -19,14 +23,13 @@ export async function POST(request: Request) {
       );
     }
 
-    const upstream = await fetch(ANILIST_ENDPOINT, {
+    const upstream = await fetch(getAnilistEndpoint(), {
       method: 'POST',
-      headers: {
-        'content-type': 'application/json',
-        accept: 'application/json',
-      },
+      headers: { ...ANILIST_JSON_HEADERS },
       body,
       signal: controller.signal,
+      // Mesmo TTL do SSR — reduz hits repetidos à AniList (IPs compartilhados na Vercel).
+      next: { revalidate: ANILIST_REVALIDATE_SECONDS },
     });
     const payload = await upstream.text();
     console.info(`[anilist] ${upstream.status} in ${Date.now() - startedAt}ms`);

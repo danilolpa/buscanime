@@ -13,6 +13,9 @@ export {
   createAnilistSdk,
   ANILIST_PROXY_ENDPOINT,
   isRateLimitError,
+  ANILIST_JSON_HEADERS,
+  ANILIST_REVALIDATE_SECONDS,
+  anilistSsrFetchInit,
 } from './lib/anilist/index.js';
 
 // --- Anime list ---

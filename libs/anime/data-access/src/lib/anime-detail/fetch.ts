@@ -5,22 +5,22 @@ import {
   type AnimeDetailQuery,
 } from '../graphql/generated/graphql.js';
 import { getAnilistEndpoint } from '../anilist/endpoint.js';
+import { ANILIST_JSON_HEADERS } from '../anilist/request.js';
 import { toAnimeDetail } from './transform.js';
 
 /** SSR fetch: goes through Next's `fetch` (Data Cache + dedup with generateMetadata). */
 export async function fetchAnimeDetail(
   id: number,
 ): Promise<AnimeDetail | null> {
-  // Next's fetch augmentation (`next.revalidate`) não está nos tipos da lib
-  // (tsconfig types: ["node"]); tipamos localmente em vez de `as RequestInit`.
+  // Detail muda pouco; cache mais longo que a listagem.
   const init: RequestInit & { next?: { revalidate: number } } = {
     method: 'POST',
-    headers: { 'content-type': 'application/json', accept: 'application/json' },
+    headers: { ...ANILIST_JSON_HEADERS },
     body: JSON.stringify({
       query: print(AnimeDetailDocument),
       variables: { id },
     }),
-    next: { revalidate: 3600 }, // detail pages rarely change; 1h ISR cache
+    next: { revalidate: 3600 },
   };
   const res = await fetch(getAnilistEndpoint(), init);
 

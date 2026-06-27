@@ -7,6 +7,7 @@ import {
 } from '../graphql/generated/graphql.js';
 import { createAnilistSdk } from '../anilist/client.js';
 import { getAnilistEndpoint } from '../anilist/endpoint.js';
+import { anilistSsrFetchInit } from '../anilist/request.js';
 import { ANIME_LIST_PER_PAGE } from './constants.js';
 import { mapAnimeListQuery } from './map-query.js';
 import { normalizeAnimeListParams } from './normalize.js';
@@ -56,26 +57,16 @@ async function fetchViaSsr(
   format: MediaFormat | undefined,
   sort: MediaSort[],
 ): Promise<AnimeListPageResult> {
-  // Next's fetch augmentation (`next.revalidate`) não está nos tipos da lib
-  // (tsconfig types: ["node"]); tipamos localmente em vez de `as RequestInit`.
-  const init: RequestInit & { next?: { revalidate: number } } = {
-    method: 'POST',
-    headers: {
-      'content-type': 'application/json',
-      accept: 'application/json',
+  const init = anilistSsrFetchInit({
+    query: print(AnimeListDocument),
+    variables: {
+      page,
+      perPage: ANIME_LIST_PER_PAGE,
+      search: trimmed,
+      format,
+      sort,
     },
-    body: JSON.stringify({
-      query: print(AnimeListDocument),
-      variables: {
-        page,
-        perPage: ANIME_LIST_PER_PAGE,
-        search: trimmed,
-        format,
-        sort,
-      },
-    }),
-    next: { revalidate: 60 },
-  };
+  });
   const res = await fetch(getAnilistEndpoint(), init);
 
   if (!res.ok) {
