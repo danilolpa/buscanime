@@ -7,7 +7,7 @@ export default defineConfig(() => ({
   cacheDir: '../../node_modules/.vite/apps/web',
   plugins: [react()],
   resolve: {
-    conditions: ['@buscanime/source'],
+    conditions: ['source'],
   },
   // Uncomment this if you are using workers.
   // worker: {

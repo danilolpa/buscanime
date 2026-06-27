@@ -1,4 +1,4 @@
-# libs/ui — component library (`@buscanime/ui`)
+# libs/ui — component library (`ui`)
 
 Pure presentation components. **No data-fetching, no business logic, no import
 of `data-access`.** Everything comes via props. (Boundary is lint-enforced.)

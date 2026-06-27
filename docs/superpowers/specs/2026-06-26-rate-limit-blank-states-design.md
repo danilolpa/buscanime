@@ -77,4 +77,4 @@ AniList 429 → proxy repassa 429 → graphql-request lança `ClientError(429)` 
 
 ## Nota de build
 
-`@buscanime/anime-data-access` é consumido do `dist/` (sem HMR) — mudar `isRateLimitError` exige `nx build @buscanime/anime-data-access` pro app enxergar (ver memória _anime-data-access-dist-consumed_). Já `@buscanime/ui` é consumido do **source** (`main: ./src/index.ts`), então `StatusState`/`theme.css` são pegos direto, sem rebuild. Verificar no **browser real**: a animação de entrada e o estado 429 não aparecem em testes mockados.
+`anime-data-access` é consumido do `dist/` (sem HMR) — mudar `isRateLimitError` exige `nx build anime-data-access` pro app enxergar (ver memória _anime-data-access-dist-consumed_). Já `ui` é consumido do **source** (`main: ./src/index.ts`), então `StatusState`/`theme.css` são pegos direto, sem rebuild. Verificar no **browser real**: a animação de entrada e o estado 429 não aparecem em testes mockados.

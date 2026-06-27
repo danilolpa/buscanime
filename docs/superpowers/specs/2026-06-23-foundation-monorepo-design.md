@@ -53,14 +53,14 @@ Esta spec cobre **apenas a fundação**: deixar o monorepo com a estrutura de li
 
 ### 4.1 Estrutura-alvo
 
-| Pasta                    | Pacote                         | Tag                | Papel                                                                                            | Gerador         |
-| ------------------------ | ------------------------------ | ------------------ | ------------------------------------------------------------------------------------------------ | --------------- |
-| `apps/web`               | `@buscanime/web`               | `type:app`         | Compõe dados + UI; route handlers; providers                                                     | (já existe)     |
-| `libs/ui`                | `@buscanime/ui`                | `type:ui`          | DS único: primitivos + compostos de domínio. **Presentational** (recebe props, não busca dados). | `@nx/react:lib` |
-| `libs/anime/data-access` | `@buscanime/anime-data-access` | `type:data-access` | Cliente GraphQL, SDK do codegen, hooks TanStack Query, transform p/ modelo de domínio            | `@nx/js:lib`    |
-| `libs/shared/types`      | `@buscanime/shared-types`      | `type:util`        | Contrato de tipos do domínio (`Anime`, `MediaFormat`) compartilhado entre `ui` e `data-access`   | `@nx/js:lib`    |
+| Pasta                    | Pacote              | Tag                | Papel                                                                                            | Gerador         |
+| ------------------------ | ------------------- | ------------------ | ------------------------------------------------------------------------------------------------ | --------------- |
+| `apps/web`               | `web`               | `type:app`         | Compõe dados + UI; route handlers; providers                                                     | (já existe)     |
+| `libs/ui`                | `ui`                | `type:ui`          | DS único: primitivos + compostos de domínio. **Presentational** (recebe props, não busca dados). | `@nx/react:lib` |
+| `libs/anime/data-access` | `anime-data-access` | `type:data-access` | Cliente GraphQL, SDK do codegen, hooks TanStack Query, transform p/ modelo de domínio            | `@nx/js:lib`    |
+| `libs/shared/types`      | `shared-types`      | `type:util`        | Contrato de tipos do domínio (`Anime`, `MediaFormat`) compartilhado entre `ui` e `data-access`   | `@nx/js:lib`    |
 
-> Setup moderno Nx 23 (TS-solution): cada lib é um pacote importado **pelo nome** (não por path do `tsconfig`); resolução via `package.json#exports` + `customConditions: ["@buscanime/source"]` já presente em `tsconfig.base.json`.
+> Setup moderno Nx 23 (TS-solution): cada lib é um pacote importado **pelo nome** (não por path do `tsconfig`); resolução via `package.json#exports` + `customConditions: ["source"]` já presente em `tsconfig.base.json`.
 
 ### 4.2 Tags e boundary rules
 

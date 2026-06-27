@@ -1,4 +1,4 @@
-# @buscanime/anime-data-access
+# anime-data-access
 
 Camada de acesso a dados da AniList para o monorepo BuscaAnime. Centraliza transporte HTTP, mapeamento GraphQL → domínio e hooks React Query.
 
@@ -66,7 +66,7 @@ flowchart TB
 | Prefetch / SSR no Server Component | `fetchAnimeListPage`, `getAnimeListInfiniteQueryOptions` |
 | Tipo de retorno da listagem        | `AnimeListPageResult`                                    |
 | Detalhe de um anime (SSR)          | `fetchAnimeDetail`                                       |
-| Tipo de retorno do detalhe         | `AnimeDetail` (em `@buscanime/shared-types`)             |
+| Tipo de retorno do detalhe         | `AnimeDetail` (em `shared-types`)                        |
 | Detectar rate limit (429)          | `isRateLimitError`                                       |
 | Flag SSR nos e2e                   | `isSsrListingEnabled` em `apps/web` (não nesta lib)      |
 
@@ -181,7 +181,7 @@ Retorna `{ trimmed, format, sort }`.
 
 **Arquivo:** `anime-list/transform.ts`
 
-Converte um item GraphQL `Media` no tipo de domínio `Anime` (`@buscanime/shared-types`):
+Converte um item GraphQL `Media` no tipo de domínio `Anime` (`shared-types`):
 
 - Título: `english` → fallback `romaji` → `'Untitled'`
 - `coverImage`, `averageScore`, `format`, `genres` com defaults seguros
@@ -329,7 +329,7 @@ Busca um anime pelo `id` AniList diretamente na API GraphQL — sem passar pelo 
 
 **Arquivo:** `anime-detail/transform.ts`
 
-Converte o resultado GraphQL `AnimeDetailQuery['Media']` no tipo de domínio `AnimeDetail` (`@buscanime/shared-types`):
+Converte o resultado GraphQL `AnimeDetailQuery['Media']` no tipo de domínio `AnimeDetail` (`shared-types`):
 
 - Título: `english` → fallback `romaji` → `'Untitled'`
 - `coverImage`: `extraLarge` → fallback `large`
@@ -343,7 +343,7 @@ Converte o resultado GraphQL `AnimeDetailQuery['Media']` no tipo de domínio `An
 
 ---
 
-#### Tipos exportados (via `@buscanime/shared-types`)
+#### Tipos exportados (via `shared-types`)
 
 | Tipo          | Descrição                                                              |
 | ------------- | ---------------------------------------------------------------------- |
@@ -424,22 +424,22 @@ Entender a cadeia ajuda a debugar cache, hydration e filtros:
 
 ## Decisões de design
 
-| Decisão                              | Motivo                                                                             |
-| ------------------------------------ | ---------------------------------------------------------------------------------- |
-| Dois transportes (`ssr` / `proxy`)   | SSR precisa de `fetch` direto + Data Cache Next; browser precisa do proxy por CORS |
-| `fetchAnimeListPage` único           | Evita duplicar lógica de normalização e mapeamento                                 |
-| Query key com trim                   | Prefetch SSR e client batem no mesmo cache                                         |
-| `useAnimeFormatCounts` separado      | Query diferente, só relevante com busca ativa                                      |
-| Domínio em `@buscanime/shared-types` | UI e data-access compartilham `Anime` sem dependência circular                     |
+| Decisão                            | Motivo                                                                             |
+| ---------------------------------- | ---------------------------------------------------------------------------------- |
+| Dois transportes (`ssr` / `proxy`) | SSR precisa de `fetch` direto + Data Cache Next; browser precisa do proxy por CORS |
+| `fetchAnimeListPage` único         | Evita duplicar lógica de normalização e mapeamento                                 |
+| Query key com trim                 | Prefetch SSR e client batem no mesmo cache                                         |
+| `useAnimeFormatCounts` separado    | Query diferente, só relevante com busca ativa                                      |
+| Domínio em `shared-types`          | UI e data-access compartilham `Anime` sem dependência circular                     |
 
 ---
 
 ## Scripts
 
 ```bash
-pnpm exec nx run @buscanime/anime-data-access:lint
-pnpm exec nx run @buscanime/anime-data-access:test
-pnpm exec nx run @buscanime/anime-data-access:build
+pnpm exec nx run anime-data-access:lint
+pnpm exec nx run anime-data-access:test
+pnpm exec nx run anime-data-access:build
 ```
 
 ---

@@ -1,5 +1,5 @@
 import { print } from 'graphql';
-import type { AnimeDetail } from '@buscanime/shared-types';
+import type { AnimeDetail } from 'shared-types';
 import {
   AnimeDetailDocument,
   type AnimeDetailQuery,

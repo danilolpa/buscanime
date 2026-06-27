@@ -7,7 +7,7 @@ import {
 import {
   fetchAnimeListPage,
   getAnimeListInfiniteQueryOptions,
-} from '@buscanime/anime-data-access';
+} from 'anime-data-access';
 
 import { isSsrListingEnabled } from './ssr-listing';
 

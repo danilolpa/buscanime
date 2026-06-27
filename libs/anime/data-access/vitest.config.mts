@@ -6,7 +6,7 @@ export default defineConfig(() => ({
   cacheDir: '../../../node_modules/.vite/libs/anime/data-access',
   plugins: [react()],
   test: {
-    name: '@buscanime/anime-data-access',
+    name: 'anime-data-access',
     watch: false,
     globals: true,
     environment: 'jsdom',

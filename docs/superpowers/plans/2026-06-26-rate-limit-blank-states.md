@@ -10,9 +10,9 @@
 
 **Notas de ambiente (importantes):**
 
-- `@buscanime/anime-data-access` é consumido do **dist** (`main: ./dist/index.js`, gitignored) — o app em runtime só enxerga mudanças após `pnpm exec nx build @buscanime/anime-data-access`. Os **testes** resolvem o **src** (condição `@buscanime/source`), então `nx test` vê o src sem rebuild. (memória _anime-data-access-dist-consumed_)
-- `@buscanime/ui` é consumido do **source** (`main: ./src/index.ts`) — `StatusState`/`theme.css` são pegos direto, **sem rebuild**.
-- Projetos Nx: `@buscanime/anime-data-access`, `@buscanime/ui`, `web`. Comando de teste: `pnpm exec nx test <projeto>`.
+- `anime-data-access` é consumido do **dist** (`main: ./dist/index.js`, gitignored) — o app em runtime só enxerga mudanças após `pnpm exec nx build anime-data-access`. Os **testes** resolvem o **src** (condição `source`), então `nx test` vê o src sem rebuild. (memória _anime-data-access-dist-consumed_)
+- `ui` é consumido do **source** (`main: ./src/index.ts`) — `StatusState`/`theme.css` são pegos direto, **sem rebuild**.
+- Projetos Nx: `anime-data-access`, `ui`, `web`. Comando de teste: `pnpm exec nx test <projeto>`.
 - Pre-commit (husky) roda lint-staged + `nx affected -t test`. Commitar só no verde. `git add` arquivos específicos (nunca `-A`).
 
 ---
@@ -60,7 +60,7 @@ describe('isRateLimitError', () => {
 
 - [ ] **Step 2: Rodar e ver falhar**
 
-Run: `pnpm exec nx test @buscanime/anime-data-access`
+Run: `pnpm exec nx test anime-data-access`
 Expected: FAIL — `isRateLimitError` não existe (módulo `./anilist-error.js` não encontrado).
 
 - [ ] **Step 3: Implementar**
@@ -90,12 +90,12 @@ export * from './lib/anilist-error.js';
 
 - [ ] **Step 4: Rodar e ver passar**
 
-Run: `pnpm exec nx test @buscanime/anime-data-access`
+Run: `pnpm exec nx test anime-data-access`
 Expected: PASS (todos os testes do projeto verdes, incluindo os 5 novos).
 
 - [ ] **Step 5: Rebuild do dist (pro app/runtime enxergar o novo export)**
 
-Run: `pnpm exec nx build @buscanime/anime-data-access`
+Run: `pnpm exec nx build anime-data-access`
 Expected: build OK. (O `dist/` é gitignored — não entra no commit; é só pro runtime.)
 
 - [ ] **Step 6: Commit**
@@ -123,7 +123,7 @@ Substituir o conteúdo de `apps/web/src/app/providers.tsx` por:
 'use client';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useState, type ReactNode } from 'react';
-import { isRateLimitError } from '@buscanime/anime-data-access';
+import { isRateLimitError } from 'anime-data-access';
 
 export function Providers({ children }: { children: ReactNode }) {
   const [client] = useState(
@@ -200,7 +200,7 @@ it('sem violações de a11y no tone danger com action', async () => {
 
 - [ ] **Step 2: Rodar e ver falhar**
 
-Run: `pnpm exec nx test @buscanime/ui`
+Run: `pnpm exec nx test ui`
 Expected: FAIL — o círculo não tem `bg-red-100`/`bg-amber-100`/`bg-ink/5` nem a classe `motion-safe:animate-status-in` (o componente atual não tem `tone` nem círculo colorido).
 
 - [ ] **Step 3: Implementar o componente**
@@ -273,7 +273,7 @@ Substituir `libs/ui/src/styles/theme.css` por:
 
 - [ ] **Step 5: Rodar e ver passar**
 
-Run: `pnpm exec nx test @buscanime/ui`
+Run: `pnpm exec nx test ui`
 Expected: PASS — os novos testes + os existentes verdes.
 
 - [ ] **Step 6: Commit**
@@ -323,7 +323,7 @@ import { Hourglass, Plus, SearchX, ServerCrash } from 'lucide-react';
 3b. Atualizar o import do data-access (adicionar `isRateLimitError`):
 
 ```tsx
-import { useAnimeList, useAnimeFormatCounts, isRateLimitError } from '@buscanime/anime-data-access';
+import { useAnimeList, useAnimeFormatCounts, isRateLimitError } from 'anime-data-access';
 ```
 
 3c. Substituir o bloco de branches (de `query.isLoading ? (` até o fechamento antes da grade) por:
@@ -385,12 +385,12 @@ git commit -m "feat: show dedicated rate-limit state on 429"
 
 - [ ] **Step 1: Garantir o dist do data-access atualizado**
 
-Run: `pnpm exec nx build @buscanime/anime-data-access`
+Run: `pnpm exec nx build anime-data-access`
 Expected: build OK (já feito na Task 1; reconfirmar caso o src tenha mudado depois).
 
 - [ ] **Step 2: Suite completa + lint**
 
-Run: `pnpm exec nx run-many -t test lint -p @buscanime/anime-data-access @buscanime/ui web`
+Run: `pnpm exec nx run-many -t test lint -p anime-data-access ui web`
 Expected: tudo verde.
 
 - [ ] **Step 3: Smoke no browser real** (a animação/contraste não aparecem em teste mockado)

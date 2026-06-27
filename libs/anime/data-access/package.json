@@ -1,5 +1,5 @@
 {
-  "name": "@buscanime/anime-data-access",
+  "name": "anime-data-access",
   "version": "0.0.1",
   "private": true,
   "type": "module",
@@ -9,7 +9,7 @@
   "exports": {
     "./package.json": "./package.json",
     ".": {
-      "@buscanime/source": "./src/index.ts",
+      "source": "./src/index.ts",
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
       "default": "./dist/index.js"
@@ -21,7 +21,7 @@
     ]
   },
   "dependencies": {
-    "@buscanime/shared-types": "workspace:*",
+    "shared-types": "workspace:*",
     "@tanstack/react-query": "^5.101.0",
     "graphql": "^16.14.2",
     "graphql-request": "^7.4.0",

@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Montar a página de listagem de animes (o wireframe) plugando o Design System `@buscanime/ui` no pipeline de dados `@buscanime/anime-data-access`, com filtro por formato, busca com debounce, paginação "Ver mais" e estados de loading/vazio/erro — estado na URL.
+**Goal:** Montar a página de listagem de animes (o wireframe) plugando o Design System `ui` no pipeline de dados `anime-data-access`, com filtro por formato, busca com debounce, paginação "Ver mais" e estados de loading/vazio/erro — estado na URL.
 
 **Architecture:** Next App Router. `page.tsx` (Server Component) renderiza `Header` + `<Suspense>` (obrigatório por causa do `useSearchParams`) com o `AnimeBrowser` + `Footer`. `AnimeBrowser` (`'use client'`) orquestra: lê filtros da URL via `useAnimeFilters` (URL ⇄ estado + debounce 300ms), dispara `useAnimeList` (que vira `useInfiniteQuery`), e compõe os componentes do DS. A query GraphQL é estendida com `search`/`format`/`sort`/`pageInfo`. O `Button` do DS ganha estado `loading` (spinner), repassado pela `SearchBar`.
 
@@ -15,7 +15,7 @@
 - Bash tool (Git Bash) pra shell. `pnpm exec nx ...` pros targets; `pnpm --filter <pkg> add ...` pra deps de pacote.
 - **Branch:** trabalhar em `feat/listing-page` (estamos na `main`; foundation/DS usaram branches de feature). Criar antes de começar: `git switch -c feat/listing-page`.
 - **husky ativo:** pre-commit (lint-staged + `nx affected -t test`) e commit-msg (commitlint — tipos `feat`/`fix`/`chore`/`docs`/`refactor`/`test`/`ci`/`a11y`). **Comitar só em verde.**
-- **Nomes de projeto Nx** (de `nx show projects`): `@buscanime/anime-data-access`, `@buscanime/ui`, `web`, `web-e2e`.
+- **Nomes de projeto Nx** (de `nx show projects`): `anime-data-access`, `ui`, `web`, `web-e2e`.
 - Imports de pacote (`@buscanime/*`, `lucide-react`, `@tanstack/react-query`) sem extensão. Imports **relativos** seguem o estilo do vizinho: a `libs/anime/data-access` usa `.js` nos relativos (ver `use-anime-list.ts` → `'./transform.js'`); a `libs/ui` e a `apps/web` usam **sem** extensão. Mantenha consistente com o arquivo que está editando.
 
 **Decisões de implementação derivadas do código atual** (ler antes de começar):
@@ -42,7 +42,7 @@ libs/ui/
 └── src/lib/search-bar/search-bar.spec.tsx       → ATUALIZAR: + teste de loading
 
 apps/web/
-├── package.json                                 → MODIFICAR: + deps @buscanime/ui, @buscanime/anime-data-access, lucide-react
+├── package.json                                 → MODIFICAR: + deps ui, anime-data-access, lucide-react
 ├── vite.config.mts                              → MODIFICAR: + setupFiles
 ├── src/test-setup.ts                            → CRIAR: jest-dom + cleanup
 └── src/app/
@@ -61,7 +61,7 @@ apps/web-e2e/
 
 ---
 
-## Wave 1 — Camada de dados (`@buscanime/anime-data-access`)
+## Wave 1 — Camada de dados (`anime-data-access`)
 
 ### Task 1: Estender a query GraphQL + regerar o codegen
 
@@ -111,7 +111,7 @@ Expected: `AnimeListQueryVariables` contém `search`/`format`/`sort`; o tipo `An
 
 - [ ] **Step 4: Typecheck (a lib ainda compila — os novos args são opcionais)**
 
-Run: `pnpm exec nx typecheck @buscanime/anime-data-access`
+Run: `pnpm exec nx typecheck anime-data-access`
 Expected: PASS (o hook atual chama `AnimeList({ page, perPage })`, que continua válido).
 
 - [ ] **Step 5: Commit**
@@ -243,14 +243,14 @@ it('usa SEARCH_MATCH quando há busca e passa search/format às variáveis', asy
 
 - [ ] **Step 2: Rodar — deve falhar**
 
-Run: `pnpm exec nx test @buscanime/anime-data-access`
+Run: `pnpm exec nx test anime-data-access`
 Expected: FAIL (o hook ainda usa `useQuery`; `result.current.data.pages` é `undefined`; `useAnimeList` não aceita objeto).
 
 - [ ] **Step 3: Reescrever o hook** — substituir todo o conteúdo de `use-anime-list.ts`:
 
 ```ts
 import { useInfiniteQuery } from '@tanstack/react-query';
-import type { Anime, MediaFormat } from '@buscanime/shared-types';
+import type { Anime, MediaFormat } from 'shared-types';
 import type { MediaSort } from './generated/graphql.js';
 import { createAnilistSdk } from './anilist-client.js';
 import { toAnime } from './transform.js';
@@ -292,12 +292,12 @@ export function useAnimeList({ search, format, endpoint }: UseAnimeListParams = 
 
 - [ ] **Step 4: Rodar — deve passar**
 
-Run: `pnpm exec nx test @buscanime/anime-data-access`
+Run: `pnpm exec nx test anime-data-access`
 Expected: PASS (3 testes).
 
 - [ ] **Step 5: Typecheck**
 
-Run: `pnpm exec nx typecheck @buscanime/anime-data-access`
+Run: `pnpm exec nx typecheck anime-data-access`
 Expected: PASS.
 
 - [ ] **Step 6: Commit**
@@ -309,7 +309,7 @@ git commit -m "feat: paginate useAnimeList with useInfiniteQuery, search and for
 
 ---
 
-## Wave 2 — Adições no Design System (`@buscanime/ui`)
+## Wave 2 — Adições no Design System (`ui`)
 
 ### Task 3: `Button` ganha `loading`
 
@@ -334,7 +334,7 @@ it('mostra spinner, desabilita e marca aria-busy quando loading', () => {
 
 - [ ] **Step 2: Rodar — deve falhar**
 
-Run: `pnpm exec nx test @buscanime/ui`
+Run: `pnpm exec nx test ui`
 Expected: FAIL (`Button` ainda não aceita `loading`; sem spinner, sem `aria-busy`).
 
 - [ ] **Step 3: Implementar** — editar `button.tsx`: importar `Loader2`, adicionar `loading` à interface, e renderizar o spinner no lugar do ícone + `disabled`/`aria-busy`.
@@ -377,7 +377,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
 
 - [ ] **Step 5: Rodar — deve passar**
 
-Run: `pnpm exec nx test @buscanime/ui`
+Run: `pnpm exec nx test ui`
 Expected: PASS (incluindo o novo teste e os de a11y já existentes).
 
 - [ ] **Step 6: Commit**
@@ -411,7 +411,7 @@ it('repassa loading pro botão Buscar', () => {
 
 - [ ] **Step 2: Rodar — deve falhar**
 
-Run: `pnpm exec nx test @buscanime/ui`
+Run: `pnpm exec nx test ui`
 Expected: FAIL (`SearchBar` ignora `loading`; o botão não tem `aria-busy`).
 
 - [ ] **Step 3: Implementar** — editar `search-bar.tsx`: adicionar `loading?` à interface e repassar ao `<Button>`:
@@ -438,7 +438,7 @@ export function SearchBar({ value, onChange, onSearch, loading }: SearchBarProps
 
 - [ ] **Step 4: Rodar — deve passar**
 
-Run: `pnpm exec nx test @buscanime/ui`
+Run: `pnpm exec nx test ui`
 Expected: PASS.
 
 - [ ] **Step 5: Commit**
@@ -462,7 +462,7 @@ git commit -m "feat: forward loading prop from SearchBar to its search Button"
 - [ ] **Step 1: Adicionar as deps de workspace + lucide-react** à app:
 
 ```bash
-pnpm --filter @buscanime/web add @buscanime/ui@workspace:* @buscanime/anime-data-access@workspace:* lucide-react
+pnpm --filter web add ui@workspace:* anime-data-access@workspace:* lucide-react
 ```
 
 Expected: grava as 3 deps em `apps/web/package.json` e roda `pnpm install`. (As libs de teste — `msw`, `@testing-library/*`, `vitest-axe` — já estão na raiz e resolvem por hoisting.)
@@ -537,8 +537,8 @@ Expected: FAIL (módulo `format-options` não existe).
 - [ ] **Step 3: Implementar** — `format-options.ts` (mapa da §9 da spec):
 
 ```ts
-import type { MediaFormat } from '@buscanime/shared-types';
-import type { ToggleGroupOption } from '@buscanime/ui';
+import type { MediaFormat } from 'shared-types';
+import type { ToggleGroupOption } from 'ui';
 
 export const FORMAT_OPTIONS: ToggleGroupOption[] = [
   { label: 'All Formats', value: 'ALL' },
@@ -821,8 +821,8 @@ Expected: FAIL (`anime-browser` não existe).
 ```tsx
 'use client';
 import { Plus, SearchX, ServerCrash } from 'lucide-react';
-import { AnimeGrid, AnimeCard, AnimeGridSkeleton, ToggleGroup, SearchBar, StatusState, Button, Container } from '@buscanime/ui';
-import { useAnimeList } from '@buscanime/anime-data-access';
+import { AnimeGrid, AnimeCard, AnimeGridSkeleton, ToggleGroup, SearchBar, StatusState, Button, Container } from 'ui';
+import { useAnimeList } from 'anime-data-access';
 import { useAnimeFilters } from './use-anime-filters';
 import { FORMAT_OPTIONS, toMediaFormat } from './format-options';
 
@@ -898,7 +898,7 @@ git commit -m "feat: add AnimeBrowser orchestrating filters, search and paginati
 
 ```tsx
 import { Suspense } from 'react';
-import { Header, Footer, Container, AnimeGridSkeleton } from '@buscanime/ui';
+import { Header, Footer, Container, AnimeGridSkeleton } from 'ui';
 import { AnimeBrowser } from './(home)/anime-browser';
 
 export default function Index() {
@@ -931,7 +931,7 @@ export default function Index() {
 Run: `pnpm exec nx build web`
 Expected: PASS. (O build pode logar que a rota usa client features — ok, o Suspense trata.)
 
-> O projeto `web` **não tem** um target `typecheck` próprio (só `build`, `dev`, `lint`, `test`, etc.) — a checagem de tipos vem do `nx build web`. Não rodar `nx typecheck web` (falha com "Cannot find configuration for task web:typecheck"). As libs (`@buscanime/anime-data-access`, `@buscanime/ui`) têm `typecheck` inferido, então os comandos das Tasks 1–2 e o `run-many` da Task 11 seguem válidos.
+> O projeto `web` **não tem** um target `typecheck` próprio (só `build`, `dev`, `lint`, `test`, etc.) — a checagem de tipos vem do `nx build web`. Não rodar `nx typecheck web` (falha com "Cannot find configuration for task web:typecheck"). As libs (`anime-data-access`, `ui`) têm `typecheck` inferido, então os comandos das Tasks 1–2 e o `run-many` da Task 11 seguem válidos.
 
 - [ ] **Step 3: Lint**
 

@@ -1,7 +1,7 @@
 'use client';
 import { memo, useState } from 'react';
 import Image from 'next/image';
-import type { Anime } from '@buscanime/shared-types';
+import type { Anime } from 'shared-types';
 import { Chip } from '../../primitives/chip/chip';
 import { AnimeRating } from '../../primitives/anime-rating/anime-rating';
 import { GlowBackground } from '../../primitives/glow-background/glow-background';

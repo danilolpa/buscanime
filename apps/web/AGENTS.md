@@ -1,6 +1,6 @@
 # apps/web — Next.js 16 app (`web`)
 
-App Router (`src/app/`). Consumes `@buscanime/ui` and `@buscanime/anime-data-access`.
+App Router (`src/app/`). Consumes `ui` and `anime-data-access`.
 UI comes from the lib — **don't create presentation components here**; if it's
 reusable it goes to `libs/ui`. The app owns routes, data-fetching, SSR and page
 composition.
@@ -19,7 +19,7 @@ composition.
   `text-ink`). Raw Tailwind color breaks lint.
 - **Server vs Client:** default to Server Components. Only mark `'use client'`
   when you need browser state/effects/handlers. Data hooks (`useAnimeList`) are client.
-- **Data:** import hooks/functions from `@buscanime/anime-data-access`, never
+- **Data:** import hooks/functions from `anime-data-access`, never
   re-implement GraphQL fetching in the app. Server-side detail fetch uses `fetchAnimeDetail`.
 - **Imagens:** SEMPRE `next/image` (`import Image from 'next/image'`), nunca
   `<img>` cru. O `next/image` redimensiona, serve AVIF/WebP e faz lazy por

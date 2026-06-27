@@ -14,8 +14,8 @@
 
 - Bash tool (Git Bash). `pnpm exec nx ...` pros targets. Branch atual: **`feat/listing-page`** (continuar nela — não criar branch).
 - husky ativo: pre-commit (lint-staged + `nx affected -t test`) e commit-msg (commitlint — tipos `feat`/`fix`/`chore`/`docs`/`refactor`/`test`/`ci`/`a11y`). **Comitar só em verde.** `git add` só os arquivos da task (NÃO `git add -A`).
-- Nomes de projeto Nx: `@buscanime/anime-data-access`, `@buscanime/ui`, `web`.
-- **`@buscanime/anime-data-access` é consumida pelo `dist/`** (lib `nodenext`): os testes vitest resolvem o `src`, mas a **app (runtime/build)** usa o `dist`. Depois de mexer na lib (query/codegen/hook), rodar **`pnpm exec nx build @buscanime/anime-data-access`** pra app enxergar. Ver `docs/superpowers/specs/...` e a memória `anime-data-access-dist-consumed`.
+- Nomes de projeto Nx: `anime-data-access`, `ui`, `web`.
+- **`anime-data-access` é consumida pelo `dist/`** (lib `nodenext`): os testes vitest resolvem o `src`, mas a **app (runtime/build)** usa o `dist`. Depois de mexer na lib (query/codegen/hook), rodar **`pnpm exec nx build anime-data-access`** pra app enxergar. Ver `docs/superpowers/specs/...` e a memória `anime-data-access-dist-consumed`.
 - Imports relativos: a `libs/anime/data-access` usa `.js`; a `libs/ui` e a `apps/web` usam **sem** extensão. Seguir o vizinho.
 - O spec de `anime-browser.spec.tsx` já tem um **mock dinâmico de `next/navigation`** (replace reescreve os searchParams) e o wrapper do `use-anime-list.spec.tsx` usa `notifyOnChangeProps: 'all'` — reusar esses padrões.
 
@@ -80,7 +80,7 @@ it('não mostra × sem onClear', () => {
 
 - [ ] **Step 2: Rodar — deve falhar**
 
-Run: `pnpm exec nx test @buscanime/ui`
+Run: `pnpm exec nx test ui`
 Expected: FAIL (não existe botão "Limpar busca").
 
 - [ ] **Step 3: Implementar** — substituir o conteúdo de `search-bar.tsx`:
@@ -143,7 +143,7 @@ export function SearchBar({ value, onChange, onSearch, loading, onClear, searchA
 
 - [ ] **Step 4: Rodar — deve passar**
 
-Run: `pnpm exec nx test @buscanime/ui`
+Run: `pnpm exec nx test ui`
 Expected: PASS (incl. os testes existentes da `SearchBar` + o axe).
 
 - [ ] **Step 5: Commit**
@@ -354,7 +354,7 @@ Expected: aparece o tipo e o método do SDK.
 
 - [ ] **Step 4: Typecheck**
 
-Run: `pnpm exec nx typecheck @buscanime/anime-data-access`
+Run: `pnpm exec nx typecheck anime-data-access`
 Expected: PASS.
 
 - [ ] **Step 5: Commit**
@@ -439,7 +439,7 @@ it('não dispara quando não há busca', () => {
 
 - [ ] **Step 2: Rodar — deve falhar**
 
-Run: `pnpm exec nx test @buscanime/anime-data-access`
+Run: `pnpm exec nx test anime-data-access`
 Expected: FAIL (módulo não existe).
 
 - [ ] **Step 3: Implementar** — `use-anime-format-counts.ts`:
@@ -480,13 +480,13 @@ export * from './lib/use-anime-format-counts.js';
 
 - [ ] **Step 4: Rodar — deve passar**
 
-Run: `pnpm exec nx test @buscanime/anime-data-access`
+Run: `pnpm exec nx test anime-data-access`
 Expected: PASS (2 testes novos + os existentes).
 
 - [ ] **Step 5: Typecheck + rebuild do dist** (pra app enxergar o hook):
 
-Run: `pnpm exec nx typecheck @buscanime/anime-data-access`
-Then: `pnpm exec nx build @buscanime/anime-data-access`
+Run: `pnpm exec nx typecheck anime-data-access`
+Then: `pnpm exec nx build anime-data-access`
 Expected: ambos PASS; `dist/` regenerado com o hook.
 
 - [ ] **Step 6: Commit**
@@ -523,7 +523,7 @@ it('renderiza a badge "0"', () => {
 
 - [ ] **Step 2: Rodar — deve falhar**
 
-Run: `pnpm exec nx test @buscanime/ui`
+Run: `pnpm exec nx test ui`
 Expected: FAIL (badge não renderiza; `badge` nem existe na option).
 
 - [ ] **Step 3: Implementar** — em `toggle-group.tsx`: adicionar `badge?` à option e renderizar o pill (usar `!= null` pra "0" aparecer):
@@ -551,7 +551,7 @@ No corpo do `Button`:
 
 - [ ] **Step 4: Rodar — deve passar**
 
-Run: `pnpm exec nx test @buscanime/ui`
+Run: `pnpm exec nx test ui`
 Expected: PASS.
 
 - [ ] **Step 5: Commit**
@@ -612,7 +612,7 @@ Expected: FAIL (sem badges; `useAnimeFormatCounts` não está sendo usado).
 Importar o hook:
 
 ```tsx
-import { useAnimeList, useAnimeFormatCounts } from '@buscanime/anime-data-access';
+import { useAnimeList, useAnimeFormatCounts } from 'anime-data-access';
 ```
 
 Depois do `query`, montar as options:
@@ -658,7 +658,7 @@ git commit -m "feat: show per-format result counts on the toggle group during se
 
 - [ ] **Step 1: Garantir o dist da lib atualizado**
 
-Run: `pnpm exec nx build @buscanime/anime-data-access`
+Run: `pnpm exec nx build anime-data-access`
 Expected: PASS (o `dist` tem `AnimeFormatCounts` + `useAnimeFormatCounts`).
 
 - [ ] **Step 2: Verificação completa**

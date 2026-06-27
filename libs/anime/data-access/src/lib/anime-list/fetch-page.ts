@@ -1,5 +1,5 @@
 import { print } from 'graphql';
-import type { MediaFormat } from '@buscanime/shared-types';
+import type { MediaFormat } from 'shared-types';
 import {
   AnimeListDocument,
   type AnimeListQuery,

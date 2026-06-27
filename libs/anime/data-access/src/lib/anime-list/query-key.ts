@@ -1,4 +1,4 @@
-import type { MediaFormat } from '@buscanime/shared-types';
+import type { MediaFormat } from 'shared-types';
 
 /**
  * Query key estável para TanStack Query (listagem infinita).

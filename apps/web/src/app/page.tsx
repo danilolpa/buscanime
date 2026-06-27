@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Header, Footer } from '@buscanime/ui';
+import { Header, Footer } from 'ui';
 import { HomeWithData } from './(home)/home-with-data';
 
 // Título/descrição/OG vêm dos defaults do root layout (layout.tsx);

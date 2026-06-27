@@ -4,7 +4,7 @@
 
 **Goal:** Levar o workspace Nx `buscanime` da estrutura gerada até uma fundação com 3 libs + app, boundary rules ativas, tooling completo (pnpm/Vitest/Tailwind v4/husky) e o pipeline de runtime AniList→route handler→data-access→React cabeado e provado por testes — sem construir a feature.
 
-**Architecture:** Monorepo Nx 23 (TS-solution). 3 libs por domínio: `@buscanime/ui` (DS presentational), `@buscanime/anime-data-access` (GraphQL/codegen/TanStack Query), `@buscanime/shared-types` (contrato neutro). `@nx/enforce-module-boundaries` com tags `type:*` impede `ui↔data-access`. O browser nunca chama a AniList direto — vai por um Route Handler `app/api/anilist` que faz proxy + log + captura Sentry.
+**Architecture:** Monorepo Nx 23 (TS-solution). 3 libs por domínio: `ui` (DS presentational), `anime-data-access` (GraphQL/codegen/TanStack Query), `shared-types` (contrato neutro). `@nx/enforce-module-boundaries` com tags `type:*` impede `ui↔data-access`. O browser nunca chama a AniList direto — vai por um Route Handler `app/api/anilist` que faz proxy + log + captura Sentry.
 
 **Tech Stack:** Nx 23, Next.js 16, React 19, TypeScript 5.9, pnpm, Vitest + Testing Library + MSW, Tailwind v4, TanStack Query, graphql-request + GraphQL Code Generator, @sentry/nextjs, husky + commitlint + lint-staged.
 
@@ -22,9 +22,9 @@
 
 **Criados:**
 
-- `libs/shared/types/` → lib `@buscanime/shared-types` (modelo `Anime`, `MediaFormat`)
-- `libs/ui/` → lib `@buscanime/ui` (DS — stubs mínimos nesta fase)
-- `libs/anime/data-access/` → lib `@buscanime/anime-data-access`
+- `libs/shared/types/` → lib `shared-types` (modelo `Anime`, `MediaFormat`)
+- `libs/ui/` → lib `ui` (DS — stubs mínimos nesta fase)
+- `libs/anime/data-access/` → lib `anime-data-access`
   - `src/lib/queries/anime-list.graphql` → documento da query
   - `src/lib/generated/graphql.ts` → SDK tipado (gerado pelo codegen)
   - `src/lib/anilist-client.ts` → factory do SDK graphql-request
@@ -341,7 +341,7 @@ git commit -m "chore: add husky commitlint and lint-staged hooks"
 
 ## Wave 3 — Skeleton de libs + boundary rules
 
-### Task 6: Lib `@buscanime/shared-types`
+### Task 6: Lib `shared-types`
 
 **Files:**
 
@@ -354,7 +354,7 @@ Run: `pnpm exec nx g @nx/js:library libs/shared/types --bundler=tsc --unitTestRu
 - [ ] **Step 2: Conferir o nome do pacote**
 
 Run: `cat libs/shared/types/package.json`
-Garanta `"name": "@buscanime/shared-types"`. Se vier diferente (ex.: `@buscanime/types`), ajuste para `@buscanime/shared-types`.
+Garanta `"name": "shared-types"`. Se vier diferente (ex.: `@buscanime/types`), ajuste para `shared-types`.
 
 - [ ] **Step 3: Teste trivial**
 
@@ -369,7 +369,7 @@ git add -A
 git commit -m "feat: scaffold shared-types library"
 ```
 
-### Task 7: Lib `@buscanime/ui`
+### Task 7: Lib `ui`
 
 **Files:**
 
@@ -381,7 +381,7 @@ Run: `pnpm exec nx g @nx/react:library libs/ui --unitTestRunner=vitest --bundler
 
 - [ ] **Step 2: Conferir nome do pacote**
 
-Garanta `"name": "@buscanime/ui"` em `libs/ui/package.json`.
+Garanta `"name": "ui"` em `libs/ui/package.json`.
 
 - [ ] **Step 3: Teste trivial do componente gerado**
 
@@ -395,7 +395,7 @@ git add -A
 git commit -m "feat: scaffold ui design-system library"
 ```
 
-### Task 8: Lib `@buscanime/anime-data-access`
+### Task 8: Lib `anime-data-access`
 
 **Files:**
 
@@ -407,7 +407,7 @@ Run: `pnpm exec nx g @nx/js:library libs/anime/data-access --bundler=tsc --unitT
 
 - [ ] **Step 2: Conferir nome do pacote**
 
-Garanta `"name": "@buscanime/anime-data-access"` em `libs/anime/data-access/package.json`.
+Garanta `"name": "anime-data-access"` em `libs/anime/data-access/package.json`.
 
 - [ ] **Step 3: Forçar ambiente jsdom (lib entrega hook React)**
 
@@ -457,7 +457,7 @@ Expected: PASS (nada viola ainda).
 
 - [ ] **Step 4: Provar o guardrail (violação temporária)**
 
-Adicione em `libs/ui/src/index.ts` um import proibido: `import '@buscanime/anime-data-access';`
+Adicione em `libs/ui/src/index.ts` um import proibido: `import 'anime-data-access';`
 Run: `pnpm exec nx lint ui`
 Expected: FAIL com `@nx/enforce-module-boundaries` (type:ui não pode depender de type:data-access).
 **Reverta** o import depois de confirmar.
@@ -680,7 +680,7 @@ Expected: FAIL (`use-anime-list` não existe).
 Create `libs/anime/data-access/src/lib/transform.ts`:
 
 ```ts
-import type { Anime, MediaFormat } from '@buscanime/shared-types';
+import type { Anime, MediaFormat } from 'shared-types';
 import type { AnimeListQuery } from './generated/graphql';
 
 type Media = NonNullable<NonNullable<AnimeListQuery['Page']>['media']>[number];
@@ -703,7 +703,7 @@ Create `libs/anime/data-access/src/lib/use-anime-list.ts`:
 
 ```ts
 import { useQuery } from '@tanstack/react-query';
-import type { Anime } from '@buscanime/shared-types';
+import type { Anime } from 'shared-types';
 import { createAnilistSdk } from './anilist-client';
 import { toAnime } from './transform';
 

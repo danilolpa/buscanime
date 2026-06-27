@@ -1,7 +1,7 @@
-# libs/anime/data-access — data layer (`@buscanime/anime-data-access`)
+# libs/anime/data-access — data layer (`anime-data-access`)
 
 AniList data layer: HTTP transport, GraphQL → domain mapping, and React Query
-hooks. **No presentation React, no UI JSX** — does not import `@buscanime/ui`.
+hooks. **No presentation React, no UI JSX** — does not import `ui`.
 (Lint-enforced: `data-access` depends only on `data-access`/`util`.)
 
 ## Structure (`src/lib/`)

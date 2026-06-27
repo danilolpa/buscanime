@@ -7,7 +7,7 @@ vi.mock('next/navigation', () => ({
   usePathname: () => '/',
 }));
 
-vi.mock('@buscanime/anime-data-access', () => ({
+vi.mock('anime-data-access', () => ({
   useAnimeList: () => ({
     data: {
       pages: [{ items: [], pageInfo: { currentPage: 1, hasNextPage: false } }],

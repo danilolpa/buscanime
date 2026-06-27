@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react';
 import { axe } from 'vitest-axe';
 import { it, expect } from 'vitest';
 import { AnimeCard } from './anime-card';
-import type { Anime } from '@buscanime/shared-types';
+import type { Anime } from 'shared-types';
 
 const anime: Anime = {
   id: 1,

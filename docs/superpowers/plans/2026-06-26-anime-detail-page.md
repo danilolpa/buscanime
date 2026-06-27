@@ -4,7 +4,7 @@
 
 **Goal:** Add a server-rendered anime detail page at `/anime/[id]/[slug]` that surfaces richer AniList data (banner, description, stats, studios, tags, trailer, external links), reachable by clicking a home card.
 
-**Architecture:** A Server Component route fetches AniList directly on the server (no browser proxy) with ISR caching, computes a canonical slug and redirects on mismatch, and composes presentational components from `@buscanime/ui`. The interactive home stays client-side (React Query); the static detail page is SSR — same data source, rendering strategy chosen per surface.
+**Architecture:** A Server Component route fetches AniList directly on the server (no browser proxy) with ISR caching, computes a canonical slug and redirects on mismatch, and composes presentational components from `ui`. The interactive home stays client-side (React Query); the static detail page is SSR — same data source, rendering strategy chosen per surface.
 
 **Tech Stack:** Next.js 16 App Router (async `params`), React 19, TypeScript, Tailwind v4, GraphQL (graphql-codegen + `graphql` `print`), Vitest + Testing Library + vitest-axe, Playwright, Nx, pnpm.
 
@@ -16,14 +16,14 @@
 
 ## File Structure
 
-**`@buscanime/shared-types` (`libs/shared/types`)**
+**`shared-types` (`libs/shared/types`)**
 
 - Create `src/lib/slug.ts` — `slugify(title)`, `animeHref(id, title)`.
 - Create `src/lib/slug.spec.ts`.
 - Create `src/lib/anime-detail.ts` — `AnimeDetail` + sub-types.
 - Modify `src/index.ts` — export both.
 
-**`@buscanime/anime-data-access` (`libs/anime/data-access`)** — _refactored into feature folders; follow the `anime-list/` convention for the new `anime-detail/` folder_
+**`anime-data-access` (`libs/anime/data-access`)** — _refactored into feature folders; follow the `anime-list/` convention for the new `anime-detail/` folder_
 
 - Create `src/lib/graphql/queries/anime-detail.graphql`.
 - Regenerate `src/lib/graphql/generated/{graphql,schema-types}.ts` via `pnpm codegen`.
@@ -34,7 +34,7 @@
 - Modify `src/index.ts` — add an `// --- Anime detail ---` export block.
 - **Already shipped by the refactor (do NOT recreate):** `getAnilistEndpoint()` (`src/lib/anilist/endpoint.ts`) and the `.status === 429`-aware `isRateLimitError` (`src/lib/anilist/errors.ts`).
 
-**`@buscanime/ui` (`libs/ui`)** — each component folder has `<name>.tsx` + `.spec.tsx` + `.stories.tsx`
+**`ui` (`libs/ui`)** — each component folder has `<name>.tsx` + `.spec.tsx` + `.stories.tsx`
 
 - `src/lib/description-text/` — `DescriptionText` + `stripAniListHtml` helper.
 - `src/lib/tag-list/` — `TagList`.
@@ -411,7 +411,7 @@ Expected: FAIL (cannot find `../transform`).
 
 ```ts
 // libs/anime/data-access/src/lib/anime-detail/transform.ts
-import type { AnimeDetail, AnimeDetailExternalLink, AnimeDetailTag, MediaFormat } from '@buscanime/shared-types';
+import type { AnimeDetail, AnimeDetailExternalLink, AnimeDetailTag, MediaFormat } from 'shared-types';
 import type { AnimeDetailQuery } from '../graphql/generated/graphql.js';
 
 type Media = NonNullable<AnimeDetailQuery['Media']>;
@@ -566,7 +566,7 @@ Expected: FAIL (cannot find `../fetch`).
 ```ts
 // libs/anime/data-access/src/lib/anime-detail/fetch.ts
 import { print } from 'graphql';
-import type { AnimeDetail } from '@buscanime/shared-types';
+import type { AnimeDetail } from 'shared-types';
 import { AnimeDetailDocument, type AnimeDetailQuery } from '../graphql/generated/graphql.js';
 import { getAnilistEndpoint } from '../anilist/endpoint.js';
 import { toAnimeDetail } from './transform.js';
@@ -1115,9 +1115,9 @@ export function AnimeHero({ title, nativeTitle, coverImage, coverColor, bannerIm
 // apps/web/src/app/anime/[id]/[[...slug]]/page.tsx
 import type { Metadata } from 'next';
 import { notFound, permanentRedirect } from 'next/navigation';
-import { Header, Footer, Container, AnimeHero, StatList, ExternalLinks, DescriptionText, TagList, TrailerEmbed } from '@buscanime/ui';
-import { fetchAnimeDetail } from '@buscanime/anime-data-access';
-import { slugify, animeHref, type AnimeDetail } from '@buscanime/shared-types';
+import { Header, Footer, Container, AnimeHero, StatList, ExternalLinks, DescriptionText, TagList, TrailerEmbed } from 'ui';
+import { fetchAnimeDetail } from 'anime-data-access';
+import { slugify, animeHref, type AnimeDetail } from 'shared-types';
 
 interface RouteParams {
   params: Promise<{ id: string; slug?: string[] }>;
@@ -1215,11 +1215,11 @@ git commit -m "feat(web): add SSR anime detail page with metadata and slug redir
 
 **Files:** Create `apps/web/src/app/anime/[id]/[[...slug]]/loading.tsx`
 
-- [ ] **Step 1: Implement** (reuse `Skeleton` from `@buscanime/ui`)
+- [ ] **Step 1: Implement** (reuse `Skeleton` from `ui`)
 
 ```tsx
 // apps/web/src/app/anime/[id]/[[...slug]]/loading.tsx
-import { Header, Footer, Container, Skeleton } from '@buscanime/ui';
+import { Header, Footer, Container, Skeleton } from 'ui';
 
 export default function Loading() {
   return (
@@ -1267,8 +1267,8 @@ Replicates the `AnimeBrowser` error branch (`StatusState` + `isRateLimitError`).
 // apps/web/src/app/anime/[id]/[[...slug]]/error.tsx
 'use client';
 import { Hourglass, ServerCrash } from 'lucide-react';
-import { StatusState, Button } from '@buscanime/ui';
-import { isRateLimitError } from '@buscanime/anime-data-access';
+import { StatusState, Button } from 'ui';
+import { isRateLimitError } from 'anime-data-access';
 
 export default function Error({ error, reset }: { error: Error; reset: () => void }) {
   const rateLimited = isRateLimitError(error);
@@ -1308,7 +1308,7 @@ expect(screen.getByRole('link', { name: /naruto/i })).toHaveAttribute('href', '/
 
 ```tsx
 import Link from 'next/link';
-import { animeHref } from '@buscanime/shared-types';
+import { animeHref } from 'shared-types';
 // ...
 <AnimeGrid>
   {animes.map((anime) => (

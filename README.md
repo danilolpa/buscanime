@@ -26,7 +26,7 @@ Para uma página de listagem de animes, é muito. Mas foi intencional.
 
 Um `create-next-app` resolveria o desafio. A escolha pelo monorepo existe para mostrar como eu pensaria numa base de código que aguentasse crescer, não só o que entrega o MVP.
 
-No monorepo, a biblioteca de componentes (`@buscanime/ui`) não sabe nada sobre dados. Nenhum componente faz fetch, nenhum conhece o TanStack Query. Essa separação não é só convenção — o ESLint quebra o build se um componente de UI tentar importar um hook de dados. É a forma de não depender da disciplina de todo o time quando o projeto crescer.
+No monorepo, a biblioteca de componentes (`ui`) não sabe nada sobre dados. Nenhum componente faz fetch, nenhum conhece o TanStack Query. Essa separação não é só convenção — o ESLint quebra o build se um componente de UI tentar importar um hook de dados. É a forma de não depender da disciplina de todo o time quando o projeto crescer.
 
 O reuso vem junto. Hoje tem um app. Se aparecer um painel admin ou um app mobile, eles consumiriam os mesmos componentes e os mesmos hooks sem copiar código. Com um repositório simples você percebe essa necessidade tarde demais.
 
@@ -69,7 +69,7 @@ buscanime/
 │   └── web-e2e/                    # Testes E2E com Playwright
 │
 ├── libs/
-│   ├── ui/                         # @buscanime/ui — biblioteca de componentes
+│   ├── ui/                         # ui — biblioteca de componentes
 │   │   ├── src/
 │   │   │   ├── lib/
 │   │   │   │   ├── primitives/     # Blocos base sem domínio (Button, Chip, Input…)
@@ -81,11 +81,11 @@ buscanime/
 │   │   └── .storybook/             # Configuração do Storybook
 │   │
 │   ├── anime/
-│   │   └── data-access/            # @buscanime/anime-data-access
+│   │   └── data-access/            # anime-data-access
 │   │       └── src/lib/            # Hooks TanStack Query + SDK GraphQL gerado
 │   │
 │   └── shared/
-│       └── types/                  # @buscanime/shared-types — interfaces compartilhadas
+│       └── types/                  # shared-types — interfaces compartilhadas
 │
 ├── .claude/
 │   └── skills/                     # Skills de projeto (validate, new-component, ds-check, storybook-check)
@@ -200,7 +200,7 @@ cd apps/web-e2e && pnpm exec playwright test --project=chromium
 
 ### Storybook
 
-Catálogo interativo de todos os componentes da `@buscanime/ui`.
+Catálogo interativo de todos os componentes da `ui`.
 
 ```bash
 pnpm exec nx storybook ui
@@ -236,13 +236,14 @@ No Storybook aberto (`http://localhost:6006`), abra o painel **Testing** na
 barra lateral e clique em **Run tests** — cada story é executada e marcada com
 ✓/✗, com link direto para depurar a que falhar.
 
-A configuração vive em `vitest.config.ts` na raiz (projeto `storybook`) e em
-`libs/ui/.storybook/main.ts` (addon registrado). Precisa ser `vitest.config.ts`
-(não `vitest.workspace.ts`) porque o Vitest 4 removeu o suporte a workspace
-files — o addon resolve o config subindo a partir de `libs/ui` e o Vitest só
-auto-carrega `vitest.config.*`/`vite.config.*`. O projeto usa `passWithNoTests`
-para não falhar quando rodado solto pela CLI sem o contexto do Storybook — o
-fluxo suportado é pelo painel da UI acima.
+A configuração vive em `libs/ui/vitest.storybook.config.ts` (referenciado por
+`vitest.config.ts` na raiz), em `libs/ui/.storybook/main.ts` (addon registrado)
+e em `libs/ui/.storybook/preview.ts` (tag global `test` para incluir todas as
+stories). Precisa ser `vitest.config.ts` na raiz (não `vitest.workspace.ts`)
+porque o Vitest 4 removeu o suporte a workspace files — o addon resolve o
+config a partir de `libs/ui` e o Vitest auto-carrega `vitest.config.*`/`vite.config.*`.
+O projeto usa `passWithNoTests` para não falhar quando rodado solto pela CLI
+sem o contexto do Storybook — o fluxo suportado é pelo painel da UI acima.
 
 ---
 
@@ -260,7 +261,7 @@ O app pontua **100 no Lighthouse** em todas as categorias: Performance, Accessib
 
 Antes de implementar, o Figma foi auditado. Um dos problemas encontrados foi o badge de score amarelo — a combinação de texto escuro sobre amarelo claro não atingia o contraste mínimo exigido pelo WCAG. A cor foi ajustada antes de virar código, não depois.
 
-Cada componente da `@buscanime/ui` tem testes automatizados com `vitest-axe`, que roda o motor do axe-core direto no Vitest. Se um componente introduzir uma violação de acessibilidade, o teste quebra antes de chegar no PR.
+Cada componente da `ui` tem testes automatizados com `vitest-axe`, que roda o motor do axe-core direto no Vitest. Se um componente introduzir uma violação de acessibilidade, o teste quebra antes de chegar no PR.
 
 Outras decisões que contribuíram para o score:
 

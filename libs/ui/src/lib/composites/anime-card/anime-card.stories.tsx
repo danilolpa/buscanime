@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { AnimeCard } from './anime-card';
-import type { Anime } from '@buscanime/shared-types';
+import type { Anime } from 'shared-types';
 
 const baseAnime: Anime = {
   id: 1,

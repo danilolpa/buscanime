@@ -1,12 +1,6 @@
 import Link from 'next/link';
 import { Ghost, Home } from 'lucide-react';
-import {
-  Header,
-  Footer,
-  Container,
-  StatusState,
-  buttonVariants,
-} from '@buscanime/ui';
+import { Header, Footer, Container, StatusState, buttonVariants } from 'ui';
 
 export default function AnimeNotFound() {
   return (

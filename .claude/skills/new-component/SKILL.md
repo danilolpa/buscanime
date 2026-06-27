@@ -22,7 +22,7 @@ If the user didn't say, ask:
    - `primitives` — base block, no anime domain (Button, Chip, Input).
    - `composites` — primitives + domain (AnimeCard, Breadcrumb).
    - `layout` — page structure (Container, Header, Footer).
-     If it would import from `@buscanime/anime-data-access`, it's in the wrong lib
+     If it would import from `anime-data-access`, it's in the wrong lib
      (it belongs in the app).
 
 `PascalName` = name in PascalCase. Capitalized `Layer` = `Primitives`/`Composites`/`Layout`.

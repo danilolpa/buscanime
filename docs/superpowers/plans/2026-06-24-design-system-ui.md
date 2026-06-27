@@ -1,10 +1,10 @@
-# Design System `@buscanime/ui` Implementation Plan
+# Design System `ui` Implementation Plan
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Construir todos os componentes presentational de `@buscanime/ui` em isolamento (Storybook), com Tailwind v4, cva, lucide-react e a11y verificada por vitest-axe — prontos pra fase de feature plugar.
+**Goal:** Construir todos os componentes presentational de `ui` em isolamento (Storybook), com Tailwind v4, cva, lucide-react e a11y verificada por vitest-axe — prontos pra fase de feature plugar.
 
-**Architecture:** Componentes presentational na lib `@buscanime/ui` (`type:ui`, sem `data-access`). Variantes com **cva + tailwind-merge** (`cn` util). Tokens de tema em **fonte única** `libs/ui/src/styles/theme.css` (importada pelo app e pelo Storybook). Cada componente = `*.tsx` + `*.stories.tsx` + `*.spec.tsx`, exportado pelo barrel. `AnimeCard` consome o tipo `Anime` de `@buscanime/shared-types` (boundary `type:ui → type:util` ✓).
+**Architecture:** Componentes presentational na lib `ui` (`type:ui`, sem `data-access`). Variantes com **cva + tailwind-merge** (`cn` util). Tokens de tema em **fonte única** `libs/ui/src/styles/theme.css` (importada pelo app e pelo Storybook). Cada componente = `*.tsx` + `*.stories.tsx` + `*.spec.tsx`, exportado pelo barrel. `AnimeCard` consome o tipo `Anime` de `shared-types` (boundary `type:ui → type:util` ✓).
 
 **Tech Stack:** Nx 23, React 19, TypeScript, Tailwind v4, class-variance-authority + clsx + tailwind-merge, lucide-react, Storybook v10 (builder Vite), Vitest + Testing Library + user-event + vitest-axe.
 
@@ -315,7 +315,7 @@ API: `size?: 'md'|'lg'`, `as?: 'span'|'a'`. Render "BUSC" (text-white) + "ANIME"
 
 **Files:** `anime-card/{anime-card.tsx,*.stories.tsx,*.spec.tsx}`; modify `libs/ui/package.json`.
 
-- **Step 0 (workspace dep):** `AnimeCard` importa `@buscanime/shared-types`. Adicionar `"@buscanime/shared-types": "workspace:*"` em `libs/ui/package.json` (criar o campo `"dependencies"` se não existir) e rodar `pnpm install`. Sem isso o Vitest/bundler não resolve o import no spec. (Boundary `type:ui → type:util` permite.)
+- **Step 0 (workspace dep):** `AnimeCard` importa `shared-types`. Adicionar `"shared-types": "workspace:*"` em `libs/ui/package.json` (criar o campo `"dependencies"` se não existir) e rodar `pnpm install`. Sem isso o Vitest/bundler não resolve o import no spec. (Boundary `type:ui → type:util` permite.)
 - Spec (TDD): dado um `Anime` mock, renderiza `alt`=título, título, chips de gênero, e o `AnimeRating`; axe sem violações.
 
 ```tsx
@@ -323,7 +323,7 @@ import { render, screen } from '@testing-library/react';
 import { axe } from 'vitest-axe';
 import { it, expect } from 'vitest';
 import { AnimeCard } from './anime-card';
-import type { Anime } from '@buscanime/shared-types';
+import type { Anime } from 'shared-types';
 
 const anime: Anime = { id: 1, title: 'Naruto', coverImage: 'n.jpg', averageScore: 88, format: 'TV', genres: ['Action', 'Drama'] };
 
@@ -343,7 +343,7 @@ it('sem violações de a11y', async () => {
 - Implementação (img nativa — sem next/image, mantém DS framework-agnóstico; overlay gradiente p/ contraste do título):
 
 ```tsx
-import type { Anime } from '@buscanime/shared-types';
+import type { Anime } from 'shared-types';
 import { Chip } from '../chip/chip.js';
 import { AnimeRating } from '../anime-rating/anime-rating.js';
 

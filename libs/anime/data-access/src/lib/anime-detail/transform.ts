@@ -3,7 +3,7 @@ import type {
   AnimeDetailExternalLink,
   AnimeDetailTag,
   MediaFormat,
-} from '@buscanime/shared-types';
+} from 'shared-types';
 import type { AnimeDetailQuery } from '../graphql/generated/graphql.js';
 
 type Media = NonNullable<AnimeDetailQuery['Media']>;

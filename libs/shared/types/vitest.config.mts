@@ -4,7 +4,7 @@ export default defineConfig(() => ({
   root: __dirname,
   cacheDir: '../../../node_modules/.vite/libs/shared/types',
   test: {
-    name: '@buscanime/shared-types',
+    name: 'shared-types',
     watch: false,
     globals: true,
     environment: 'node',

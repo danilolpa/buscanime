@@ -1,5 +1,5 @@
 /**
- * @buscanime/anime-data-access
+ * anime-data-access
  *
  * Camada de acesso a dados da AniList: transporte HTTP, mapeamento GraphQL → domínio
  * e hooks React Query. Documentação completa em `libs/anime/data-access/README.md`.

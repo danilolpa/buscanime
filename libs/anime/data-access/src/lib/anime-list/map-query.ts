@@ -1,4 +1,4 @@
-import type { Anime } from '@buscanime/shared-types';
+import type { Anime } from 'shared-types';
 import type { AnimeListQuery } from '../graphql/generated/graphql.js';
 import { toAnime } from './transform.js';
 import type { AnimeListPageResult } from './types.js';

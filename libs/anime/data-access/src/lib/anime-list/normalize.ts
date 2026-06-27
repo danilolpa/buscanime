@@ -1,4 +1,4 @@
-import type { MediaFormat } from '@buscanime/shared-types';
+import type { MediaFormat } from 'shared-types';
 import type { MediaSort } from '../graphql/generated/graphql.js';
 
 /**

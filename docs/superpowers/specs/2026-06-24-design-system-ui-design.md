@@ -1,4 +1,4 @@
-# Spec — Design System `@buscanime/ui`
+# Spec — Design System `ui`
 
 **Data:** 2026-06-24
 **Status:** Aprovado em discussão — aguardando revisão
@@ -8,11 +8,11 @@
 
 ## 1. Contexto e objetivo
 
-A fundação do monorepo está pronta (`@buscanime/ui` existe como stub, Tailwind v4 cabeado, boundaries `type:*` ativas). Esta fase constrói **todos os componentes de UI** do app de listagem de animes — de forma **isolada, com Storybook** — antes de montar qualquer tela.
+A fundação do monorepo está pronta (`ui` existe como stub, Tailwind v4 cabeado, boundaries `type:*` ativas). Esta fase constrói **todos os componentes de UI** do app de listagem de animes — de forma **isolada, com Storybook** — antes de montar qualquer tela.
 
 Referência visual: o mock do Figma (header roxo "BUSCANIME", barra de filtros por formato, busca, grid 4-col de cards com capa + título + chips de gênero + rating %, botão "Ver mais", footer roxo).
 
-Todos os componentes são **presentational** e vivem em `@buscanime/ui` (`type:ui`): recebem dados/handlers por props, **não** acessam `data-access`. A fiação com dados (página, estado, query) é a **fase de feature**, fora desta spec.
+Todos os componentes são **presentational** e vivem em `ui` (`type:ui`): recebem dados/handlers por props, **não** acessam `data-access`. A fiação com dados (página, estado, query) é a **fase de feature**, fora desta spec.
 
 ## 2. Escopo
 
@@ -40,7 +40,7 @@ Todos os componentes são **presentational** e vivem em `@buscanime/ui` (`type:u
 | Ícones              | **lucide-react**                                                         |
 | Typography          | **Sem primitivos** — classes Tailwind direto                             |
 | Button: ícone       | prop genérica **`icon?: ReactNode`** — sempre renderizado à esquerda     |
-| AnimeCard props     | recebe o tipo **`Anime`** de `@buscanime/shared-types`                   |
+| AnimeCard props     | recebe o tipo **`Anime`** de `shared-types`                              |
 | Rating alto         | **teal-700** + texto branco (contraste — ver §4)                         |
 | SearchBar           | **componente** próprio (Input + Button), não composição na página        |
 | Amarelo             | **yellow-300** (pode subir p/ `yellow-400` se ficar pálido no Storybook) |
@@ -51,7 +51,7 @@ Todos os componentes são **presentational** e vivem em `@buscanime/ui` (`type:u
 
 Os tokens vivem em **um único arquivo**: `libs/ui/src/styles/theme.css` (`@import 'tailwindcss'; @theme { … }`). Tanto `apps/web/src/app/global.css` quanto o `.storybook/preview` **importam esse arquivo** — zero duplicação de tokens.
 
-**Supersede a fundação:** o `global.css` hoje tem tokens placeholder `--color-score-low/mid/high/ink` (criados na Onda 2 da fundação, com cores diferentes — `#e53e3e`/`#38a169`). Eles são **removidos** e substituídos pelos abaixo. O `global.css` passa a conter só o import do tema + o `@source` (o caminho exato do import — relativo vs export do pacote `@buscanime/ui` — fica a critério do plano).
+**Supersede a fundação:** o `global.css` hoje tem tokens placeholder `--color-score-low/mid/high/ink` (criados na Onda 2 da fundação, com cores diferentes — `#e53e3e`/`#38a169`). Eles são **removidos** e substituídos pelos abaixo. O `global.css` passa a conter só o import do tema + o `@source` (o caminho exato do import — relativo vs export do pacote `ui` — fica a critério do plano).
 
 | Token            | Valor                | Uso                                        |
 | ---------------- | -------------------- | ------------------------------------------ |

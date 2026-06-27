@@ -8,7 +8,7 @@
 
 ## 1. Contexto e objetivo
 
-A fundação (pipeline GraphQL: hook `useAnimeList`, Route Handler `/api/anilist`, Sentry) e o Design System (`@buscanime/ui`: Header, Footer, ToggleGroup, SearchBar, AnimeCard, AnimeGrid, skeletons, StatusState, Button, etc.) já existem. Esta fase **monta a página de listagem** (o wireframe) compondo o DS com os dados reais da AniList, com filtro por formato, busca por texto, paginação "Ver mais" e feedbacks de loading.
+A fundação (pipeline GraphQL: hook `useAnimeList`, Route Handler `/api/anilist`, Sentry) e o Design System (`ui`: Header, Footer, ToggleGroup, SearchBar, AnimeCard, AnimeGrid, skeletons, StatusState, Button, etc.) já existem. Esta fase **monta a página de listagem** (o wireframe) compondo o DS com os dados reais da AniList, com filtro por formato, busca por texto, paginação "Ver mais" e feedbacks de loading.
 
 ## 2. Escopo
 

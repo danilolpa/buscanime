@@ -1,5 +1,5 @@
-import type { MediaFormat } from '@buscanime/shared-types';
-import type { ToggleGroupOption } from '@buscanime/ui';
+import type { MediaFormat } from 'shared-types';
+import type { ToggleGroupOption } from 'ui';
 
 export const FORMAT_OPTIONS: ToggleGroupOption[] = [
   { label: 'All Formats', value: 'ALL' },

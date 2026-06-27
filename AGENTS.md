@@ -49,7 +49,7 @@ Projects: `web` (app), `ui`, `anime-data-access`, `shared-types`.
    `data-access` imports only `data-access`/`util`; the app imports all.
    `ui` never imports `data-access` (UI is pure, no fetching).
 3. **Import from the lib root**, never an internal path:
-   `import { Button } from '@buscanime/ui'` — not `.../lib/primitives/button`.
+   `import { Button } from 'ui'` — not `.../lib/primitives/button`.
 4. **Conventional commits** (commitlint runs in the husky hook).
    E.g. `feat(ui): ...`, `fix(web): ...`.
 
@@ -70,7 +70,7 @@ build = do not ship. Skill: `validate`.
 ## Common tasks
 
 - New lib: `pnpm nx g @nx/react:library <name> --directory=libs/<name>
---bundler=vite --unitTestRunner=vitest --importPath=@buscanime/<name>
+--bundler=vite --unitTestRunner=vitest --importPath=<name>
 --no-component --no-interactive` then `pnpm nx sync` (updates paths and tags).
 - New UI component: skill `new-component`, or follow `libs/ui/AGENTS.md`.
 

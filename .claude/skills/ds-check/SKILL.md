@@ -19,7 +19,7 @@ with `{/* ds-ok */}` on the same line to suppress it.
 
 ### Step 1 — Raw HTML that should be a DS component
 
-Native elements that have an equivalent in `@buscanime/ui`:
+Native elements that have an equivalent in `ui`:
 
 ```bash
 # <button> → use <Button>
@@ -34,14 +34,14 @@ rg -n '<input' apps/web/src libs/ui/src -g '*.tsx' | rg -v 'ds-ok'
 
 ### Step 2 — Internal-path import of the UI lib
 
-Consumers must import from the barrel (`@buscanime/ui`), never a subpath:
+Consumers must import from the barrel (`ui`), never a subpath:
 
 ```bash
-rg -n "from '@buscanime/ui/" apps/web/src libs/ui/src -g '*.{ts,tsx}'
+rg -n "from 'ui/" apps/web/src libs/ui/src -g '*.{ts,tsx}'
 rg -n "from '\.\./.*/(primitives|composites|layout)/" apps/web/src -g '*.{ts,tsx}'
 ```
 
-Any match here is a violation → switch to `import { X } from '@buscanime/ui'`.
+Any match here is a violation → switch to `import { X } from 'ui'`.
 
 ### Step 3 — Stray hex (color outside a token)
 

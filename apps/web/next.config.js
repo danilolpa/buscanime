@@ -5,11 +5,7 @@ const { withSentryConfig } = require('@sentry/nextjs');
 const nextConfig = {
   // Next.js options go here
   // See: https://nextjs.org/docs/app/api-reference/config/next-config-js
-  transpilePackages: [
-    '@buscanime/ui',
-    '@buscanime/anime-data-access',
-    '@buscanime/shared-types',
-  ],
+  transpilePackages: ['ui', 'anime-data-access', 'shared-types'],
   images: {
     remotePatterns: [
       { protocol: 'https', hostname: 's4.anilist.co' },

@@ -12,14 +12,14 @@ import {
   StatusState,
   Button,
   Container,
-} from '@buscanime/ui';
+} from 'ui';
 import {
   useAnimeList,
   useAnimeFormatCounts,
   isRateLimitError,
   type AnimeListPageResult,
-} from '@buscanime/anime-data-access';
-import { animeHref } from '@buscanime/shared-types';
+} from 'anime-data-access';
+import { animeHref } from 'shared-types';
 import { useAnimeFilters } from './use-anime-filters';
 import { FORMAT_OPTIONS, toMediaFormat } from './format-options';
 import { buildAnimeListUrl } from './anime-list-url';

@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { AnimeGrid } from './anime-grid';
 import { AnimeCard } from '../anime-card/anime-card';
 import { Container } from '../../layout/container/container';
-import type { Anime } from '@buscanime/shared-types';
+import type { Anime } from 'shared-types';
 
 const makeAnime = (id: number, title: string): Anime => ({
   id,

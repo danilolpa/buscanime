@@ -5,7 +5,7 @@ export default defineConfig(() => ({
   cacheDir: '../../node_modules/.vite/libs/ui',
   plugins: [react()],
   test: {
-    name: '@buscanime/ui',
+    name: 'ui',
     watch: false,
     globals: true,
     environment: 'jsdom',

@@ -1,7 +1,7 @@
 'use client';
 import { Hourglass, ServerCrash } from 'lucide-react';
-import { StatusState, Button } from '@buscanime/ui';
-import { isRateLimitError } from '@buscanime/anime-data-access';
+import { StatusState, Button } from 'ui';
+import { isRateLimitError } from 'anime-data-access';
 
 export default function Error({
   error,

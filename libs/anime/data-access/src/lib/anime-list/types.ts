@@ -1,4 +1,4 @@
-import type { Anime, MediaFormat } from '@buscanime/shared-types';
+import type { Anime, MediaFormat } from 'shared-types';
 
 /**
  * Resultado normalizado de uma página da listagem AniList.

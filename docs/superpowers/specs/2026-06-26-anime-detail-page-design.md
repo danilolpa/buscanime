@@ -91,7 +91,7 @@ AniList source, different rendering strategy chosen per surface.
   is a bare boundary (`<h2>` + button), and the `StatusState` "Erro ao carregar"
   treatment currently lives in the **client** `AnimeBrowser` (the React Query
   `query.isError` branch). The new `error.tsx` replicates that branch: `StatusState`
-  (exported from `@buscanime/ui`) with a retry, branching on `isRateLimitError(error)`
+  (exported from `ui`) with a retry, branching on `isRateLimitError(error)`
   for the rate-limit copy.
 - **`loading.tsx`** at the route renders a lightweight hero skeleton while the
   server fetch is in flight.
@@ -103,10 +103,10 @@ AniList source, different rendering strategy chosen per surface.
   presentational and decoupled from Next. (The `AnimeGridSkeleton` placeholders
   have no `id`/title and stay unlinked.)
 - New helpers `slugify(title)` and `animeHref(id, title)` exported from
-  `@buscanime/shared-types` (lowest-level shared lib, no deps), used by both the
+  `shared-types` (lowest-level shared lib, no deps), used by both the
   home (build href) and the detail page (compute canonical slug for redirect).
 
-### Data layer (`@buscanime/anime-data-access`)
+### Data layer (`anime-data-access`)
 
 - New query: `libs/anime/data-access/src/lib/queries/anime-detail.graphql`
   (`query AnimeDetail($id: Int)`), picked up by the existing codegen
@@ -131,7 +131,7 @@ AniList source, different rendering strategy chosen per surface.
     extend `isRateLimitError` to also accept the raw `Response` status. The plan
     picks one; no new error class is required.
 - New transform `toAnimeDetail(media)` mirroring `toAnime`.
-- New type `AnimeDetail` in `@buscanime/shared-types`.
+- New type `AnimeDetail` in `shared-types`.
 
 ### AniList fields (MVP)
 
@@ -141,7 +141,7 @@ AniList source, different rendering strategy chosen per surface.
 | Sidebar stats | `meanScore`, `popularity`, `favourites`, `episodes`, `duration`, `status`, `startDate`, `endDate`, `season` + `seasonYear`, `format`, `source`, `studios(isMain: true) { nodes { name } }` |
 | Content       | `description`, `genres`, `tags { name, rank }`, `trailer { id, site, thumbnail }`, `externalLinks { url, site, color, type }`                                                              |
 
-### New UI components (`@buscanime/ui`)
+### New UI components (`ui`)
 
 Each follows the repo convention: `libs/ui/src/lib/<name>/<name>.tsx` +
 `.spec.tsx` + `.stories.tsx`. All presentational (no data fetching, no router).

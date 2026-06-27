@@ -1,4 +1,4 @@
-import type { Anime, MediaFormat } from '@buscanime/shared-types';
+import type { Anime, MediaFormat } from 'shared-types';
 import type { AnimeListQuery } from '../graphql/generated/graphql.js';
 
 type Media = NonNullable<NonNullable<AnimeListQuery['Page']>['media']>[number];
@@ -6,7 +6,7 @@ type Media = NonNullable<NonNullable<AnimeListQuery['Page']>['media']>[number];
 /**
  * Converte um item GraphQL `Media` no tipo de domínio `Anime`.
  *
- * Isola o shape da API AniList do que a UI consome (`@buscanime/shared-types`).
+ * Isola o shape da API AniList do que a UI consome (`shared-types`).
  * Se a query GraphQL mudar campos, só este arquivo precisa atualizar.
  *
  * Regras de mapeamento:

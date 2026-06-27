@@ -198,7 +198,7 @@ export function useAnimeFormatCounts({ search, endpoint }: UseAnimeFormatCountsP
 - `enabled: Boolean(trimmed)` → **nenhuma request sem busca**.
 - `endpoint` é o mesmo seam de teste das outras (relativo→absoluto via `createAnilistSdk`).
 - Exportar no barrel `libs/anime/data-access/src/index.ts`.
-- **Rebuild do `dist`** depois (lib dist-consumed — `nx build @buscanime/anime-data-access`), senão a app não enxerga o hook novo. Ver [[anime-data-access-dist-consumed]].
+- **Rebuild do `dist`** depois (lib dist-consumed — `nx build anime-data-access`), senão a app não enxerga o hook novo. Ver [[anime-data-access-dist-consumed]].
 
 ### B.3 `ToggleGroup` (DS — `libs/ui/src/lib/toggle-group/toggle-group.tsx`)
 

@@ -1,13 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Ghost, Home } from 'lucide-react';
-import {
-  Header,
-  Footer,
-  Container,
-  StatusState,
-  buttonVariants,
-} from '@buscanime/ui';
+import { Header, Footer, Container, StatusState, buttonVariants } from 'ui';
 
 // 404 global (URLs desconhecidas). Não indexar páginas de erro.
 export const metadata: Metadata = {

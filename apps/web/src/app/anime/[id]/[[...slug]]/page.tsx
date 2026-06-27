@@ -12,14 +12,14 @@ import {
   TrailerEmbed,
   Breadcrumb,
   stripAniListHtml,
-} from '@buscanime/ui';
-import { fetchAnimeDetail } from '@buscanime/anime-data-access';
+} from 'ui';
+import { fetchAnimeDetail } from 'anime-data-access';
 import {
   slugify,
   animeHref,
   type AnimeDate,
   type AnimeDetail,
-} from '@buscanime/shared-types';
+} from 'shared-types';
 
 function fmtDate(d: AnimeDate | null): string | null {
   if (!d?.year) return null;

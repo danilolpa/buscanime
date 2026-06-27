@@ -17,9 +17,9 @@
     "strict": true,
     "target": "es2022",
     "baseUrl": ".",
-    "customConditions": ["@buscanime/source"],
+    "customConditions": ["source"],
     "paths": {
-      "@buscanime/web/*": ["apps/web/src/*"]
+      "web/*": ["apps/web/src/*"]
     }
   }
 }
