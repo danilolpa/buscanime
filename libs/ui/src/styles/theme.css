@@ -4,7 +4,10 @@
 @theme {
   --color-brand: #6d28d9; /* violet-700 */
   --color-accent: #fde047; /* yellow-300 */
-  --color-ink: #1a1a1a;
+
+  --color-ink: #1a1a1a; /* texto primário — títulos, corpo */
+  --color-ink-muted: #525252; /* texto secundário — subtítulos, labels, meta */
+  --color-ink-subtle: #737373; /* texto terciário — hints, placeholders */
 
   --animate-status-in: status-in 0.3s ease-out;
   --animate-fade-in: fade-in 0.6s ease-out both;

@@ -61,11 +61,13 @@ export function AnimeHero({
           >
             {title}
           </h1>
-          {nativeTitle && <p className="text-sm text-ink/60">{nativeTitle}</p>}
+          {nativeTitle && (
+            <p className="text-sm text-ink-muted">{nativeTitle}</p>
+          )}
           <div className="flex flex-wrap items-center justify-center gap-2 md:justify-start">
             {score != null && <AnimeRating value={score} />}
             {meta.map((m) => (
-              <span key={m} className="text-sm text-ink/70">
+              <span key={m} className="text-sm text-ink-muted">
                 {m}
               </span>
             ))}

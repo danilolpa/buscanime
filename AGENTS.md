@@ -32,11 +32,19 @@ Projects: `web` (app), `ui`, `anime-data-access`, `shared-types`.
 ## Hard rules
 
 1. **Colors: never use raw Tailwind colors** (`bg-purple-700`, `text-red-500`,
-   `#hex`). Always use the semantic theme tokens: `bg-brand`, `text-accent`,
-   `text-ink` (with opacity like `bg-brand/80`). Missing a token? Add it to
-   `libs/ui/src/styles/theme.css` first — don't improvise in the component.
-   Enforced by ESLint (`no-restricted-syntax`) in `libs/ui` and `apps/web` —
-   raw color breaks lint.
+   `#hex`). Always use the semantic theme tokens defined in
+   `libs/ui/src/styles/theme.css`. Current tokens:
+   - `bg-brand` / `text-brand` — cor principal da marca (#6d28d9)
+   - `bg-accent` / `text-accent` — destaque / CTA (#fde047)
+   - `text-ink` — texto primário, títulos (#1a1a1a)
+   - `text-ink-muted` — texto secundário, subtítulos, meta (#525252)
+   - `text-ink-subtle` — texto terciário, hints, placeholders (#737373)
+
+   Missing a token? Add it to `libs/ui/src/styles/theme.css` first.
+   Opacity modifiers (`text-ink/60`) are linter-safe but prefer named tokens —
+   on colored backgrounds opacity blends with the bg and produces unpredictable results.
+   Enforced by ESLint (`no-restricted-syntax`) in `libs/ui` and `apps/web`.
+
 2. **Nx boundaries** (lint-enforced): `ui` imports only `ui`/`util`;
    `data-access` imports only `data-access`/`util`; the app imports all.
    `ui` never imports `data-access` (UI is pure, no fetching).

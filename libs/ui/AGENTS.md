@@ -34,10 +34,20 @@ Plus a named export in `src/index.ts`, under the layer section
 
 ## Colors — semantic tokens only
 
-Use `bg-brand`, `text-accent`, `text-ink` (with opacity: `bg-brand/80`).
 Raw Tailwind color (`bg-purple-700`, `text-red-500`) **breaks lint**.
-New token? Add it to `src/styles/theme.css` before using.
-Current tokens: `--color-brand` (#6d28d9), `--color-accent` (#fde047), `--color-ink` (#1a1a1a).
+Novo token? Adicione em `src/styles/theme.css` antes de usar — não improvise.
+
+| Token                       | Valor   | Quando usar                                      |
+| --------------------------- | ------- | ------------------------------------------------ |
+| `bg-brand` / `text-brand`   | #6d28d9 | Cor principal da marca                           |
+| `bg-accent` / `text-accent` | #fde047 | Destaque / CTA                                   |
+| `text-ink`                  | #1a1a1a | Texto primário — títulos, corpo                  |
+| `text-ink-muted`            | #525252 | Texto secundário — subtítulos, labels, meta info |
+| `text-ink-subtle`           | #737373 | Texto terciário — hints, placeholders            |
+
+Opacity modifiers (`text-ink/60`) são permitidos pelo linter mas **evite** —
+em fundos coloridos o valor mistura com o fundo e fica imprevisível.
+Prefira tokens nomeados com valor sólido.
 
 ## Expected skeletons (copy these patterns)
 
