@@ -17,3 +17,6 @@ export * from './lib/status-state/status-state';
 export * from './lib/description-text/description-text';
 export * from './lib/tag-list/tag-list';
 export * from './lib/stat-list/stat-list';
+export * from './lib/external-links/external-links';
+export * from './lib/trailer-embed/trailer-embed';
+export * from './lib/anime-hero/anime-hero';
