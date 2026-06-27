@@ -16,7 +16,16 @@ export const Solid: Story = {
 };
 
 export const Outline: Story = {
-  args: { children: 'Ver mais', variant: 'outline' },
+  args: { children: 'Cancelar', variant: 'outline' },
+};
+
+export const Accent: Story = {
+  args: {
+    children: 'Ver mais',
+    variant: 'accent',
+    size: 'lg',
+    icon: <Plus size={16} />,
+  },
 };
 
 export const Active: Story = {

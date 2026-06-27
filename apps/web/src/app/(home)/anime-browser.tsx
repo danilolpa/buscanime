@@ -144,6 +144,7 @@ export function AnimeBrowser({ endpoint }: AnimeBrowserProps) {
               {query.hasNextPage && (
                 <div className="mt-8 flex justify-center">
                   <Button
+                    variant="accent"
                     size="lg"
                     icon={<Plus />}
                     loading={query.isFetchingNextPage}
