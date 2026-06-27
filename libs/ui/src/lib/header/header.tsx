@@ -15,7 +15,7 @@ export const Header = forwardRef<HTMLElement, HeaderProps>(function Header(
     <header ref={ref} className={cn('bg-brand', className)} {...props}>
       <Container>
         <div className="flex items-center justify-between py-4">
-          <Logo size="md" />
+          <Logo size="md" as="a" href="/" aria-label="BuscAnime — início" />
           {children}
         </div>
       </Container>
