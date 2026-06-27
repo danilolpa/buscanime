@@ -27,15 +27,13 @@ export interface DescriptionTextProps {
 export function DescriptionText({ html }: DescriptionTextProps) {
   const text = stripAniListHtml(html);
   if (!text) {
-    return (
-      <p className="text-sm text-neutral-500">Sem descrição disponível.</p>
-    );
+    return <p className="text-sm text-ink-subtle">Sem descrição disponível.</p>;
   }
   const paragraphs = text
     .split(/\n{2,}/)
     .map((p) => p.replace(/\n/g, ' ').trim());
   return (
-    <div className="space-y-3 text-sm leading-relaxed text-neutral-700">
+    <div className="space-y-3 text-sm leading-relaxed text-ink-muted">
       {paragraphs.map((p, i) => (
         <p key={i}>{p}</p>
       ))}

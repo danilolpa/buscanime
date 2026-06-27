@@ -30,7 +30,7 @@ export function TrailerEmbed({
           type="button"
           onClick={() => setPlaying(true)}
           aria-label={`Reproduzir trailer: ${title}`}
-          className="group absolute inset-0 h-full w-full"
+          className="group absolute inset-0 h-full w-full focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
         >
           {thumbnail && (
             <img

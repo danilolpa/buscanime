@@ -9,6 +9,9 @@
   --color-ink-muted: #525252; /* texto secundário — subtítulos, labels, meta */
   --color-ink-subtle: #737373; /* texto terciário — hints, placeholders */
 
+  --color-surface: #ffffff; /* fundo de superfície — cards, inputs */
+  --color-border: #e5e5e5; /* bordas e divisores sutis */
+
   --animate-status-in: status-in 0.3s ease-out;
   --animate-fade-in: fade-in 0.6s ease-out both;
 }
