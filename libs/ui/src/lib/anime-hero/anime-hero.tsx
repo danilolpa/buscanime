@@ -22,22 +22,24 @@ export function AnimeHero({
 }: AnimeHeroProps) {
   return (
     <section className="relative" aria-labelledby="anime-hero-title">
-      <div
-        className="h-48 w-full bg-cover bg-center md:h-64"
-        style={{
-          backgroundColor: coverColor ?? '#1a1a1a',
-          backgroundImage: bannerImage ? `url(${bannerImage})` : undefined,
-        }}
-        aria-hidden="true"
-      />
+      <div className="overflow-hidden">
+        <div
+          className="h-48 w-full bg-cover bg-center motion-safe:animate-scale-down md:h-64"
+          style={{
+            backgroundColor: coverColor ?? '#1a1a1a',
+            backgroundImage: bannerImage ? `url(${bannerImage})` : undefined,
+          }}
+          aria-hidden="true"
+        />
+      </div>
       <div className="pointer-events-none absolute inset-x-0 top-0 h-48 bg-gradient-to-b from-black/40 to-transparent md:h-64" />
       <Container className="relative -mt-20 flex flex-col gap-4 md:-mt-24 md:flex-row md:items-end">
         {coverImage && (
-          <div className="flex-none md:sticky md:top-20 md:self-start">
+          <div className="flex-none overflow-hidden rounded-lg shadow-lg md:sticky md:top-20 md:self-start">
             <img
               src={coverImage}
               alt={title}
-              className="h-48 w-32 rounded-lg object-cover shadow-lg md:h-64 md:w-44"
+              className="h-48 w-32 object-cover motion-safe:animate-scale-down md:h-64 md:w-44"
             />
           </div>
         )}

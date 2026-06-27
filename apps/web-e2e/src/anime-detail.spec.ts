@@ -9,9 +9,17 @@ test('navega de um card da home para o detalhe', async ({ page }) => {
   await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
 });
 
-test('id não-numérico retorna 404', async ({ page }) => {
+test('id não-numérico retorna 404 e mostra a página de não encontrado', async ({
+  page,
+}) => {
   const res = await page.goto('/anime/not-a-number');
   expect(res?.status()).toBe(404);
+  await expect(
+    page.getByRole('heading', { name: 'Anime não encontrado' }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole('link', { name: /Voltar para a home/i }),
+  ).toBeVisible();
 });
 
 test('slug incorreto redireciona para o canônico', async ({ page }) => {
