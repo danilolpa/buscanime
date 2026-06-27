@@ -62,16 +62,22 @@ genres/tags, studios, trailer, and external links. Relational sections
 - **`generateMetadata`** uses the same fetch (dedup via the framework cache) to
   emit `<title>`, description (truncated plain text), and `og:image`
   (`coverImage.extraLarge` or `bannerImage`).
-- **`error.tsx`** at the route for upstream failures (reuses the existing
-  `StatusState` "Erro ao carregar" pattern).
+- **`error.tsx`** at the route for upstream failures. Note: there is no
+  route-level error template to copy today — the root `apps/web/src/app/error.tsx`
+  is a bare boundary (`<h2>` + button), and the `StatusState` "Erro ao carregar"
+  treatment currently lives in the **client** `AnimeBrowser` (the React Query
+  `query.isError` branch). The new `error.tsx` replicates that branch: `StatusState`
+  (exported from `@buscanime/ui`) with a retry, branching on `isRateLimitError(error)`
+  for the rate-limit copy.
 - **`loading.tsx`** at the route renders a lightweight hero skeleton while the
   server fetch is in flight.
 
 ### Home → detail links
 
-- The `<Link>` wrap lives in `apps/web/src/app/(home)/anime-browser.tsx` (and in
-  the skeleton grid usage) — wrap each `AnimeCard` with `next/link`. This keeps
-  `AnimeCard` presentational and decoupled from Next.
+- The `<Link>` wrap lives in `apps/web/src/app/(home)/anime-browser.tsx` —
+  wrap each rendered `AnimeCard` with `next/link`. This keeps `AnimeCard`
+  presentational and decoupled from Next. (The `AnimeGridSkeleton` placeholders
+  have no `id`/title and stay unlinked.)
 - New helpers `slugify(title)` and `animeHref(id, title)` exported from
   `@buscanime/shared-types` (lowest-level shared lib, no deps), used by both the
   home (build href) and the detail page (compute canonical slug for redirect).
@@ -81,13 +87,25 @@ genres/tags, studios, trailer, and external links. Relational sections
 - New query: `libs/anime/data-access/src/lib/queries/anime-detail.graphql`
   (`query AnimeDetail($id: Int)`), picked up by the existing codegen
   (`pnpm codegen` → `graphql-codegen --config libs/anime/data-access/codegen.ts`)
-  which regenerates `generated/graphql.ts` with an `AnimeDetail` SDK method.
+  which regenerates `generated/graphql.ts` with the `AnimeDetailQuery` type and
+  `AnimeDetailDocument` node that the raw fetch below consumes. (Codegen also
+  emits an `AnimeDetail` SDK method, but the server fetch path below does not use
+  it.)
 - New server fetch `fetchAnimeDetail(id: number)`:
-  - Calls AniList directly (`https://graphql.anilist.co`) with
-    `next: { revalidate: 3600 }`.
+  - Uses a raw `fetch` to AniList directly (`https://graphql.anilist.co`) with the
+    generated `AnimeDetailDocument` (`print()`-ed) as the query body, and
+    `next: { revalidate: 3600 }`. Going through Next's `fetch` (not the
+    `graphql-request` client) is what gives us the Data Cache + request
+    memoization that dedups the `generateMetadata` and page calls. We still get
+    typed results from the generated `AnimeDetailQuery` type.
   - Returns `AnimeDetail | null` (null when no media).
-  - Wraps upstream errors in the existing `AnilistError` so `error.tsx` and rate
-    limiting behave consistently with the rest of the app.
+  - On a non-OK response it throws (propagating to the route `error.tsx`). There
+    is **no** `AnilistError` class today — the existing primitive is the
+    `isRateLimitError(error)` duck-type (`error.response.status === 429`) in
+    `anilist-error.ts`. To keep that working for the 429 case, throw an error
+    shaped so `isRateLimitError` still matches (i.e. carry `response.status`), or
+    extend `isRateLimitError` to also accept the raw `Response` status. The plan
+    picks one; no new error class is required.
 - New transform `toAnimeDetail(media)` mirroring `toAnime`.
 - New type `AnimeDetail` in `@buscanime/shared-types`.
 
@@ -135,8 +153,10 @@ Collapses to a single column on mobile.
 - Non-numeric/invalid `id` → `notFound()` (404).
 - Anime not found upstream → `notFound()` (404).
 - Slug mismatch/missing → `redirect()` 308 to canonical URL.
-- Upstream/network/rate-limit error → thrown `AnilistError` caught by route
-  `error.tsx` (reuses `StatusState`, with retry).
+- Upstream/network error → `fetchAnimeDetail` throws; caught by the route
+  `error.tsx`, which renders `StatusState` with a retry. The rate-limit (429)
+  case is detected via `isRateLimitError(error)` for the "Muitas buscas" copy —
+  same branch the client `AnimeBrowser` already uses.
 
 ## Testing
 
