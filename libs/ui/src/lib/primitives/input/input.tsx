@@ -4,7 +4,7 @@ import { cn } from '../../utils/cn';
 
 const input = cva(
   cn(
-    'w-full rounded-md border border-ink/20 bg-surface text-ink placeholder:text-ink/40',
+    'w-full rounded-md border border-border bg-surface text-ink placeholder:text-ink-subtle',
     'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand',
     'disabled:opacity-50 disabled:pointer-events-none',
   ),
@@ -36,7 +36,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
       {icon && (
         <span
           aria-hidden="true"
-          className="pointer-events-none absolute left-3 flex items-center text-ink/50"
+          className="pointer-events-none absolute left-3 flex items-center text-ink-subtle"
         >
           {icon}
         </span>

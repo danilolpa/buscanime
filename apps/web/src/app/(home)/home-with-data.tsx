@@ -4,10 +4,7 @@ import {
   QueryClient,
 } from '@tanstack/react-query';
 
-import {
-  fetchAnimeListPage,
-  getAnimeListInfiniteQueryOptions,
-} from 'anime-data-access';
+import { getAnimeListInfiniteQueryOptions } from 'anime-data-access';
 
 import { isSsrListingEnabled } from './ssr-listing';
 
@@ -28,37 +25,22 @@ export async function HomeWithData({
 }: HomeWithDataProps) {
   const queryClient = new QueryClient();
 
-  let serverListing = null;
-
-  const mediaFormat = toMediaFormat(initialFormat);
-
+  // 1ª página vem do servidor via prefetch + hidratação do React Query: o HTML
+  // já chega populado (crawler/LCP) e o client continua o infinite query sem
+  // refetch. Um único fetch por render — sem duplicar a página 1.
   if (isSsrListingEnabled()) {
-    serverListing = await fetchAnimeListPage({
-      page: 1,
-
-      search: initialQ,
-
-      format: mediaFormat,
-
-      transport: 'ssr',
-    });
-
     await queryClient.prefetchInfiniteQuery(
       getAnimeListInfiniteQueryOptions({
         search: initialQ,
 
-        format: mediaFormat,
+        format: toMediaFormat(initialFormat),
       }),
     );
   }
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <AnimeBrowser
-        initialFormat={initialFormat}
-        initialQ={initialQ}
-        serverListing={serverListing}
-      />
+      <AnimeBrowser initialFormat={initialFormat} initialQ={initialQ} />
     </HydrationBoundary>
   );
 }

@@ -81,7 +81,7 @@ describe('StatusState', () => {
       <StatusState tone="danger" icon={<SearchX />} title="Erro" />,
     );
     const circle = container.querySelector('[aria-hidden="true"]');
-    expect(circle).toHaveClass('bg-red-100', 'text-red-600');
+    expect(circle).toHaveClass('bg-danger-surface', 'text-danger');
   });
 
   it('aplica as classes do tone warning no círculo do ícone', () => {
@@ -89,7 +89,7 @@ describe('StatusState', () => {
       <StatusState tone="warning" icon={<SearchX />} title="Muitas buscas" />,
     );
     const circle = container.querySelector('[aria-hidden="true"]');
-    expect(circle).toHaveClass('bg-amber-100', 'text-amber-600');
+    expect(circle).toHaveClass('bg-warning-surface', 'text-warning');
   });
 
   it('aplica a animação de entrada sob motion-safe', () => {

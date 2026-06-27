@@ -42,7 +42,7 @@ export function AnimeHero({
           />
         )}
       </div>
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-48 bg-gradient-to-b from-black/40 to-transparent md:h-64" />
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-48 bg-gradient-to-b from-scrim/40 to-transparent md:h-64" />
       <Container className="relative -mt-20 flex flex-col items-center gap-4 text-center md:-mt-24 md:flex-row md:items-end md:text-left">
         {coverImage && (
           <div className="relative h-48 w-32 flex-none overflow-hidden rounded-lg shadow-lg md:sticky md:top-20 md:h-64 md:w-44 md:self-start">

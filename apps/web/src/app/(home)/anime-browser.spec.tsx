@@ -23,6 +23,7 @@ vi.mock('next/navigation', () => ({
   usePathname: () => '/',
 }));
 
+import { getAnimeListInfiniteQueryOptions } from 'anime-data-access';
 import { AnimeBrowser } from './anime-browser';
 
 const TEST_ENDPOINT = 'http://localhost/api/anilist';
@@ -86,27 +87,20 @@ function wrapper({ children }: { children: ReactNode }) {
 }
 
 describe('AnimeBrowser', () => {
-  it('renderiza serverListing imediatamente (sem skeleton)', () => {
-    render(
-      <AnimeBrowser
-        endpoint={TEST_ENDPOINT}
-        serverListing={{
-          items: [
-            {
-              id: 99,
-              title: 'Server Anime',
-              coverImage: 'https://s4.anilist.co/s.jpg',
-              averageScore: 90,
-              format: 'TV',
-              genres: ['Action'],
-            },
-          ],
-          pageInfo: { currentPage: 1, hasNextPage: false },
-        }}
-      />,
-      { wrapper },
+  it('renderiza a lista hidratada imediatamente (sem skeleton)', async () => {
+    // Simula o SSR: prefetch + cache populado antes do render (HydrationBoundary).
+    const client = new QueryClient({
+      defaultOptions: { queries: { retry: false } },
+    });
+    await client.prefetchInfiniteQuery(
+      getAnimeListInfiniteQueryOptions({ endpoint: TEST_ENDPOINT }),
     );
-    expect(screen.getByText('Server Anime')).toBeInTheDocument();
+    render(<AnimeBrowser endpoint={TEST_ENDPOINT} />, {
+      wrapper: ({ children }) => (
+        <QueryClientProvider client={client}>{children}</QueryClientProvider>
+      ),
+    });
+    expect(screen.getByText('Naruto')).toBeInTheDocument();
     expect(screen.queryByLabelText('Carregando anime')).not.toBeInTheDocument();
   });
 

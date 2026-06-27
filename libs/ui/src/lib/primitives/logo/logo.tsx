@@ -29,7 +29,7 @@ export function Logo({
       )}
       {...props}
     >
-      <span className="text-white">BUSC</span>
+      <span className="text-on-brand">BUSC</span>
       <span className="text-accent">ANIME</span>
     </Tag>
   );

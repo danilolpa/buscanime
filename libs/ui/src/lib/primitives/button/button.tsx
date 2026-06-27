@@ -13,7 +13,7 @@ const button = cva(
   {
     variants: {
       variant: {
-        solid: 'bg-brand text-white hover:bg-brand/80',
+        solid: 'bg-brand text-on-brand hover:bg-brand/80',
         outline: 'border-2 border-brand text-brand md:hover:bg-brand/20',
         accent:
           'bg-accent text-ink hover:bg-accent/90 active:ring-accent focus-visible:outline-accent',
@@ -25,7 +25,7 @@ const button = cva(
       {
         variant: 'outline',
         active: true,
-        class: 'bg-brand text-white border-transparent md:hover:bg-brand',
+        class: 'bg-brand text-on-brand border-transparent md:hover:bg-brand',
       },
     ],
     defaultVariants: { variant: 'solid', size: 'md', active: false },

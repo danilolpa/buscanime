@@ -1,5 +1,7 @@
 'use client';
 import { useState } from 'react';
+import Image from 'next/image';
+import { Play } from 'lucide-react';
 
 export interface TrailerEmbedProps {
   youtubeId: string | null;
@@ -16,7 +18,7 @@ export function TrailerEmbed({
   if (!youtubeId) return null;
 
   return (
-    <div className="relative aspect-video w-full overflow-hidden rounded-lg bg-black">
+    <div className="relative aspect-video w-full overflow-hidden rounded-lg bg-scrim">
       {playing ? (
         <iframe
           className="absolute inset-0 h-full w-full"
@@ -33,15 +35,17 @@ export function TrailerEmbed({
           className="group absolute inset-0 h-full w-full focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
         >
           {thumbnail && (
-            <img
+            <Image
               src={thumbnail}
               alt=""
-              className="h-full w-full object-cover"
+              fill
+              sizes="(max-width: 768px) 100vw, 66vw"
+              className="object-cover"
             />
           )}
-          <span className="absolute inset-0 grid place-items-center bg-black/30 transition group-hover:bg-black/40">
-            <span className="grid h-14 w-14 place-items-center rounded-full bg-white/90 text-2xl text-black">
-              ▶
+          <span className="absolute inset-0 grid place-items-center bg-scrim/30 transition group-hover:bg-scrim/40">
+            <span className="grid h-14 w-14 place-items-center rounded-full bg-surface/90 text-scrim">
+              <Play aria-hidden="true" className="translate-x-0.5" />
             </span>
           </span>
         </button>

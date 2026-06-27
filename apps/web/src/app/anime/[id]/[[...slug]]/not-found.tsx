@@ -1,6 +1,12 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Ghost, Home } from 'lucide-react';
 import { Header, Footer, Container, StatusState, buttonVariants } from 'ui';
+
+// Já retorna HTTP 404, mas reforça que páginas de erro não devem ser indexadas.
+export const metadata: Metadata = {
+  robots: { index: false, follow: false },
+};
 
 export default function AnimeNotFound() {
   return (

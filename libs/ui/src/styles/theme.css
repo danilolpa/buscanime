@@ -12,6 +12,22 @@
   --color-surface: #ffffff; /* fundo de superfície — cards, inputs */
   --color-border: #e5e5e5; /* bordas e divisores sutis */
 
+  --color-on-brand: #ffffff; /* texto/ícone sobre bg-brand (botão, chip, footer, logo) */
+  --color-on-media: #ffffff; /* texto/overlay sobre imagens (título do card) */
+  --color-scrim: #000000; /* escurecimento sobre mídia — gradientes, skeletons */
+
+  /* feedback / estado (StatusState) */
+  --color-danger: #dc2626; /* texto/ícone de erro */
+  --color-danger-surface: #fee2e2; /* fundo do badge de erro */
+  --color-warning: #d97706; /* texto/ícone de alerta (rate limit) */
+  --color-warning-surface: #fef3c7; /* fundo do badge de alerta */
+
+  /* nota (score) do anime (AnimeRating) */
+  --color-score-low: #e11d48; /* nota baixa (< 50%) */
+  --color-score-mid: #fde047; /* nota média (50–80%) */
+  --color-score-high: #0f766e; /* nota alta (> 80%) */
+  --color-on-score: #ffffff; /* texto sobre score-low / score-high */
+
   --animate-status-in: status-in 0.3s ease-out;
   --animate-fade-in: fade-in 0.6s ease-out both;
 }

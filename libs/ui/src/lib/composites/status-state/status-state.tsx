@@ -13,8 +13,8 @@ export interface StatusStateProps {
 
 const TONE_CLASSES: Record<StatusTone, string> = {
   neutral: 'bg-ink/5 text-ink/40',
-  danger: 'bg-red-100 text-red-600',
-  warning: 'bg-amber-100 text-amber-600',
+  danger: 'bg-danger-surface text-danger',
+  warning: 'bg-warning-surface text-warning',
 };
 
 export function StatusState({

@@ -14,7 +14,7 @@ export const Footer = forwardRef<HTMLElement, FooterProps>(function Footer(
   return (
     <footer
       ref={ref}
-      className={cn('bg-brand text-white/80', className)}
+      className={cn('bg-brand text-on-brand/80', className)}
       {...props}
     >
       <Container>

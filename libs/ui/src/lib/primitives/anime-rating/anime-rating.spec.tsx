@@ -17,10 +17,10 @@ describe('AnimeRating', () => {
   });
 
   it.each([
-    [49, 'bg-rose-600'],
-    [50, 'bg-yellow-300'],
-    [80, 'bg-yellow-300'],
-    [81, 'bg-teal-700'],
+    [49, 'bg-score-low'],
+    [50, 'bg-score-mid'],
+    [80, 'bg-score-mid'],
+    [81, 'bg-score-high'],
   ] as const)(
     'value %i recebe a classe de faixa %s',
     (value, expectedClass) => {

@@ -10,7 +10,13 @@ it('não renderiza nada sem youtubeId', () => {
   expect(container).toBeEmptyDOMElement();
 });
 it('carrega o iframe só após o clique', () => {
-  render(<TrailerEmbed youtubeId="abc123" thumbnail="t.jpg" title="Trailer" />);
+  render(
+    <TrailerEmbed
+      youtubeId="abc123"
+      thumbnail="https://i.ytimg.com/vi/abc123/hqdefault.jpg"
+      title="Trailer"
+    />,
+  );
   expect(screen.queryByTitle('Trailer')).not.toBeInTheDocument();
   fireEvent.click(screen.getByRole('button', { name: /reproduzir trailer/i }));
   const iframe = screen.getByTitle('Trailer');
@@ -18,7 +24,10 @@ it('carrega o iframe só após o clique', () => {
 });
 it('sem violações de a11y', async () => {
   const { container } = render(
-    <TrailerEmbed youtubeId="abc123" thumbnail="t.jpg" />,
+    <TrailerEmbed
+      youtubeId="abc123"
+      thumbnail="https://i.ytimg.com/vi/abc123/hqdefault.jpg"
+    />,
   );
   expect(await axe(container)).toHaveNoViolations();
 });

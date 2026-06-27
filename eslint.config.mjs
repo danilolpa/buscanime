@@ -64,7 +64,10 @@ export default [
     // Design system: forbid raw Tailwind colors. Use semantic tokens
     // (bg-brand, text-accent, text-ink). Missing a token? Add it to
     // libs/ui/src/styles/theme.css before using.
-    files: ['libs/ui/**/*.{ts,tsx}', 'apps/web/**/*.{ts,tsx}'],
+    // NB: usar '**/*' (não 'libs/ui/**') para a regra disparar também no lint
+    // por-projeto (`nx lint ui`), onde os paths são relativos ao projeto (src/…).
+    // data-access/shared-types não têm Tailwind, então é inócuo lá.
+    files: ['**/*.{ts,tsx}'],
     ignores: [
       '**/*.spec.{ts,tsx}',
       '**/*.stories.{ts,tsx}',
@@ -77,9 +80,9 @@ export default [
         'error',
         {
           selector:
-            'Literal[value=/\\b(bg|text|border|ring|fill|stroke|from|via|to|outline|divide|decoration|shadow|accent|caret|ring-offset)-(red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|blue|indigo|violet|purple|fuchsia|pink|rose|gray|slate|zinc|neutral|stone)-\\d{2,3}(?![/\\d])/]',
+            'Literal[value=/\\b(bg|text|border|ring|fill|stroke|from|via|to|outline|divide|decoration|shadow|accent|caret|ring-offset)-((red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|blue|indigo|violet|purple|fuchsia|pink|rose|gray|slate|zinc|neutral|stone)-\\d{2,3}|black|white)(\\/\\d{1,3})?\\b/]',
           message:
-            'Raw Tailwind colors are forbidden. Use semantic tokens: bg-brand, text-accent, text-ink / text-ink-muted / text-ink-subtle. Missing a token? Add it to libs/ui/src/styles/theme.css.',
+            'Raw Tailwind colors are forbidden (inclui black/white). Use semantic tokens: bg-brand, text-accent, text-ink / text-ink-muted / text-ink-subtle, on-brand, on-media, scrim, danger, warning, score-*. Missing a token? Add it to libs/ui/src/styles/theme.css.',
         },
       ],
     },

@@ -56,7 +56,9 @@ async function fetchViaSsr(
   format: MediaFormat | undefined,
   sort: MediaSort[],
 ): Promise<AnimeListPageResult> {
-  const res = await fetch(getAnilistEndpoint(), {
+  // Next's fetch augmentation (`next.revalidate`) não está nos tipos da lib
+  // (tsconfig types: ["node"]); tipamos localmente em vez de `as RequestInit`.
+  const init: RequestInit & { next?: { revalidate: number } } = {
     method: 'POST',
     headers: {
       'content-type': 'application/json',
@@ -72,8 +74,9 @@ async function fetchViaSsr(
         sort,
       },
     }),
-    ...({ next: { revalidate: 60 } } as RequestInit),
-  });
+    next: { revalidate: 60 },
+  };
+  const res = await fetch(getAnilistEndpoint(), init);
 
   if (!res.ok) {
     const err = new Error(`AniList request failed: ${res.status}`) as Error & {

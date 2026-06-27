@@ -31,9 +31,9 @@ export const AnimeCard = memo(function AnimeCard({
         onLoad={() => setLoaded(true)}
         className={`object-cover transition duration-500 ease-out hover:scale-110 ${loaded ? 'scale-100 opacity-100' : 'scale-105 opacity-0'}`}
       />
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-2/3 bg-gradient-to-b from-black to-transparent" />
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-2/3 bg-gradient-to-b from-scrim to-transparent" />
       <div className="absolute inset-x-0 top-0 p-4">
-        <h3 className="text-xl font-bold text-white">{anime.title}</h3>
+        <h3 className="text-xl font-bold text-on-media">{anime.title}</h3>
         <div className="mt-2 flex flex-wrap gap-1">
           {anime.genres.slice(0, 3).map((g) => (
             <Chip key={g}>{g}</Chip>

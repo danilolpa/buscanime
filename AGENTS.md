@@ -39,7 +39,13 @@ Projects: `web` (app), `ui`, `anime-data-access`, `shared-types`.
    - `text-ink` — texto primário, títulos (#1a1a1a)
    - `text-ink-muted` — texto secundário, subtítulos, meta (#525252)
    - `text-ink-subtle` — texto terciário, hints, placeholders (#737373)
+   - `bg-surface` (#fff) / `border-border` (#e5e5e5) — superfícies e bordas
+   - `text-on-brand` / `text-on-media` (#fff) — texto sobre brand / sobre imagem
+   - `bg-scrim` / `from-scrim` (#000) — escurecimento sobre mídia
+   - `text-danger`/`bg-danger-surface`, `text-warning`/`bg-warning-surface` — estados
+   - `bg-score-low/mid/high` + `text-on-score` — faixas de nota (AnimeRating)
 
+   A regra de cor crua agora inclui `black`/`white` e roda no lint por-projeto.
    Missing a token? Add it to `libs/ui/src/styles/theme.css` first.
    Opacity modifiers (`text-ink/60`) are linter-safe but prefer named tokens —
    on colored backgrounds opacity blends with the bg and produces unpredictable results.

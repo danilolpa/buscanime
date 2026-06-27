@@ -26,7 +26,7 @@ export function Skeleton({
       aria-hidden="true"
       style={style}
       className={cn(
-        'animate-pulse bg-black/10',
+        'animate-pulse bg-scrim/10',
         rounded ? 'rounded-full' : 'rounded-sm',
         className,
       )}

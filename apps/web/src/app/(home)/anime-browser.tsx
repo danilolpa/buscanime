@@ -17,7 +17,6 @@ import {
   useAnimeList,
   useAnimeFormatCounts,
   isRateLimitError,
-  type AnimeListPageResult,
 } from 'anime-data-access';
 import { animeHref } from 'shared-types';
 import { useAnimeFilters } from './use-anime-filters';
@@ -27,8 +26,6 @@ import { buildAnimeListUrl } from './anime-list-url';
 export interface AnimeBrowserProps {
   initialFormat?: string;
   initialQ?: string;
-  /** Lista da 1ª página renderizada no server (HTML sem JS). */
-  serverListing?: AnimeListPageResult | null;
   /** Test-only: endpoint absoluto pro MSW (graphql-request rejeita URL relativa em jsdom). */
   endpoint?: string;
 }
@@ -36,7 +33,6 @@ export interface AnimeBrowserProps {
 export function AnimeBrowser({
   initialFormat = 'ALL',
   initialQ = '',
-  serverListing = null,
   endpoint,
 }: AnimeBrowserProps) {
   const pathname = usePathname();
@@ -55,15 +51,11 @@ export function AnimeBrowser({
     endpoint,
   });
 
-  const filtersChanged =
-    format !== initialFormat || q.trim() !== initialQ.trim();
-
-  const pages =
-    query.data?.pages ??
-    (!filtersChanged && serverListing ? [serverListing] : undefined);
-  const animes = pages?.flatMap((p) => p.items) ?? [];
+  const animes = query.data?.pages.flatMap((p) => p.items) ?? [];
   const fetchingResults = query.isFetching && !query.isFetchingNextPage;
-  const isInitialLoading = query.isLoading && !serverListing && !filtersChanged;
+  // Hidratado no SSR: isLoading=false já no 1º render. Sem dados (e2e / troca de
+  // filtro com cache frio): isLoading=true → skeleton.
+  const isInitialLoading = query.isLoading;
   const isBlankState =
     query.isError || (!isInitialLoading && animes.length === 0);
 
@@ -118,7 +110,7 @@ export function AnimeBrowser({
           aria-busy={fetchingResults}
           className={`flex flex-1 flex-col${isBlankState ? ' justify-center' : ''}`}
         >
-          {isInitialLoading || (filtersChanged && query.isLoading) ? (
+          {isInitialLoading ? (
             <AnimeGridSkeleton count={12} />
           ) : query.isError ? (
             isRateLimitError(query.error) ? (

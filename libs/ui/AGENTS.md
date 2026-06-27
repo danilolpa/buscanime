@@ -37,13 +37,22 @@ Plus a named export in `src/index.ts`, under the layer section
 Raw Tailwind color (`bg-purple-700`, `text-red-500`) **breaks lint**.
 Novo token? Adicione em `src/styles/theme.css` antes de usar — não improvise.
 
-| Token                       | Valor   | Quando usar                                      |
-| --------------------------- | ------- | ------------------------------------------------ |
-| `bg-brand` / `text-brand`   | #6d28d9 | Cor principal da marca                           |
-| `bg-accent` / `text-accent` | #fde047 | Destaque / CTA                                   |
-| `text-ink`                  | #1a1a1a | Texto primário — títulos, corpo                  |
-| `text-ink-muted`            | #525252 | Texto secundário — subtítulos, labels, meta info |
-| `text-ink-subtle`           | #737373 | Texto terciário — hints, placeholders            |
+| Token                                 | Valor             | Quando usar                                      |
+| ------------------------------------- | ----------------- | ------------------------------------------------ |
+| `bg-brand` / `text-brand`             | #6d28d9           | Cor principal da marca                           |
+| `bg-accent` / `text-accent`           | #fde047           | Destaque / CTA                                   |
+| `text-ink`                            | #1a1a1a           | Texto primário — títulos, corpo                  |
+| `text-ink-muted`                      | #525252           | Texto secundário — subtítulos, labels, meta info |
+| `text-ink-subtle`                     | #737373           | Texto terciário — hints, placeholders            |
+| `bg-surface`                          | #ffffff           | Fundo de superfície — cards, inputs              |
+| `border-border`                       | #e5e5e5           | Bordas e divisores sutis                         |
+| `text-on-brand`                       | #ffffff           | Texto/ícone sobre `bg-brand` (botão, chip…)      |
+| `text-on-media`                       | #ffffff           | Texto/overlay sobre imagens (título do card)     |
+| `bg-scrim` / `from-scrim`             | #000000           | Escurecimento sobre mídia — gradientes, skeleton |
+| `text-danger` / `bg-danger-surface`   | #dc2626 / #fee2e2 | Estado de erro (StatusState)                     |
+| `text-warning` / `bg-warning-surface` | #d97706 / #fef3c7 | Estado de alerta / rate limit                    |
+| `bg-score-low/mid/high`               | rose/yellow/teal  | Faixas de nota do anime (AnimeRating)            |
+| `text-on-score`                       | #ffffff           | Texto sobre `score-low` / `score-high`           |
 
 Opacity modifiers (`text-ink/60`) são permitidos pelo linter mas **evite** —
 em fundos coloridos o valor mistura com o fundo e fica imprevisível.

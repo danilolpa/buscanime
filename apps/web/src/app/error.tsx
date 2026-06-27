@@ -1,6 +1,8 @@
 'use client';
 import * as Sentry from '@sentry/nextjs';
 import { useEffect } from 'react';
+import { ServerCrash } from 'lucide-react';
+import { StatusState, Button } from 'ui';
 
 export default function Error({
   error,
@@ -13,9 +15,14 @@ export default function Error({
     Sentry.captureException(error);
   }, [error]);
   return (
-    <main>
-      <h2>Algo deu errado.</h2>
-      <button onClick={reset}>Tentar novamente</button>
-    </main>
+    <div className="grid min-h-screen place-items-center p-6">
+      <StatusState
+        tone="danger"
+        icon={<ServerCrash />}
+        title="Algo deu errado"
+        message="Tivemos um problema ao carregar esta página. Tente novamente."
+        action={<Button onClick={reset}>Tentar novamente</Button>}
+      />
+    </div>
   );
 }

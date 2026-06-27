@@ -48,6 +48,8 @@ export function useAnimeFormatCounts({
   return useQuery({
     queryKey: ['anime-format-counts', trimmed ?? null],
     enabled: Boolean(trimmed),
+    // 8 sub-queries (perPage 50) por busca — evita refazer no remount do mesmo termo.
+    staleTime: 60_000,
     queryFn: async (): Promise<FormatCounts> => {
       const sdk = createAnilistSdk(endpoint);
       const data = await sdk.AnimeFormatCounts({ search: trimmed });

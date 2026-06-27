@@ -11,16 +11,18 @@ import { toAnimeDetail } from './transform.js';
 export async function fetchAnimeDetail(
   id: number,
 ): Promise<AnimeDetail | null> {
-  const res = await fetch(getAnilistEndpoint(), {
+  // Next's fetch augmentation (`next.revalidate`) não está nos tipos da lib
+  // (tsconfig types: ["node"]); tipamos localmente em vez de `as RequestInit`.
+  const init: RequestInit & { next?: { revalidate: number } } = {
     method: 'POST',
     headers: { 'content-type': 'application/json', accept: 'application/json' },
     body: JSON.stringify({
       query: print(AnimeDetailDocument),
       variables: { id },
     }),
-    // cast like fetchViaSsr — the lib's tsconfig (types: ["node"]) lacks Next's fetch augmentation
-    ...({ next: { revalidate: 3600 } } as RequestInit), // detail pages rarely change; 1h ISR cache
-  });
+    next: { revalidate: 3600 }, // detail pages rarely change; 1h ISR cache
+  };
+  const res = await fetch(getAnilistEndpoint(), init);
 
   // AniList returns 404 for a non-existent Media id — that's "not found", not an error.
   if (res.status === 404) return null;
