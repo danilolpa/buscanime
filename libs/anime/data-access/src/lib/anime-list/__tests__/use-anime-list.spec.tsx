@@ -3,7 +3,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { setupServer } from 'msw/node';
 import { graphql, HttpResponse } from 'msw';
 import type { ReactNode } from 'react';
-import { useAnimeList } from './use-anime-list.js';
+import { useAnimeList } from '../use-anime-list.js';
 
 const naruto = {
   id: 1,
@@ -64,16 +64,12 @@ afterEach(() => {
 afterAll(() => server.close());
 
 function wrapper({ children }: { children: ReactNode }) {
-  // notifyOnChangeProps: 'all' desliga o prop-tracking do observer. Sob renderHook o
-  // componente de teste não lê props durante o render, então o tracking ficaria vazio
-  // e o re-render após fetchNextPage não dispararia. 'all' garante a notificação.
   const client = new QueryClient({
     defaultOptions: { queries: { retry: false, notifyOnChangeProps: 'all' } },
   });
   return <QueryClientProvider client={client}>{children}</QueryClientProvider>;
 }
 
-// Endpoint ABSOLUTO: graphql-request/undici rejeita URL relativa em node/jsdom.
 const TEST_ENDPOINT = 'http://localhost/api/anilist';
 
 it('retorna a 1ª página normalizada (flatten) e indica hasNextPage', async () => {
@@ -117,9 +113,6 @@ it('usa SEARCH_MATCH quando há busca e passa search/format às variáveis', asy
 });
 
 it('funciona com o endpoint padrão (proxy relativo resolvido pra absoluto)', async () => {
-  // Sem endpoint explícito, usa o proxy default '/api/anilist'. graphql-request faz
-  // `new URL(endpoint)` internamente, então a URL relativa precisa ser resolvida pra
-  // absoluta — senão estoura "Invalid URL" e a query nunca dispara (o bug em produção).
   const { result } = renderHook(() => useAnimeList(), { wrapper });
   await waitFor(() => expect(result.current.isSuccess).toBe(true));
   expect(result.current.data?.pages[0].items).toEqual([narutoAnime]);

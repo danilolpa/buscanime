@@ -24,6 +24,12 @@ describe('Header', () => {
     expect(screen.getByTestId('nav')).toBeInTheDocument();
   });
 
+  it('logo é um link para a home', () => {
+    render(<Header />);
+    const link = screen.getByRole('link', { name: /BuscAnime/i });
+    expect(link).toHaveAttribute('href', '/');
+  });
+
   it('sem violações de a11y', async () => {
     const { container } = render(<Header />);
     expect(await axe(container)).toHaveNoViolations();

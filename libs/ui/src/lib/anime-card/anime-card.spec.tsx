@@ -1,4 +1,4 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { axe } from 'vitest-axe';
 import { it, expect } from 'vitest';
 import { AnimeCard } from './anime-card';
@@ -21,11 +21,10 @@ it('renderiza capa, título, gêneros e rating', () => {
   expect(screen.getByText('88%')).toBeInTheDocument();
 });
 
-it('revela a capa (opacidade + scale) ao carregar', () => {
+it('aplica hover na capa', () => {
   render(<AnimeCard anime={anime} />);
   const img = screen.getByRole('img', { name: 'Naruto' });
-  fireEvent.load(img);
-  expect(img).toHaveClass('opacity-100', 'scale-100');
+  expect(img).toHaveClass('hover:scale-110');
 });
 
 it('não renderiza rating quando averageScore é null', () => {

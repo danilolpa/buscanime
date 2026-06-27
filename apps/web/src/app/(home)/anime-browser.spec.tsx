@@ -15,18 +15,12 @@ import {
 } from 'vitest';
 import type { ReactNode } from 'react';
 
-// Mock dinâmico: `replace` reescreve os searchParams (lidos pelo binding vivo), pra que
-// clicar "Buscar"/trocar formato reflita na URL como no app real.
-let searchParams = new URLSearchParams();
-const replace = vi.fn((url: string) => {
-  const qs = url.includes('?') ? url.slice(url.indexOf('?') + 1) : '';
-  searchParams = new URLSearchParams(qs);
-});
+// Mock dinâmico: `replace` simula navegação client-side (filtros/busca).
+const replace = vi.fn();
 
 vi.mock('next/navigation', () => ({
   useRouter: () => ({ replace }),
   usePathname: () => '/',
-  useSearchParams: () => searchParams,
 }));
 
 import { AnimeBrowser } from './anime-browser';
@@ -79,7 +73,6 @@ const server = setupServer(
 );
 beforeAll(() => server.listen());
 beforeEach(() => {
-  searchParams = new URLSearchParams();
   replace.mockClear();
 });
 afterEach(() => server.resetHandlers());
@@ -93,12 +86,44 @@ function wrapper({ children }: { children: ReactNode }) {
 }
 
 describe('AnimeBrowser', () => {
+  it('renderiza serverListing imediatamente (sem skeleton)', () => {
+    render(
+      <AnimeBrowser
+        endpoint={TEST_ENDPOINT}
+        serverListing={{
+          items: [
+            {
+              id: 99,
+              title: 'Server Anime',
+              coverImage: 's.jpg',
+              averageScore: 90,
+              format: 'TV',
+              genres: ['Action'],
+            },
+          ],
+          pageInfo: { currentPage: 1, hasNextPage: false },
+        }}
+      />,
+      { wrapper },
+    );
+    expect(screen.getByText('Server Anime')).toBeInTheDocument();
+    expect(screen.queryByLabelText('Carregando anime')).not.toBeInTheDocument();
+  });
+
   it('mostra skeleton e depois a grade', async () => {
     render(<AnimeBrowser endpoint={TEST_ENDPOINT} />, { wrapper });
+    expect(
+      screen.getByRole('searchbox', { name: 'Buscar anime' }),
+    ).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'TV Show' })).toBeInTheDocument();
     expect(screen.getAllByLabelText('Carregando anime').length).toBeGreaterThan(
       0,
     );
     expect(await screen.findByText('Naruto')).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /naruto/i })).toHaveAttribute(
+      'href',
+      '/anime/1/naruto',
+    );
   });
 
   it('"Ver mais" acumula a próxima página', async () => {
@@ -155,11 +180,11 @@ describe('AnimeBrowser', () => {
       'naruto',
     );
     await userEvent.click(screen.getByRole('button', { name: 'Buscar' }));
-    const clear = await screen.findByRole('button', { name: 'Limpar busca' });
+    const clear = await screen.findByRole('link', { name: 'Limpar busca' });
     await userEvent.click(clear);
     await waitFor(() =>
       expect(
-        screen.queryByRole('button', { name: 'Limpar busca' }),
+        screen.queryByRole('link', { name: 'Limpar busca' }),
       ).not.toBeInTheDocument(),
     );
     expect(screen.getByRole('searchbox', { name: 'Buscar anime' })).toHaveValue(

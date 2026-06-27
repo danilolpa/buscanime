@@ -1,0 +1,59 @@
+query AnimeDetail($id: Int) {
+  Media(id: $id, type: ANIME) {
+    id
+    title {
+      romaji
+      english
+      native
+    }
+    description
+    coverImage {
+      extraLarge
+      large
+      color
+    }
+    bannerImage
+    averageScore
+    meanScore
+    popularity
+    favourites
+    episodes
+    duration
+    status
+    season
+    seasonYear
+    format
+    source
+    startDate {
+      year
+      month
+      day
+    }
+    endDate {
+      year
+      month
+      day
+    }
+    genres
+    tags {
+      name
+      rank
+    }
+    studios(isMain: true) {
+      nodes {
+        name
+      }
+    }
+    trailer {
+      id
+      site
+      thumbnail
+    }
+    externalLinks {
+      url
+      site
+      color
+      type
+    }
+  }
+}

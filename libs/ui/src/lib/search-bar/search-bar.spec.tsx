@@ -76,6 +76,39 @@ describe('SearchBar', () => {
     expect(onSearch).not.toHaveBeenCalled();
   });
 
+  it('renderiza input name=q e hidden format no GET form', () => {
+    render(
+      <SearchBar
+        value=""
+        onChange={vi.fn()}
+        onSearch={vi.fn()}
+        action="/"
+        format="TV"
+      />,
+    );
+    expect(
+      screen.getByRole('searchbox', { name: 'Buscar anime' }),
+    ).toHaveAttribute('name', 'q');
+    expect(document.querySelector('input[name="format"]')).toHaveValue('TV');
+  });
+
+  it('mostra × como link quando clearHref é passado', async () => {
+    const onClear = vi.fn();
+    render(
+      <SearchBar
+        value="naruto"
+        onChange={vi.fn()}
+        onSearch={vi.fn()}
+        onClear={onClear}
+        clearHref="/?format=TV"
+      />,
+    );
+    const clear = screen.getByRole('link', { name: 'Limpar busca' });
+    expect(clear).toHaveAttribute('href', '/?format=TV');
+    await userEvent.click(clear);
+    expect(onClear).toHaveBeenCalledOnce();
+  });
+
   it('sem violações de a11y', async () => {
     const { container } = render(
       <SearchBar value="" onChange={vi.fn()} onSearch={vi.fn()} />,

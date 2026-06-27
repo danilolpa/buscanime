@@ -14,12 +14,27 @@ export default defineConfig({
     baseURL,
     trace: 'on-first-retry',
   },
-  webServer: {
-    command: 'npx nx run web:dev',
-    url: 'http://localhost:3000',
-    reuseExistingServer: true,
-    cwd: workspaceRoot,
-  },
+  webServer: [
+    {
+      command: 'node apps/web-e2e/src/mock-server/anilist-mock.mjs',
+      url: 'http://127.0.0.1:4010',
+      reuseExistingServer: false,
+      cwd: workspaceRoot,
+      timeout: 30000,
+    },
+    {
+      command: 'npx nx run web:dev',
+      url: 'http://localhost:3000',
+      reuseExistingServer: false,
+      cwd: workspaceRoot,
+      timeout: 120000,
+      env: {
+        ...process.env,
+        PLAYWRIGHT_TEST: '1',
+        ANILIST_ENDPOINT: 'http://127.0.0.1:4010',
+      },
+    },
+  ],
   projects: [
     {
       name: 'chromium',

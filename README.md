@@ -59,6 +59,7 @@ buscanime/
 │   │   │   │   ├── anime-browser.tsx       # Componente principal da página
 │   │   │   │   ├── use-anime-filters.ts    # Hook de filtros sincronizados com a URL
 │   │   │   │   └── format-options.ts       # Constantes e conversões de formato
+│   │   │   ├── anime/[id]/[[...slug]]/  # Rota de detalhe — página SSR de um anime
 │   │   │   ├── api/anilist/        # Route Handler — proxy para a API do AniList
 │   │   │   ├── layout.tsx          # Layout raiz com metadata
 │   │   │   ├── providers.tsx       # QueryClient e configuração de retry
@@ -112,6 +113,12 @@ Na interface, cada situação tem seu estado próprio:
 
 Quando o proxy falha em chegar na AniList, o erro é capturado pelo Sentry antes de devolver um 502 pro cliente.
 
+**Mas o proxy não é a única forma de chegar na AniList.**
+
+A home é uma superfície interativa — filtros, busca, scroll infinito — então faz sentido buscar os dados no browser, via React Query e o proxy. A página de detalhe (`/anime/[id]/[slug]`) é o oposto: capa, banner, sinopse, estúdios, gêneros, trailer — conteúdo praticamente estático de um único anime. Aí o servidor faz o fetch direto na AniList, sem passar pelo proxy.
+
+O resultado: o HTML já chega populado (sem spinner), o `generateMetadata` consegue emitir `<title>` e `og:image` antes de qualquer JS rodar (link indexável, compartilhável), e a gente economiza o hop do proxy — que existe só pra dar controle sobre o que o browser faz. Mesma fonte de dados, estratégia de render por superfície.
+
 ---
 
 ## Como executar
@@ -153,7 +160,7 @@ pnpm exec nx test anime-data-access
 
 ### Testes E2E
 
-Os testes E2E sobem o servidor automaticamente antes de rodar. Eles exercitam o app no browser com a **API real** (AniList via proxy `/api/anilist`), complementando os testes unitários que usam MSW.
+Os testes E2E sobem o servidor automaticamente antes de rodar. A API AniList é **mockada** via interceptação do Playwright em `/api/anilist` (mesmos fixtures do MSW em `anime-browser.spec.tsx`), evitando rate limit (429) e tornando a suíte rápida e determinística. O proxy real continua coberto em `route.spec.ts` e nos testes de integração com MSW.
 
 ```bash
 # Instalar os browsers do Playwright (primeira vez)

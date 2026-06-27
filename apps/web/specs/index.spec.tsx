@@ -1,15 +1,10 @@
 import { render, screen } from '@testing-library/react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { vi } from 'vitest';
 import Page from '../src/app/page';
-
-// A página compõe Header + AnimeBrowser (client) + Footer. Mockamos as
-// dependências de runtime do AnimeBrowser pra um smoke test offline:
-// - next/navigation: o AnimeBrowser usa useRouter/useSearchParams via useAnimeFilters.
-// - useAnimeList / useAnimeFormatCounts: evitam rede (a página real usa o proxy /api/anilist).
 vi.mock('next/navigation', () => ({
   useRouter: () => ({ replace: vi.fn() }),
   usePathname: () => '/',
-  useSearchParams: () => new URLSearchParams(),
 }));
 
 vi.mock('@buscanime/anime-data-access', () => ({
@@ -25,13 +20,22 @@ vi.mock('@buscanime/anime-data-access', () => ({
     fetchNextPage: vi.fn(),
     refetch: vi.fn(),
   }),
-  // sem busca na home (q=''), o AnimeBrowser não lê counts.data — basta o hook existir.
   useAnimeFormatCounts: () => ({ data: undefined }),
+  getAnimeListInfiniteQueryOptions: vi.fn(),
+}));
+
+vi.mock('../src/app/(home)/home-with-data', () => ({
+  HomeWithData: () => <div data-testid="home-with-data" />,
 }));
 
 describe('Page', () => {
-  it('compõe a estrutura da página (header + footer)', () => {
-    render(<Page />);
+  it('compõe a estrutura da página (header + footer)', async () => {
+    const ui = await Page({ searchParams: Promise.resolve({}) });
+    render(
+      <QueryClientProvider client={new QueryClient()}>
+        {ui}
+      </QueryClientProvider>,
+    );
     expect(screen.getByRole('banner')).toBeInTheDocument();
     expect(screen.getByRole('contentinfo')).toBeInTheDocument();
   });

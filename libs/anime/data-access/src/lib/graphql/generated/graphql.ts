@@ -9,6 +9,8 @@ export type Incremental<T> =
 import { GraphQLClient, type RequestOptions } from 'graphql-request';
 import { DocumentNode } from 'graphql';
 type GraphQLClientRequestHeaders = RequestOptions['requestHeaders'];
+export type ExternalLinkType = 'INFO' | 'SOCIAL' | 'STREAMING';
+
 /** The format the media was released in */
 export type MediaFormat =
   /** Professionally published manga with more than one chapter */
@@ -31,6 +33,16 @@ export type MediaFormat =
   | 'TV'
   /** Anime which are under 15 minutes in length and broadcast on television */
   | 'TV_SHORT';
+
+export type MediaSeason =
+  /** Predominantly started airing between October and November */
+  | 'FALL'
+  /** Predominantly started airing between April and June */
+  | 'SPRING'
+  /** Predominantly started airing between July and September */
+  | 'SUMMER'
+  /** Predominantly started airing between January and March */
+  | 'WINTER';
 
 /** Media sort enums */
 export type MediaSort =
@@ -71,6 +83,109 @@ export type MediaSort =
   | 'UPDATED_AT_DESC'
   | 'VOLUMES'
   | 'VOLUMES_DESC';
+
+/** Source type the media was adapted from */
+export type MediaSource =
+  /** Version 2+ only. Japanese Anime */
+  | 'ANIME'
+  /** Version 3 only. Comics excluding manga */
+  | 'COMIC'
+  /** Version 2+ only. Self-published works */
+  | 'DOUJINSHI'
+  /** Version 3 only. Games excluding video games */
+  | 'GAME'
+  /** Written work published in volumes */
+  | 'LIGHT_NOVEL'
+  /** Version 3 only. Live action media such as movies or TV show */
+  | 'LIVE_ACTION'
+  /** Asian comic book */
+  | 'MANGA'
+  /** Version 3 only. Multimedia project */
+  | 'MULTIMEDIA_PROJECT'
+  /** Version 2+ only. Written works not published in volumes */
+  | 'NOVEL'
+  /** An original production not based of another work */
+  | 'ORIGINAL'
+  /** Other */
+  | 'OTHER'
+  /** Version 3 only. Picture book */
+  | 'PICTURE_BOOK'
+  /** Video game */
+  | 'VIDEO_GAME'
+  /** Video game driven primary by text and narrative */
+  | 'VISUAL_NOVEL'
+  /** Version 3 only. Written works published online */
+  | 'WEB_NOVEL';
+
+/** The current releasing status of the media */
+export type MediaStatus =
+  /** Ended before the work could be finished */
+  | 'CANCELLED'
+  /** Has completed and is no longer being released */
+  | 'FINISHED'
+  /** Version 2 only. Is currently paused from releasing and will resume at a later date */
+  | 'HIATUS'
+  /** To be released at a later date */
+  | 'NOT_YET_RELEASED'
+  /** Currently releasing */
+  | 'RELEASING';
+
+export type AnimeDetailQueryVariables = Exact<{
+  id?: number | null | undefined;
+}>;
+
+export type AnimeDetailQuery = {
+  Media: {
+    id: number;
+    description: string | null;
+    bannerImage: string | null;
+    averageScore: number | null;
+    meanScore: number | null;
+    popularity: number | null;
+    favourites: number | null;
+    episodes: number | null;
+    duration: number | null;
+    status: MediaStatus | null;
+    season: MediaSeason | null;
+    seasonYear: number | null;
+    format: MediaFormat | null;
+    source: MediaSource | null;
+    genres: Array<string | null> | null;
+    title: {
+      romaji: string | null;
+      english: string | null;
+      native: string | null;
+    } | null;
+    coverImage: {
+      extraLarge: string | null;
+      large: string | null;
+      color: string | null;
+    } | null;
+    startDate: {
+      year: number | null;
+      month: number | null;
+      day: number | null;
+    } | null;
+    endDate: {
+      year: number | null;
+      month: number | null;
+      day: number | null;
+    } | null;
+    tags: Array<{ name: string; rank: number | null } | null> | null;
+    studios: { nodes: Array<{ name: string } | null> | null } | null;
+    trailer: {
+      id: string | null;
+      site: string | null;
+      thumbnail: string | null;
+    } | null;
+    externalLinks: Array<{
+      url: string | null;
+      site: string;
+      color: string | null;
+      type: ExternalLinkType | null;
+    } | null> | null;
+  } | null;
+};
 
 export type AnimeFormatCountsQueryVariables = Exact<{
   search?: string | null | undefined;
@@ -136,6 +251,198 @@ export type AnimeListQuery = {
   } | null;
 };
 
+export const AnimeDetailDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'AnimeDetail' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'id' } },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'Media' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'id' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'id' },
+                },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'type' },
+                value: { kind: 'EnumValue', value: 'ANIME' },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'title' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'romaji' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'english' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'native' },
+                      },
+                    ],
+                  },
+                },
+                { kind: 'Field', name: { kind: 'Name', value: 'description' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'coverImage' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'extraLarge' },
+                      },
+                      { kind: 'Field', name: { kind: 'Name', value: 'large' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'color' } },
+                    ],
+                  },
+                },
+                { kind: 'Field', name: { kind: 'Name', value: 'bannerImage' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'averageScore' },
+                },
+                { kind: 'Field', name: { kind: 'Name', value: 'meanScore' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'popularity' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'favourites' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'episodes' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'duration' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'status' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'season' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'seasonYear' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'format' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'source' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'startDate' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'year' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'month' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'day' } },
+                    ],
+                  },
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'endDate' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'year' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'month' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'day' } },
+                    ],
+                  },
+                },
+                { kind: 'Field', name: { kind: 'Name', value: 'genres' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'tags' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'rank' } },
+                    ],
+                  },
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'studios' },
+                  arguments: [
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'isMain' },
+                      value: { kind: 'BooleanValue', value: true },
+                    },
+                  ],
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'nodes' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'name' },
+                            },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'trailer' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'site' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'thumbnail' },
+                      },
+                    ],
+                  },
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'externalLinks' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'url' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'site' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'color' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'type' } },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode;
 export const AnimeFormatCountsDocument = {
   kind: 'Document',
   definitions: [
@@ -825,6 +1132,24 @@ export function getSdk(
   withWrapper: SdkFunctionWrapper = defaultWrapper,
 ) {
   return {
+    AnimeDetail(
+      variables?: AnimeDetailQueryVariables,
+      requestHeaders?: GraphQLClientRequestHeaders,
+      signal?: RequestInit['signal'],
+    ): Promise<AnimeDetailQuery> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.request<AnimeDetailQuery>({
+            document: AnimeDetailDocument,
+            variables,
+            requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders },
+            signal,
+          }),
+        'AnimeDetail',
+        'query',
+        variables,
+      );
+    },
     AnimeFormatCounts(
       variables?: AnimeFormatCountsQueryVariables,
       requestHeaders?: GraphQLClientRequestHeaders,

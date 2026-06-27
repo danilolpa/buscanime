@@ -3,7 +3,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { setupServer } from 'msw/node';
 import { graphql, HttpResponse } from 'msw';
 import type { ReactNode } from 'react';
-import { useAnimeFormatCounts } from './use-anime-format-counts.js';
+import { useAnimeFormatCounts } from '../use-format-counts.js';
 
 const server = setupServer(
   graphql.query('AnimeFormatCounts', () =>

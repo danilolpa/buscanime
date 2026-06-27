@@ -1,5 +1,7 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { Hourglass, Plus, SearchX, ServerCrash } from 'lucide-react';
 import {
   AnimeGrid,
@@ -15,16 +17,29 @@ import {
   useAnimeList,
   useAnimeFormatCounts,
   isRateLimitError,
+  type AnimeListPageResult,
 } from '@buscanime/anime-data-access';
+import { animeHref } from '@buscanime/shared-types';
 import { useAnimeFilters } from './use-anime-filters';
 import { FORMAT_OPTIONS, toMediaFormat } from './format-options';
+import { buildAnimeListUrl } from './anime-list-url';
 
 export interface AnimeBrowserProps {
+  initialFormat?: string;
+  initialQ?: string;
+  /** Lista da 1ª página renderizada no server (HTML sem JS). */
+  serverListing?: AnimeListPageResult | null;
   /** Test-only: endpoint absoluto pro MSW (graphql-request rejeita URL relativa em jsdom). */
   endpoint?: string;
 }
 
-export function AnimeBrowser({ endpoint }: AnimeBrowserProps) {
+export function AnimeBrowser({
+  initialFormat = 'ALL',
+  initialQ = '',
+  serverListing = null,
+  endpoint,
+}: AnimeBrowserProps) {
+  const pathname = usePathname();
   const {
     format,
     q,
@@ -33,23 +48,25 @@ export function AnimeBrowser({ endpoint }: AnimeBrowserProps) {
     onChangeText,
     submitSearch,
     clearSearch,
-  } = useAnimeFilters();
+  } = useAnimeFilters({ initialFormat, initialQ });
   const query = useAnimeList({
     search: q,
     format: toMediaFormat(format),
     endpoint,
   });
 
-  const animes = query.data?.pages.flatMap((p) => p.items) ?? [];
-  const fetchingResults = query.isFetching && !query.isFetchingNextPage;
-  // Estados em branco (erro / nada encontrado) centralizam na altura disponível;
-  // a grade e o skeleton ficam no topo.
-  const isBlankState =
-    query.isError || (!query.isLoading && animes.length === 0);
+  const filtersChanged =
+    format !== initialFormat || q.trim() !== initialQ.trim();
 
-  // O botão "Buscar" só mostra loading quando a busca foi disparada por clique/Enter —
-  // não no load inicial nem ao trocar de formato. Liga no clique e desliga quando o fetch
-  // resultante termina (transição de fetching true -> false).
+  const pages =
+    query.data?.pages ??
+    (!filtersChanged && serverListing ? [serverListing] : undefined);
+  const animes = pages?.flatMap((p) => p.items) ?? [];
+  const fetchingResults = query.isFetching && !query.isFetchingNextPage;
+  const isInitialLoading = query.isLoading && !serverListing && !filtersChanged;
+  const isBlankState =
+    query.isError || (!isInitialLoading && animes.length === 0);
+
   const [searchPending, setSearchPending] = useState(false);
   const wasFetching = useRef(false);
   useEffect(() => {
@@ -58,15 +75,15 @@ export function AnimeBrowser({ endpoint }: AnimeBrowserProps) {
   }, [query.isFetching]);
 
   const counts = useAnimeFormatCounts({ search: q, endpoint });
-  const options =
-    q && counts.data
-      ? FORMAT_OPTIONS.map((o) => ({
-          ...o,
-          // cast pra Record<string, number>: o.value é string e FormatCounts é tipado
-          // por união literal de chaves — sem o cast o `nx build`/typecheck reclama.
+  const options = FORMAT_OPTIONS.map((o) => ({
+    ...o,
+    href: buildAnimeListUrl(pathname, o.value, q),
+    ...(q && counts.data
+      ? {
           badge: (counts.data as Record<string, number>)[o.value] ?? 0,
-        }))
-      : FORMAT_OPTIONS;
+        }
+      : {}),
+  }));
 
   function handleSearch() {
     setSearchPending(true);
@@ -91,15 +108,17 @@ export function AnimeBrowser({ endpoint }: AnimeBrowserProps) {
           loading={searchPending && query.isFetching}
           onClear={clearSearch}
           searchActive={Boolean(q)}
+          action={pathname}
+          format={format}
+          clearHref={buildAnimeListUrl(pathname, format, '')}
         />
 
-        {/* aria-busy sinaliza qualquer refetch de resultados (filtro/busca), não só a carga inicial. */}
         <div
           aria-live="polite"
           aria-busy={fetchingResults}
           className={`flex flex-1 flex-col${isBlankState ? ' justify-center' : ''}`}
         >
-          {query.isLoading ? (
+          {isInitialLoading || (filtersChanged && query.isLoading) ? (
             <AnimeGridSkeleton count={12} />
           ) : query.isError ? (
             isRateLimitError(query.error) ? (
@@ -138,7 +157,13 @@ export function AnimeBrowser({ endpoint }: AnimeBrowserProps) {
             <>
               <AnimeGrid>
                 {animes.map((anime) => (
-                  <AnimeCard key={anime.id} anime={anime} />
+                  <Link
+                    key={anime.id}
+                    href={animeHref(anime.id, anime.title)}
+                    className="block rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500"
+                  >
+                    <AnimeCard anime={anime} />
+                  </Link>
                 ))}
               </AnimeGrid>
               {query.hasNextPage && (
