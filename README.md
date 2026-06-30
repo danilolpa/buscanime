@@ -13,7 +13,7 @@
 [![ESLint](https://img.shields.io/badge/ESLint-9-4B32C3?logo=eslint&logoColor=fff)](https://eslint.org)
 [![Prettier](https://img.shields.io/badge/Prettier-3-F7B93E?logo=prettier&logoColor=000)](https://prettier.io)
 [![Sentry](https://img.shields.io/badge/Sentry-10-362D59?logo=sentry&logoColor=fff)](https://sentry.io)
-[![CI](https://github.com/danilolpa/buscanime-winnin/actions/workflows/ci.yml/badge.svg)](https://github.com/danilolpa/buscanime-winnin/actions/workflows/ci.yml)
+[![CI](https://github.com/danilolpa/buscanime/actions/workflows/ci.yml/badge.svg)](https://github.com/danilolpa/buscanime/actions/workflows/ci.yml)
 [![Deploy](https://img.shields.io/badge/Vercel-Deploy-000000?logo=vercel)](https://buscanime-winnin-web.vercel.app/)
 
 **[buscanime-winnin-web.vercel.app](https://buscanime-winnin-web.vercel.app/)**

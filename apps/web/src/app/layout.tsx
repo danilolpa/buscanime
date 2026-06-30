@@ -3,8 +3,7 @@ import './global.css';
 import { Providers } from './providers';
 
 const siteUrl =
-  process.env['NEXT_PUBLIC_SITE_URL'] ??
-  'https://buscanime-winnin-web.vercel.app';
+  process.env['NEXT_PUBLIC_SITE_URL'] ?? 'https://buscanime-web.vercel.app';
 
 const defaultTitle =
   'BuscaAnime · Pesquise animes com notas, episódios e trailers';

@@ -3,7 +3,7 @@ export const ANILIST_JSON_HEADERS: Readonly<Record<string, string>> = {
   'content-type': 'application/json',
   accept: 'application/json',
   // Cloudflare/AniList podem bloquear requests sem UA identificável (comum em serverless).
-  'user-agent': 'BuscaAnime/1.0 (+https://buscanime-winnin-web.vercel.app)',
+  'user-agent': 'BuscaAnime/1.0 (+https://buscanime-web.vercel.app)',
 };
 
 /** Alinha Data Cache Next.js entre SSR e `/api/anilist`. */
